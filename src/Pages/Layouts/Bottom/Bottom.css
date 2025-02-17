@@ -1,0 +1,54 @@
+.main-menu{
+    border-radius: 10px;
+    width: fit-content;
+    padding-inline: 4rem;
+    margin: 0 auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-style: solid;
+    border-width: 1px;
+    border-color: #660033 !important;
+}
+
+.main-menu a{
+    color: white !important;
+}
+
+.main-menu a:hover{
+    cursor: pointer;
+}
+
+.main-menu a:focus{
+    opacity: 0.8;
+}
+
+.toast-top {
+    position: fixed;
+    bottom: 110px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1050;
+    box-shadow: none !important;
+    animation: slideIn 0.3s ease-out; /* Add animation */
+    border-radius: 11px !important;
+    background-color: white !important;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+.toast-top a{
+    color: #660033 !important;
+}
+
+.toast-top a:focus{
+    background-color: #660033 !important;
+    color: white!important;
+}

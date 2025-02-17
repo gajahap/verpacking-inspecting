@@ -11,3 +11,301 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+
+input:focus, 
+textarea:focus, 
+select:focus {
+  outline: none !important; /* Remove the outline */
+  box-shadow: none !important   ; /* Remove the shadow */
+  border-color: #660033 !important;
+}
+
+button {
+  border: none !important;
+}
+button:hover{
+  outline: none !important;
+  border: none !important;
+}
+
+.card{
+  border-radius: 11px!important;
+}
+
+
+.bg-burgundy {
+  background-color: #660033 !important;
+}
+
+.bg-burgundy-dark {
+  background-color: #490125 !important;
+}
+
+.bg-young-burgundy {
+  background-color: #be1640 !important;
+}
+
+.bg-burgundy-gradient{
+  background-image: linear-gradient(to bottom right, #be1640, #660033) !important;
+}
+
+.bg-burgundy-gradient-top{
+  background-image: linear-gradient(to top, #be1640, #660033) !important;
+}
+
+.bg-burgundy-gradient-bottom{
+  background-image: linear-gradient(to bottom, #be1640, #660033) !important;
+}
+
+.border-white{
+  border-color: #fff !important;
+}
+
+.bg-transperent-border-burgundy{
+  border: 2px solid #660033 !important;
+}
+
+.btn-burgundy-transparent{
+  background-color: #ffffff !important;
+  color: #660033 !important;
+  border: 2px solid #660033 !important;
+}
+
+.btn-burgundy-transparent:hover{
+  background-color: #660033 !important;
+  color: #ffffff !important;
+  border: 2px solid #660033 !important;
+}
+
+/* .btn-burgundy-transparent:focus{
+  background-color: #ffffff !important;
+  color: #660033 !important;
+  border: 2px solid #660033 !important;
+} */
+
+.btn-burgundy{
+  background-color: #660033 !important;
+  color: #fff !important;
+  border-color: #660033 !important;
+}
+
+.btn-burgundy:hover{
+  background-color: #be1640 !important;
+}
+
+.btn-burgundy:focus{
+  background-color: #660033 !important;
+}
+
+.btn-young-burgundy{
+  background-color: #be1640 !important;
+  color: #fff !important;
+  border-color: #be1640 !important;
+}
+
+.btn-young-burgundy:hover{
+  background-color: #e33863 !important;
+}
+
+.btn-young-burgundy:focus{
+  background-color: #be1640 !important;
+}
+
+.text-burgundy{
+  color: #660033 !important;
+}
+
+.text-young-burgundy{
+  color: #be1640 !important;
+}
+
+.text-strong{
+  font-weight: 600 !important;
+}
+
+
+.bg-pattern-container {
+  position: relative;
+  z-index: 1; /* Pastikan elemen ini berada di atas pattern */
+}
+
+.bg-pattern-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1; /* Membuat pattern berada di bawah kontainer */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cpath fill='%23660033' fill-opacity='0.2' d='M0 0h20v20H0V0zm20 20h20v20H20V20zm0-10h10v10H20V10zm0-10h10v10H20V0zM0 20h10v10H0V20zm0 10h10v10H0V30zM0 10h20v20H0V10zM0 0h10v10H0V0zM10 10h10v10H10V10zM10 20h10v10H10V20zM10 0h10v10H10V0zM20 10h10v10H20V10zM20 20h10v10H20V20zM20 0h10v10H20V0z'/%3E%3C/svg%3E"); /* Tambahkan URL pattern */
+  background-repeat: repeat; /* Ulangi gambar pattern */
+  background-size: 150px 150px; /* Atur ukuran pattern */
+  opacity: 1; /* Sesuaikan transparansi */
+  pointer-events: none; /* Hindari pengaruh pada interaksi */
+}
+
+.bg-pattern-card {
+  position: relative;
+  z-index: 1; /* Pastikan elemen ini berada di atas pattern */
+  border-radius: 11px!important;
+}
+
+.bg-pattern-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1; /* Membuat pattern berada di bawah kontainer */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cpath fill='%23660033' fill-opacity='0.2' d='M0 0h20v20H0V0zm20 20h20v20H20V20zm0-10h10v10H20V10zm0-10h10v10H20V0zM0 20h10v10H0V20zm0 10h10v10H0V30zM0 10h20v20H0V10zM0 0h10v10H0V0zM10 10h10v10H10V10zM10 20h10v10H10V20zM10 0h10v10H10V0zM20 10h10v10H20V10zM20 20h10v10H20V20zM20 0h10v10H20V0z'/%3E%3C/svg%3E"); /* Tambahkan URL pattern */
+  background-repeat: repeat; /* Ulangi gambar pattern */
+  background-size: 150px 150px; /* Atur ukuran pattern */
+  opacity: 1; /* Sesuaikan transparansi */
+  pointer-events: none; /* Hindari pengaruh pada interaksi */
+  border-radius: 11px!important;
+}
+
+
+.curved-container {
+  clip-path: ellipse(100% 50% at 50% 30%);
+}
+
+.border-none{
+  border: none !important;
+}
+
+.hover-burgundy:hover{
+  background-color: #660033 !important;
+}
+
+.hover-young-burgundy{
+  background-color: #be1640 !important;
+}
+
+
+.small-text{
+  font-size: 13px !important;
+} 
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.border-bold{
+  border: 2px solid rgb(0, 0, 0) !important;
+  background-color: #f6f5f5 !important;
+}
+
+.__control {
+  background-color: #f0f0f0;
+  border-color:  2px solid black !important;
+}
+
+.__option--is-focused {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.__single-value {
+  color: #007bff;
+}
+
+
+/* Global styles */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: white;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d7d7d7;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #9c9c9c;
+}
+
+/* Firefox styles */
+* {
+  scrollbar-width: thin; 
+  scrollbar-color: #d7d7d7 white;
+}
+
+.scroll-container:hover {
+  scrollbar-color: #9c9c9c white;
+}
+
+
+.rounded{
+  border-radius: 11px !important;
+}
+
+.bg-soft-green{
+  background-color: rgba(0, 128, 0, 0.2) !important;
+}
+
+
+.bg-pattern-container {
+  background-repeat: repeat-y; /* Agar gambar diulang secara vertikal */
+  background-size: cover; /* Sesuaikan ukuran */
+  animation: scrollBackground 10s linear infinite; /* Animasi selama 10 detik */
+}
+
+@keyframes scrollBackground {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 0 100%; /* Pindahkan ke bawah */
+  }
+}
+
+
+.border-bottom-bold{
+  border-bottom: 1px solid rgb(202, 202, 202) !important;
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Fade-out animation */
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* Classes for fade-in and fade-out */
+.fade-in {
+  animation: fadeIn 1s ease-in forwards; /* 1 second for fade-in */
+}
+
+.fade-out {
+  animation: fadeOut 1s ease-out forwards; /* 1 second for fade-out */
+}
