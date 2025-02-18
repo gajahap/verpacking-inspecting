@@ -8,7 +8,7 @@ import InspectingCreateMklBj from './Pages/Inspecting/InspectingCreateMklBj'
 import InspectingView from './Pages/Inspecting/InspectingView';
 import ErrorPage from './ErrorPage';
 import InspectPrint from './Pages/Print/InspectPrint';
-import InspectKartuPrint from './Pages/Print/InspectKartuPrint2';
+import InspectKartuPrint from './Pages/Print/InspectKartuPrint';
 import FabricInspectionReport from './Pages/Print/FabricInspectionReport';
 
 
