@@ -45,6 +45,6 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://gap-api.produksionline.xyz/v1/"
-  
+  "proxy": "http://gap-api.produksionline.xyz"
+
 }
