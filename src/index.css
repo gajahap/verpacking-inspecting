@@ -309,3 +309,8 @@ input[type=number] {
 .fade-out {
   animation: fadeOut 1s ease-out forwards; /* 1 second for fade-out */
 }
+
+
+/* .btn {
+  background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.139), rgba(0, 0, 0, 0.218));
+} */

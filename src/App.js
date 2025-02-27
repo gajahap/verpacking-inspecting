@@ -10,6 +10,7 @@ import ErrorPage from './ErrorPage';
 import InspectPrint from './Pages/Print/InspectPrint';
 import InspectKartuPrint from './Pages/Print/InspectKartuPrint';
 import FabricInspectionReport from './Pages/Print/FabricInspectionReport';
+import LaporanStockGreige from './Pages/LaporanStockGreige';
 
 
 const App = () => {
@@ -38,6 +39,8 @@ const App = () => {
           <Route path="/print/fir/dyeing/:idInspecting" element={<Middleware><FabricInspectionReport jenisProses="dyeing" /></Middleware>} />
           <Route path="/print/fir/printing/:idInspecting" element={<Middleware><FabricInspectionReport jenisProses="printing" /></Middleware>} />
           <Route path="/print/fir/mkl-bj/:idInspecting" element={<Middleware><FabricInspectionReport jenisProses="mkl-bj" /></Middleware>} />
+
+          <Route path="/laporan-stock-greige" element={<Middleware><LaporanStockGreige/></Middleware>} />
 
       </Routes>
     </Router>

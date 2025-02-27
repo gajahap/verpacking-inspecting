@@ -69,7 +69,7 @@ const InspectPrint = (props) => {
             {loading ? (
                 <LoadingSpinner />
             ) : isError ? <ErrorPage status={isError} /> : (
-            <div className="container py-4 a4-portrait">
+            <div className="container-fluid py-4 a4-portrait">
                 <div className="card border-1 shadow-sm print:border-0">
                 <div className="card-body print:p-0" ref={printRef}>
                     <div className="d-flex justify-content-end align-items-center mb-4 no-print">

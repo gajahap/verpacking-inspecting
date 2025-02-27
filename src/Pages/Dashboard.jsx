@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Stack,Badge } from 'react-bootstrap';
+import { Container, Row, Col, Card, Stack,Badge, Button ,Spinner } from 'react-bootstrap';
 import axiosInstance from '../axiosConfig';
 import Bottom from './Layouts/Bottom/Bottom';
 import LoadingSpinner from '../Components/LoadingSpinner';
@@ -20,25 +20,42 @@ const Dashboard = () => {
   const [chartData, setChartData] = useState({});
   const [chartlabels, setChartLabels] = useState([]);
   const [isError, setIsError] = useState(false);
+  const [isSearchForGrafik, setIsSearchForGrafik] = useState(false);
+
+  const fetchDataIndex = async () => {
+    try {
+      const response = await axiosInstance.get('dashboard/index');
+      setData(response.data);
+      console.log(response.data);
+      setInspectRecent(response.data.recent_kartu_proses_dyeing);
+      // setChartData(Object.values(response.data.inspectings_per_year));
+      // setChartLabels(Object.keys(response.data.inspectings_per_year));
+    } catch (error) {
+      setIsError(error.response?.status || 'Error');
+      console.log(error.response);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fetchDataGrafik = async () => {
+    try {
+      setIsSearchForGrafik(true);
+      const response = await axiosInstance.get('dashboard/grafik');
+      setData(response.data);
+      console.log(response.data);
+      setChartData(Object.values(response.data.inspectings_per_year));
+      setChartLabels(Object.keys(response.data.inspectings_per_year));
+    } catch (error) {
+      setIsError(error.response?.status || 'Error');
+      console.log(error.response);
+    } finally {
+      setIsSearchForGrafik(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axiosInstance.get('dashboard/index');
-        setData(response.data);
-        console.log(response.data);
-        setInspectRecent(response.data.recent_kartu_proses_dyeing);
-        setChartData(Object.values(response.data.inspectings_per_year));
-        setChartLabels(Object.keys(response.data.inspectings_per_year));
-      } catch (error) {
-        setIsError(error.response?.status || 'Error');
-        console.log(error.response);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
+    fetchDataIndex();
   }, []);
 
   useEffect(() => {
@@ -144,7 +161,7 @@ const Dashboard = () => {
                     </Stack>
                   </div>
                 </Stack>
-                <Card className="p-4" style={{ marginBottom: "8rem" }}>
+                <Card className="p-4" style={{ marginBottom: "8rem" , minHeight: "50vh"}}>
                   <Row className="g-3">
                     <Col sm={4} md={4}>
                       <Link to="/inspecting-create-dyeing" className="text-decoration-none">
@@ -178,8 +195,11 @@ const Dashboard = () => {
                     </Col>
                   </Row>
                   <hr />
-                  <h5>Statistik Hasil Inspect Saya</h5>
-                  <Bar data={dataChart} options={options} />
+                  <h5>
+                    Statistik Hasil Inspect Saya 
+                    </h5>
+                  <div><Button variant='burgundy' size='sm' onClick={() => fetchDataGrafik()} disabled={isSearchForGrafik} >{isSearchForGrafik ? <Spinner animation="border" size="sm" /> : "Tampilkan Grafik" }</Button></div>
+                  <Bar data={dataChart} options={options} /> 
                 </Card>
               </Container>
             </div>

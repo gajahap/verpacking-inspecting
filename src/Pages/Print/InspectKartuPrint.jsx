@@ -80,7 +80,7 @@ const InspectPrint = ({jenisProses}) => {
     if (isError) return <ErrorPage status={isError} />;
 
     return (
-        <div className="container py-4 a4-portrait">
+        <div className="container-fluid py-4 a4-portrait">
           <div className="card border-1 shadow-sm print:border-0">
             <div className="card-body print:p-0 landscape-page" ref={printRef} >
               <div className="d-flex justify-content-end align-items-center no-print">

@@ -13,6 +13,7 @@ const InspectResultEdit = (props) => {
         qty: result.qty,
         grade: result.grade,
         join_piece: result.join_piece,
+        is_head: result.is_head,
         lot_no: result.lot_no,
         defect: result.defect_item,
         stock_id: result.stock_id,
@@ -39,6 +40,8 @@ const InspectResultEdit = (props) => {
 
     useEffect(() => {
         getKodeDefectOption();
+        console.log(formData);
+        
     }, [formData]);
 
 
@@ -124,7 +127,7 @@ const InspectResultEdit = (props) => {
                             </Form.Group>
                             <hr />
                             <Row className="mb-3">
-                                <Form.Group as={Col} xs={4}>
+                                <Form.Group as={Col} xs={3}>
                                     <Form.Label><strong>Grade</strong></Form.Label>
                                     <Form.Select className="border-bold" name="grade" defaultValue={formData?.grade} onChange={handleChangeForm} required>
                                         <option value="7">A+</option>
@@ -136,7 +139,15 @@ const InspectResultEdit = (props) => {
                                         <option value="1">A</option>
                                     </Form.Select>
                                 </Form.Group>
-                                <Form.Group as={Col} xs={4}>
+                                <Form.Group as={Col} xs={3}>
+                                    <Form.Label><strong>Head</strong></Form.Label>
+                                    <Form.Select className="border-bold" name="is_head" defaultValue={formData?.is_head} onChange={handleChangeForm} required>
+                                        <option value={1}>Ya</option>
+                                        <option value={0}>Tidak</option>
+
+                                    </Form.Select>
+                                </Form.Group>
+                                <Form.Group as={Col} xs={3}>
                                     <Form.Label><strong>Join</strong></Form.Label>
                                     <Form.Control type="text" name="join_piece" defaultValue={formData?.join_piece?.toUpperCase()} className="border-bold" onChange={(e) => {
                                         const uppercasedValue = e.target.value.toUpperCase();
@@ -145,7 +156,7 @@ const InspectResultEdit = (props) => {
                                         e.target.value = e.target.value.toUpperCase();
                                     }} />
                                 </Form.Group>
-                                <Form.Group as={Col} xs={4}>
+                                <Form.Group as={Col} xs={3}>
                                     <Form.Label><strong>Lot</strong></Form.Label>
                                     <Form.Control type="text" name="lot_no" defaultValue={formData?.lot_no} className="border-bold" onChange={handleChangeForm}/>
                                 </Form.Group>

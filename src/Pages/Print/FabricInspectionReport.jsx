@@ -7,6 +7,7 @@ import LoadingSpinner from "../../Components/LoadingSpinner";
 import ErrorPage from '../../ErrorPage';
 import './Inspectprint.module.css';
 import gapImage from "../../Assets/logo-gajah/gap.png";
+import { AiOutlineCalculator } from "react-icons/ai";
 
 const InspectPrint = (props) => {
     const type = "portrait";
@@ -32,6 +33,7 @@ const InspectPrint = (props) => {
     const [inspectItem, setInspectItem] = useState([]);
     const [isError, setIsError] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [rawData, setRawData] = useState([]);
 
     const grades = {
         7: 'A+',
@@ -58,6 +60,41 @@ const InspectPrint = (props) => {
         document.body.innerHTML = printContent;
         window.print();
     };
+
+    const handleGetRawData = () => {
+        const dataArray = [];
+        const items = data.inspecting_item;
+        const itemsFiltered = data.inspecting_item.filter(item => item.is_head === 1);
+        for (let i = 0; i < itemsFiltered.length; i++) {
+            dataArray.push({
+                id: items.filter(item => item.join_piece === itemsFiltered[i].join_piece).map(item => ({
+                    inspecting_item_id: item.id,
+                    grade: item.grade
+                })),
+                nilai_poin: items.filter(item => item.join_piece === itemsFiltered[i].join_piece).map(item => item.defect_item).flat().reduce((total, item) => total + parseInt(item.point) * 3600 /  (itemsFiltered[i].qty_sum * width[data?.sc_greige?.lebar_kain] * (data.unit === 2 ? 0.9144 : 1)), 0).toFixed(1) 
+                // nilai_poin: data?.sc_greige?.lebar_kain
+            });
+
+        }
+        console.log("ARRAY :",dataArray);
+        
+        // kirim data array ke get-inspecting/kalkukasi/{id}
+        axiosInstance.put(`inspecting/kalkukasi/${idInspecting}`, dataArray)
+        .then(response => {
+            setRawData(response);
+        })
+        .catch(error => {
+            console.error(error);
+        })
+        .finally(() => {
+            window.location.reload();
+        });
+    };
+
+    useEffect(() => {
+        console.log(data);
+    }, [data]);
+      
   
     const { idInspecting } = useParams();
   
@@ -80,17 +117,14 @@ const InspectPrint = (props) => {
       };
       fetchDataAsync();
     }, [idInspecting, props.jenisProses]);
-  
-    useEffect(() => {
-      console.log(data);
-    }, [inspectItem]);
+
 
     return (
         <>
             {loading ? (
                 <LoadingSpinner />
             ) : isError ? <ErrorPage status={isError} /> : (
-            <div className="container py-4 a4-portrait">
+            <div className="container-fluid py-4 a4-portrait">
                 <div className="card border-1 shadow-sm print:border-0">
                 <div className="card-body print:p-0" ref={printRef}>
                     <div className="row align-items-center">
@@ -174,11 +208,11 @@ const InspectPrint = (props) => {
                     </div>
                     {/* Tabel Area */}
                     {inspectItem.length > 0 && Array.from({ length: Math.ceil(inspectItem.length / 12) }).map((_, i) => {
-                        const unit = 1;
+                        const unit = data.unit;
                         const inspectItems = inspectItem.slice(i * 12, (i + 1) * 12).filter(item => item.is_head === 1);   
                         const rawInspectItems = inspectItem.slice(i * 12, (i + 1) * 12);   
                         return (
-                            <Table key={i} className="mt-2" bordered style={{tableLayout: "fixed", borderColor: "black",pageBreakInside: "avoid", fontSize: "11px"}}>
+                            <Table key={i} className="mt-2" bordered responsive style={{ borderColor: "black",pageBreakInside: "avoid", fontSize: "11px"}}>
                                 <tbody>
                                     <tr className="py-0">
                                         <td rowSpan={11} style={{ width: "25px", whiteSpace: "nowrap", verticalAlign: "middle"}} >{i+1}</td>
@@ -287,7 +321,7 @@ const InspectPrint = (props) => {
                                                 <td colSpan={6} className="">
                                                     <strong>Note:</strong>
                                                     <Stack direction="horizontal" gap={3}>
-                                                        <p className="p-0 text-center mt-2">Point /100 Square Yds = </p>
+                                                        <p className="p-0 text-center mt-2">Point /100 Square Yds =</p>
                                                         <Stack direction="vertical">
                                                             <div className="p-0 text-center">Jumlah Point X 3600 </div>
                                                             <div className="m-1" style={{ borderTop: "3px solid black" }} />
@@ -305,7 +339,7 @@ const InspectPrint = (props) => {
                                                     <p className="p-0 text-bottom mt-2">
                                                         <span className="ms-1">Point A Grade &le; </span>
                                                         <u style={{ textDecoration: "underline" }}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>
-                                                        <span className="ms-1">point//100 sq yds</span>
+                                                        <span className="ms-1">point/100 sq yds</span>
                                                     </p>
                                                 </td>
                                             </tr>
@@ -334,7 +368,11 @@ const InspectPrint = (props) => {
                 </div>
                 <button onClick={handlePrint} className="btn bg-burgundy text-white m-2 no-print">
                     <FiPrinter className="me-2" />
-                    Print
+                    <b>Print</b>
+                </button>
+                <button onClick={handleGetRawData} className="btn bg-warning m-2 no-print">
+                    <FiPrinter className="me-2" />
+                    <b>Kalkulasi Point</b>
                 </button>
                 </div>
             </div>

@@ -1,5 +1,7 @@
 
 import { IoWarningOutline } from "react-icons/io5";
+import { Button } from "react-bootstrap";
+
 
 const ErrorPage = (props) => {
 
@@ -28,6 +30,14 @@ const ErrorPage = (props) => {
       <IoWarningOutline style={{ fontSize: '100px' }} />
       <h1>Maaf, Terjadi kesalahan</h1>
       <p>{errorMessage}</p>
+      {
+        props.status === 500 &&
+        <Button variant={'warning'} className="text-burgundy" onClick={() => {
+          localStorage.clear();
+          window.location.reload();
+        }}>Re-Connecting</Button>
+      }
+
     </div>
   );
 };
