@@ -13,7 +13,7 @@ import ErrorPage from '../ErrorPage';
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 const Dashboard = () => {
-  document.title = 'Vinspect GAP';
+  document.title = 'Vinspect GAP | Dashboard';
   const [data, setData] = useState({});
   const [inspectRecent, setInspectRecent] = useState([]);
   const [isLoading, setIsLoading] = useState(true);

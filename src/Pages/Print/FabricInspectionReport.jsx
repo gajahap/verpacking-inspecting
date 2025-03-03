@@ -10,6 +10,9 @@ import gapImage from "../../Assets/logo-gajah/gap.png";
 import { AiOutlineCalculator } from "react-icons/ai";
 
 const InspectPrint = (props) => {
+    const { idInspecting } = useParams();
+    document.title = `Inspect ${props.jenisProses.charAt(0).toUpperCase() + props.jenisProses.slice(1)} Print 4.0 : ${idInspecting}`;
+
     const type = "portrait";
     useEffect(() => {
         const style = document.createElement("style");
@@ -63,41 +66,40 @@ const InspectPrint = (props) => {
 
     const handleGetRawData = () => {
         const dataArray = [];
-        const items = data.inspecting_item;
-        const itemsFiltered = data.inspecting_item.filter(item => item.is_head === 1);
+        const items = data.inspecting_item ? data.inspecting_item : data.inspecting_mklbj_item;
+        const itemsFiltered = data.inspecting_item ? data.inspecting_item.filter(item => item.is_head === 1) : data.inspecting_mklbj_item.filter(item => item.is_head === 1);
         for (let i = 0; i < itemsFiltered.length; i++) {
             dataArray.push({
                 id: items.filter(item => item.join_piece === itemsFiltered[i].join_piece).map(item => ({
                     inspecting_item_id: item.id,
                     grade: item.grade
                 })),
-                nilai_poin: items.filter(item => item.join_piece === itemsFiltered[i].join_piece).map(item => item.defect_item).flat().reduce((total, item) => total + parseInt(item.point) * 3600 /  (itemsFiltered[i].qty_sum * width[data?.sc_greige?.lebar_kain] * (data.unit === 2 ? 0.9144 : 1)), 0).toFixed(1) 
+                nilai_poin: items.filter(item => item.join_piece === itemsFiltered[i].join_piece).map(item => item.defect_item).flat().reduce((total, item) => total + parseInt(item.point) * 3600 /  (itemsFiltered[i].qty_sum * width[data?.sc_greige?.lebar_kain || data?.wo?.sc_greige?.lebar_kain] * (data.unit === 2 ? 0.9144 : 1)), 0).toFixed(1) 
+                
                 // nilai_poin: data?.sc_greige?.lebar_kain
             });
 
         }
         console.log("ARRAY :",dataArray);
-        
+        const url = props.jenisProses === 'mkl-bj' ? 'inspecting/kalkukasi/mkl-bj/' : 'inspecting/kalkukasi/';
         // kirim data array ke get-inspecting/kalkukasi/{id}
-        axiosInstance.put(`inspecting/kalkukasi/${idInspecting}`, dataArray)
+        axiosInstance.put(`${url}${idInspecting}`, dataArray)
         .then(response => {
             setRawData(response);
+            console.log(response);
         })
         .catch(error => {
             console.error(error);
         })
         .finally(() => {
-            window.location.reload();
+            // window.location.reload();
         });
     };
 
     useEffect(() => {
         console.log(data);
     }, [data]);
-      
-  
-    const { idInspecting } = useParams();
-  
+        
     useEffect(() => {
       const fetchDataAsync = async () => {
         try {
@@ -179,7 +181,7 @@ const InspectPrint = (props) => {
                                 <tr>
                                     <th style={{ width: "50%" }}>Contract Width</th>
                                     <td>: {width[data?.wo?.greige?.greige_group?.lebar_kain]}</td>
-                                </tr>
+                                </tr>   
                                 </tbody>
                             </table>
                         </div>
@@ -253,7 +255,7 @@ const InspectPrint = (props) => {
                                     <tr>
                                         <td style={{ width: "170px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>Width (inches)</td>
                                         {[...Array(12).keys()].map(j => (
-                                            <td key={j}>{inspectItems[j]?.id ? width[data?.sc_greige?.lebar_kain] : ''}</td>
+                                            <td key={j}>{inspectItems[j]?.id ? width[data?.sc_greige?.lebar_kain]  ? width[data?.sc_greige?.lebar_kain] : width[data?.wo?.sc_greige?.lebar_kain] :  ''}</td>
                                         ))}
                                     </tr>
                                     <tr>
@@ -297,16 +299,15 @@ const InspectPrint = (props) => {
                                         <td>Point/100 Square Yds</td>
                                         {[...Array(12).keys()].map(j => (
                                             <td key={j}>
-                                            {inspectItems[j] && inspectItems[j].qty_sum && width[data?.sc_greige?.lebar_kain] ? 
+                                            {inspectItems[j] && inspectItems[j].qty_sum && width[data?.sc_greige?.lebar_kain || data?.wo?.sc_greige?.lebar_kain] ? 
                                                 (((inspectItems[j]?.defect_item?.reduce((total, item) => total + parseInt(item.point, 10), 0) + 
                                                 rawInspectItems
                                                     .filter(rawInspectItem => rawInspectItem?.join_piece === inspectItems[j]?.join_piece && rawInspectItem?.is_head === 0)
                                                     .flatMap(rawInspectItem => rawInspectItem?.defect_item || [])
                                                     .reduce((total, item) => total + parseInt(item.point, 10), 0)) * 3600) / 
-                                                    (inspectItems[j].qty_sum * width[data?.sc_greige?.lebar_kain] * (unit === 2 ? 0.9144 : 1))).toFixed(1)
+                                                    (inspectItems[j].qty_sum * width[data?.sc_greige?.lebar_kain || data?.wo?.sc_greige?.lebar_kain] * (unit === 2 ? 0.9144 : 1))).toFixed(1)
                                                     : ''}
                                             </td>
-
                                         ))}
                                     </tr>
                                     <tr>

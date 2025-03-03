@@ -8,6 +8,9 @@ import ErrorPage from '../../ErrorPage';
 import './Inspectprint.module.css';
 
 const InspectPrint = ({jenisProses}) => {
+    const { idInspecting } = useParams();
+    document.title = `Inspect ${jenisProses.charAt(0).toUpperCase() + jenisProses.slice(1)} Print Kartu : ${idInspecting}`;
+
     const type = "landscape";
     useEffect(() => {
         const style = document.createElement("style");
@@ -27,7 +30,6 @@ const InspectPrint = ({jenisProses}) => {
     }, [type]);
 
     const printRef = useRef();
-    const { idInspecting } = useParams();
     const [data, setData] = useState(null);
     const [inspectItem, setInspectItem] = useState([]);
     const [isError, setIsError] = useState(false);

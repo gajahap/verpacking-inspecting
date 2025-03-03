@@ -8,6 +8,8 @@ import ErrorPage from '../../ErrorPage';
 import './Inspectprint.module.css';
 
 const InspectPrint = (props) => {
+    const { idInspecting } = useParams();
+    document.title = `Inspect ${props.jenisProses.charAt(0).toUpperCase() + props.jenisProses.slice(1)} Print : ${idInspecting}`;
     const type = "portrait";
     useEffect(() => {
         const style = document.createElement("style");
@@ -38,7 +40,6 @@ const InspectPrint = (props) => {
         window.print();
     };
   
-    const { idInspecting } = useParams();
   
     useEffect(() => {
       const fetchDataAsync = async () => {

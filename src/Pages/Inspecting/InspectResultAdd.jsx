@@ -17,7 +17,8 @@ const InspectResultAdd = (props) => {
         join_piece: '',
         lot_no: '',
         defect: [],
-        stock_id: ''
+        stock_id: '',
+        gsm_item: ''
     });
 
     useEffect(() => {
@@ -139,9 +140,12 @@ const InspectResultAdd = (props) => {
                             )}
                             <Form.Group className="mb-3">
                                 <Form.Label><strong>Qty</strong></Form.Label>
-
                                 <Form.Control type="number" value={formData.qty} className='border-bold' name="qty" onChange={handleChangeForm} />
                             </Form.Group>   
+                            <Form.Group className="mb-3">
+                                <Form.Label><strong>GSM</strong></Form.Label>
+                                <Form.Control type="number" step="0.01" value={formData?.gsm_item} className='border-bold' name="gsm_item"  onChange={handleChangeForm} required/>
+                            </Form.Group>
                             <hr />
                             <Row className="mb-3">
                                 <Form.Group as={Col} xs={4}>

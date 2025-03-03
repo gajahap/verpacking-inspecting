@@ -18,9 +18,9 @@ import { Link } from 'react-router-dom';
 
 
 const InspectingView = (props) => {
-    document.title = `Inspecting ${props.jenisProses.charAt(0).toUpperCase() + props.jenisProses.slice(1)} View `;
-    const [data, setData] = useState([]);
     const {idInspecting } = useParams();
+    document.title = `Inspecting ${props.jenisProses.charAt(0).toUpperCase() + props.jenisProses.slice(1)} View : ${idInspecting}`;
+    const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [inspectItem, setInspectItem] = useState([]);
     const [visibleCard, setVisibleCard] = useState({ id: null});

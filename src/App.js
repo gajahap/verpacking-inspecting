@@ -40,7 +40,7 @@ const App = () => {
           <Route path="/print/fir/printing/:idInspecting" element={<Middleware><FabricInspectionReport jenisProses="printing" /></Middleware>} />
           <Route path="/print/fir/mkl-bj/:idInspecting" element={<Middleware><FabricInspectionReport jenisProses="mkl-bj" /></Middleware>} />
 
-          <Route path="/laporan-stock-greige" element={<Middleware><LaporanStockGreige/></Middleware>} />
+          {/* <Route path="/laporan-stock-greige" element={<Middleware><LaporanStockGreige/></Middleware>} /> */}
 
       </Routes>
     </Router>
