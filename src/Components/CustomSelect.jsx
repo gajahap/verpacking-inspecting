@@ -17,7 +17,7 @@ const customStyles = {
     ...provided,
     backgroundColor: state.isFocused
       ? "#660033"
-      : state.data.isImportant // Warna dinamis berdasarkan opsi
+      : state.data.isImportant
       ? "#ffefef"
       : "#fff",
     cursor: "pointer",
@@ -30,6 +30,11 @@ const customStyles = {
     ...provided,
     color: "#000",
   }),
+};
+
+const filterOption = (option, inputValue) => {
+  // Case-sensitive comparison
+  return option.label.includes(inputValue);
 };
 
 const CustomSelect = ({
@@ -48,7 +53,8 @@ const CustomSelect = ({
       styles={customStyles}
       onChange={onChange}
       placeholder={placeholder}
-      isDisabled={isDisabled} // Tambahkan properti isDisabled
+      isDisabled={isDisabled}
+      filterOption={filterOption} // ⬅️ Tambahkan ini
     />
   );
 };

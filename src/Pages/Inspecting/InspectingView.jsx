@@ -62,6 +62,32 @@ const InspectingView = (props) => {
     4: "Fresh",
   };
 
+  const statusKartuDyPr = {
+    1: "DRAFT",
+    2: "POSTED",
+    3: "DELIVERED",
+    4: "APPROVED",
+    5: "INSPECTED",
+    6: "GANTI_GREIGE",
+    7: "GANTI_GREIGE_LINKED",
+    8: "BATAL",
+  };
+
+  const statusKartuPfpClp = {
+    1: "DRAFT",
+    2: "POSTED",
+    3: "DELIVERED",
+    4: "APPROVED",
+    5: "INSPECTED",
+    6: "GAGAL PROSES",
+  };
+  const statusKartuMkl = {
+    1: "DRAFT",
+    2: "POSTED",
+    3: "DELIVERED",
+    4: "BATAL",
+  };
+
   const unitOptions = Object.keys(units).map((key) => ({
     value: key,
     label: units[key],
@@ -462,6 +488,16 @@ const InspectingView = (props) => {
                         </td>
                         <td>{data.created_by?.full_name || "-"}</td>
                       </tr>
+                      <tr>
+                        <td>
+                          <strong>Status</strong>
+                        </td>
+                        <td>
+                          {props.jenisProses === "mkl-bj"
+                            ? statusKartuMkl[data?.status] || "-"
+                            : statusKartuDyPr[data?.status] || "-"}
+                        </td>
+                      </tr>
                     </tbody>
                   </Table>
                 </Col>
@@ -516,21 +552,23 @@ const InspectingView = (props) => {
                             </span>
                           )}
                         </td>
-                        <td>
-                          <Button
-                            variant="warning"
-                            className="text-white"
-                            size="sm"
-                            onClick={() =>
-                              setVisibleCard(
-                                visibleCard.id === result.id
-                                  ? { id: null } // Jika tombol yang sama diklik, sembunyikan kartu
-                                  : { id: result.id } // Tampilkan kartu untuk item.id dan index tertentu
-                              )
-                            }
-                          >
-                            <FaEdit /> Edit
-                          </Button>
+                        <td>  
+                          {data.status < (props.jenisProses === "mkl-bj" ? 3 : 4) && (
+                            <Button
+                              variant="warning"
+                              className="text-white"
+                              size="sm"
+                              onClick={() =>
+                                setVisibleCard(
+                                  visibleCard.id === result.id
+                                    ? { id: null } // Jika tombol yang sama diklik, sembunyikan kartu
+                                    : { id: result.id } // Tampilkan kartu untuk item.id dan index tertentu
+                                )
+                              }
+                            >
+                              <FaEdit /> Edit
+                            </Button>
+                          )}
                         </td>
                       </tr>
                       {visibleCard.id === result.id && (
