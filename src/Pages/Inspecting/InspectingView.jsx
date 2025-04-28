@@ -55,6 +55,11 @@ const InspectingView = (props) => {
     4: "Kilogram",
   };
 
+  const jenisInspek = {
+    1: "Fresh Order",
+    2: "Re-inspect",
+  };
+
   const jenisMakloon = {
     1: "Makloon Proses",
     2: "Makloon Finish",
@@ -73,14 +78,6 @@ const InspectingView = (props) => {
     8: "BATAL",
   };
 
-  const statusKartuPfpClp = {
-    1: "DRAFT",
-    2: "POSTED",
-    3: "DELIVERED",
-    4: "APPROVED",
-    5: "INSPECTED",
-    6: "GAGAL PROSES",
-  };
   const statusKartuMkl = {
     1: "DRAFT",
     2: "POSTED",
@@ -91,6 +88,11 @@ const InspectingView = (props) => {
   const unitOptions = Object.keys(units).map((key) => ({
     value: key,
     label: units[key],
+  }));
+
+  const jenisInspekOptions = Object.keys(jenisInspek).map((key) => ({
+    value: key,
+    label: jenisInspek[key],
   }));
 
   const grades = {
@@ -152,6 +154,7 @@ const InspectingView = (props) => {
             response.data.data.kartu_process_printing?.wo_color_id ||
             null,
           inspection_table: response.data.data.inspection_table,
+          jenis_inspek: response.data.data.jenis_inspek,
         }));
         setWoColorsOptions([
           { value: null, label: response.data.data.kombinasi },
@@ -191,7 +194,7 @@ const InspectingView = (props) => {
     } finally {
       setLoading(false);
     }
-  }, [idInspecting]); // Dependencies here
+  }, [idInspecting, props.jenisProses]); // Dependencies here
 
   useEffect(() => {
     fetchData();
@@ -448,6 +451,18 @@ const InspectingView = (props) => {
                           <td>{jenisMakloon[data.jenis] || "-"}</td>
                         </tr>
                       )}
+                      <tr>
+                        <td>
+                          <strong>Jenis Inspek</strong>
+                        </td>
+                        <td>
+                          <Stack direction="horizontal" gap={3}>
+                            <div className="text-center w-100">
+                              {data?.jenis_inspek === 1 ? "Fresh Order" : data?.jenis_inspek === 2 ? "Re-Inspect" : "-"}
+                            </div>
+                          </Stack>
+                        </td>
+                      </tr>
                     </tbody>
                   </Table>
                 </Col>
@@ -750,6 +765,20 @@ const InspectingView = (props) => {
                     </Form.Control>
                   </Form.Group>
                 )}
+                <Form.Group className="mb-3" controlId="formBasicEmail">
+                  <Form.Label className="small-text">
+                    <strong>Jenis Inspeksi</strong>
+                  </Form.Label>
+                  <CustomSelect
+                    options={jenisInspekOptions}
+                    value={{
+                      value: form.jenis_inspek,
+                      label: jenisInspek[form.jenis_inspek],
+                    }}
+                    onChange={({ value }) => setForm({ ...form, jenis_inspek: value })}
+                    placeholder="Pilih"
+                  />
+                </Form.Group>
               </Modal.Body>
               <Modal.Footer>
                 <Button variant="danger" onClick={() => setShowModal(false)}>

@@ -313,9 +313,9 @@ const InspectingCreate = (props) => {
   
     try {
       // Validasi awal
-      if (!formData.no_lot || !formData.unit) {
+      if (!formData.no_lot || !formData.unit || !formData.jenis_inspek) {
         return setModalMessage({
-          message: "Nomor lot dan satuan tidak boleh kosong.",
+          message: "Nomor lot, satuan, dan jenis inspek tidak boleh kosong.",
           status: 422,
         });
       }
@@ -334,6 +334,7 @@ const InspectingCreate = (props) => {
         unit: formData.unit,
         inspection_table: formData.inspection_table,
         inspect_result: inspectResult,
+        jenis_inspek: formData.jenis_inspek
       };
   
       const url = props.jenisProses === "dyeing"
@@ -693,6 +694,25 @@ const InspectingCreate = (props) => {
                       required
                     />
                   </Form.Group>
+                  <Form.Group controlId="jenis_inspek" className="w-50 small-text">
+                    <Form.Label>
+                      <strong>Jenis Inspeksi</strong>
+                    </Form.Label>
+                    <Form.Control
+                      as="select"
+                      value={formData.jenis_inspek || ""}
+                      onChange={(e) =>
+                        setFormData({ ...formData, jenis_inspek: e.target.value })
+                      }
+                      className="small-text"
+                      required
+                    >
+                      <option value="">Pilih Jenis Inspeksi</option>
+                      <option value="1">Fresh Order</option>
+                      <option value="2">Re-Inspect</option>
+                    </Form.Control>
+                  </Form.Group>
+
                 </Stack>
               </Form>
             </Card>
