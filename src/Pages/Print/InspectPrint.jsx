@@ -48,9 +48,9 @@ const InspectPrint = (props) => {
           const response = await axiosInstance.get(`${url}/${idInspecting}`);
           setData(response.data.data);
           if (props.jenisProses === 'mkl-bj') {
-            setInspectItem(response.data.data.inspecting_mklbj_item.sort((a, b) => a.id - b.id));
+            setInspectItem(response.data.data.inspecting_mklbj_item.sort((a, b) => a.no_urut - b.no_urut));
           }else{
-            setInspectItem(response.data.data.inspecting_item.sort((a, b) => a.id - b.id));
+            setInspectItem(response.data.data.inspecting_item.sort((a, b) => a.no_urut - b.no_urut));
           }
         } catch (error) {
           setIsError(error.response?.status);
@@ -120,7 +120,7 @@ const InspectPrint = (props) => {
                     {[...Array(Math.max(Math.ceil(inspectItem.length / 10), 4))].map((_, j) => (
                             <Table className="mt-2" bordered key={j} style={{tableLayout: "fixed", borderColor: "black",pageBreakInside: "avoid"}}>
                             <tbody style={{ fontSize: "12px" }}>
-                                <tr >
+                                {/* <tr >
                                 <td style={{width: "10%"}} >NO. PCS</td>
                                 {[...Array(10)].map((_, i) => (
                                     <td style={{width: "8",fontSize: "9px"}} key={i}>{j * 10 + i + 1}</td>
@@ -158,6 +158,86 @@ const InspectPrint = (props) => {
 
                                     </td>
                                 ))}
+                                </tr>
+                                <tr>
+                                <td style={{width: "10%"}}>GRADE PK</td>
+                                {[
+                                    ...inspectItem
+                                    .filter(item => [4].includes(item.grade))
+                                    .slice(j * 10, j * 10 + 10),
+                                    ...Array(10).fill({ qty: '' })
+                                ]
+                                    .slice(0, 10)
+                                    .map((item, i) => (
+                                    <td style={{width: "8" ,fontSize: "14px"}} key={i} className="py-0">
+                                        <b>{item.qty}</b> {item.join_piece && "(" + item.join_piece + ")"}
+                                        <div style={{fontSize: "10px", color: "red"}}>{item.defect_item?.map(defect => defect.mst_kode_defect_id).join(' , ') || ''}</div>
+
+                                    </td>
+                                ))}
+                                </tr> */}
+                                <tr >
+                                    <td style={{width: "10%"}} >NO. PCS</td>
+                                    {[...Array(10)].map((_, i) => (
+                                        <td style={{width: "8",fontSize: "9px"}} key={i}>{j * 10 + i + 1}</td>
+                                    ))}
+                                </tr>
+                                <tr>
+                                    <td >GRADE A</td>
+                                    {[
+                                    ...inspectItem
+                                    .slice(j * 10, j * 10 + 10),
+                                    ...Array(10).fill({ qty: '' })
+                                ]
+                                    .slice(0, 10)
+                                    .map((item, i) => (
+                                    <td style={{width: "8",fontSize: "14px"}} key={i} className="py-0">
+                                        {([7,1,8].includes(item.grade)) && 
+                                            <>
+                                                <b>{item.qty}</b> {item.join_piece && `(${item.join_piece})`}
+                                                <div style={{fontSize: "10px", color: "red"}}>{item.defect_item?.map(defect => defect.mst_kode_defect_id).join(', ') || ''}</div>
+                                            </> 
+                                        }
+                                    </td>
+                                    ))}
+                                </tr>
+                                <tr>
+                                    <td >GRADE C</td>
+                                    {[
+                                    ...inspectItem
+                                    .slice(j * 10, j * 10 + 10),
+                                    ...Array(10).fill({ qty: '' })
+                                ]
+                                    .slice(0, 10)
+                                    .map((item, i) => (
+                                    <td style={{width: "8",fontSize: "14px"}} key={i} className="py-0">
+                                        {(![7, 1, 8, 4, 5].includes(item.grade)) && 
+                                            <>
+                                                <b>{item.qty}</b> {item.join_piece && `(${item.join_piece})`}
+                                                <div style={{fontSize: "10px", color: "red"}}>{item.defect_item?.map(defect => defect.mst_kode_defect_id).join(', ') || ''}</div>
+                                            </>
+                                        }
+                                    </td>
+                                    ))}
+                                </tr>
+                                <tr>
+                                    <td >GRADE PK</td>
+                                    {[
+                                    ...inspectItem
+                                    .slice(j * 10, j * 10 + 10),
+                                    ...Array(10).fill({ qty: '' })
+                                ]
+                                    .slice(0, 10)
+                                    .map((item, i) => (
+                                    <td style={{width: "8",fontSize: "14px"}} key={i} className="py-0">
+                                        {([4].includes(item.grade)) && 
+                                            <>
+                                                <b>{item.qty}</b> {item.join_piece && `(${item.join_piece})`}
+                                                <div style={{fontSize: "10px", color: "red"}}>{item.defect_item?.map(defect => defect.mst_kode_defect_id).join(', ') || ''}</div>
+                                            </>
+                                        }
+                                    </td>
+                                    ))}
                                 </tr>
                             </tbody>
                             </Table>
@@ -200,7 +280,7 @@ const InspectPrint = (props) => {
                                 <div className="col-4 fw-bold">JML GRADE C</div>
                                 <div className="col">
                                 <Stack direction="horizontal" gap={4}>
-                                    <div>: {inspectItem.filter(item => ![7, 1, 8].includes(item.grade)).length} PCS</div>
+                                    <div>: {inspectItem.filter(item => ![7, 1, 8,4,5].includes(item.grade)).length} PCS</div>
                                     <div>: {inspectItem.filter(item => ![7, 1, 8,4,5].includes(item.grade)).reduce((total, item) => total + parseInt(item.qty, 10), 0)} Y/M</div>
                                 </Stack>
                                 </div>

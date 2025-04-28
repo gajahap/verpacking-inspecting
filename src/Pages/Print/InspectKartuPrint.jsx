@@ -60,12 +60,12 @@ const InspectPrint = ({ jenisProses }) => {
         if (jenisProses === "mkl-bj") {
           setInspectItem(
             response.data.data?.inspecting_mklbj_item?.sort(
-              (a, b) => a.id - b.id
+              (a, b) => a.no_urut - b.no_urut
             ) || []
           );
         } else {
           setInspectItem(
-            response.data.data?.inspecting_item?.sort((a, b) => a.id - b.id) ||
+            response.data.data?.inspecting_item?.sort((a, b) => a.no_urut - b.no_urut) ||
               []
           );
           setKartuProsesItem(

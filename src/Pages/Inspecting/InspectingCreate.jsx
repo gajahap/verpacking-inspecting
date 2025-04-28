@@ -309,37 +309,48 @@ const InspectingCreate = (props) => {
   };
 
   const handleStore = async () => {
+    setIsSubmiting(true);
+  
     try {
-      setIsSubmiting(true);
+      // Validasi awal
       if (!formData.no_lot || !formData.unit) {
-        setModalMessage({
+        return setModalMessage({
           message: "Nomor lot dan satuan tidak boleh kosong.",
           status: 422,
         });
-        return;
-      } else if (Object.keys(inspectResult).length === 0) {
-        setModalMessage({
+      }
+  
+      if (Object.keys(inspectResult).length === 0) {
+        return setModalMessage({
           message: "Hasil inspect tidak boleh kosong.",
           status: 422,
         });
-        return;
       }
-
-      const url =
-        props.jenisProses === "dyeing"
-          ? "inspecting/store-inspecting"
-          : "inspecting/store-printing-inspecting";
-      const response = await axiosInstance.post(url, {
+  
+      const payload = {
         id: data[0]?.id,
         id_kartu: data[0]?.id,
         no_lot: formData.no_lot,
         unit: formData.unit,
         inspection_table: formData.inspection_table,
         inspect_result: inspectResult,
-      });
-
-      if (response.data?.success) {
+      };
+  
+      const url = props.jenisProses === "dyeing"
+        ? "inspecting/store-inspecting"
+        : "inspecting/store-printing-inspecting";
+  
+      const response = await axiosInstance.post(url, payload);
+  
+      // Log response untuk debug
+      console.log("Server response:", response);
+  
+      const resData = response.data;
+  
+      if (response.status === 200 && resData?.data?.id) {
         setModalMessage({ message: "Data berhasil disimpan.", status: 200 });
+  
+        // Reset form
         setNomorKartu("");
         setInspectResult({});
         setIsChooseOne(false);
@@ -355,17 +366,32 @@ const InspectingCreate = (props) => {
         });
         setData([]);
         setKartuProsesItem([]);
-        if (props.jenisProses === "dyeing") {
-          navigate(`/inspecting-dyeing/${response.data.data.id}`);
-        } else {
-          navigate(`/inspecting-printing/${response.data.data.id}`);
-        }
+  
+        // Redirect
+        const target = props.jenisProses === "dyeing"
+          ? `/inspecting-dyeing/${resData.data.id}`
+          : `/inspecting-printing/${resData.data.id}`;
+        navigate(target);
+      } else {
+        setModalMessage({
+          message: resData?.message || "Terjadi kesalahan saat menyimpan data.",
+          status: response.status,
+        });
       }
+  
     } catch (error) {
-      console.error(error);
-      console.log("Request Payload:", {
-        id: data[0].id,
-        id_kartu: data[0]?.id,
+      console.error("Store Error:", error);
+  
+      setModalMessage({
+        message:
+          error.response?.data?.message ||
+          "Gagal menyimpan data. Silakan coba lagi.",
+        status: error.response?.status || 500,
+      });
+  
+      // Optional: kirim log payload ke log server jika perlu audit/debug
+      console.log("Payload terkirim:", {
+        id: data[0]?.id,
         no_lot: formData.no_lot,
         unit: formData.unit,
         inspection_table: formData.inspection_table,
@@ -375,6 +401,7 @@ const InspectingCreate = (props) => {
       setIsSubmiting(false);
     }
   };
+  
 
   const handleToggleInput = (id) => {
     setInputVisibility((prevState) => ({

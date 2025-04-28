@@ -130,7 +130,7 @@ const InspectingView = (props) => {
         );
         setData(response.data.data);
         setInspectItem(
-          response.data.data.inspecting_item.sort((a, b) => a.id - b.id)
+          response.data.data.inspecting_item.sort((a, b) => a.no_urut - b.no_urut)
         );
         setForm((prevForm) => ({
           ...prevForm,
@@ -163,7 +163,7 @@ const InspectingView = (props) => {
         );
         setData(response.data.data);
         setInspectItem(
-          response.data.data.inspecting_mklbj_item.sort((a, b) => a.id - b.id)
+          response.data.data.inspecting_mklbj_item.sort((a, b) => a.no_urut - b.no_urut)
         );
         setForm((prevForm) => ({
           ...prevForm,
@@ -349,14 +349,16 @@ const InspectingView = (props) => {
             </Card>
             <Card className="p-2 shadow-sm">
               <Stack direction="horizontal" gap={2} className="p-2 ms-auto">
-                <Link
-                  to={`/print/inspecting-kartu/${props.jenisProses}/${idInspecting}`}
-                >
-                  <Button className="bg-success text-white" size="sm">
-                    <FiPrinter />
-                    Print GAP-FRM-GG- 03
-                  </Button>
-                </Link>
+                {props.jenisProses !== "mkl-bj" && (
+                  <Link
+                    to={`/print/inspecting-kartu/${props.jenisProses}/${idInspecting}`}
+                  >
+                    <Button className="bg-success text-white" size="sm">
+                      <FiPrinter />
+                      Print GAP-FRM-GG- 03
+                    </Button>
+                  </Link>
+                )}
                 <Link
                   to={`/print/inspecting/${props.jenisProses}/${idInspecting}`}
                 >

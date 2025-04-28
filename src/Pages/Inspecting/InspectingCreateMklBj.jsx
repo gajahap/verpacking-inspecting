@@ -57,7 +57,20 @@ const InspectingCreate = (props) => {
             lot_no: '',
             gsm_item:'',
             defect: [],
+            time_add: Date.now() / 1000,
         }]);
+
+        handleUpdateNoUrut();
+    };
+
+    const handleUpdateNoUrut = () => {
+        setInspectResult((prevInspectResult) => {
+            const sortedInspectResult = [...prevInspectResult].sort((a,b) => a.time_add - b.time_add);
+            return sortedInspectResult.map((result, index) => ({
+                ...result,
+                no_urut: index + 1
+            }));
+        });
     };
 
 
@@ -95,6 +108,7 @@ const InspectingCreate = (props) => {
             newInspectResult.splice(index, 1);
             return newInspectResult;
         });
+        handleUpdateNoUrut();
     };
 
 
@@ -437,7 +451,7 @@ const InspectingCreate = (props) => {
                                     {inspectResult && inspectResult.map((item, index) => (
                                         <tr key={index}>
                                             <td className="text-center">{index + 1}</td>
-                                            <td className='text-center'><Button variant="danger" size="sm"><FaTrash onClick={() => handleDeleteInspectResult(index)} /></Button></td>
+                                            <td className='text-center'><Button variant="danger" size="sm" onClick={() => handleDeleteInspectResult(index)} ><FaTrash /></Button></td>
                                             <td className="text-center">
                                                 <Form.Control
                                                     type="number"
