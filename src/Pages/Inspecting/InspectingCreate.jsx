@@ -398,6 +398,9 @@ const InspectingCreate = (props) => {
         inspection_table: formData.inspection_table,
         inspect_result: inspectResult,
       });
+      
+      navigate('/');
+
     } finally {
       setIsSubmiting(false);
     }
@@ -709,7 +712,7 @@ const InspectingCreate = (props) => {
                     >
                       <option value="">Pilih Jenis Inspeksi</option>
                       <option value="1">Fresh Order</option>
-                      <option value="2">Re-Inspect</option>
+                      <option value="2">Re-Packing</option>
                     </Form.Control>
                   </Form.Group>
 

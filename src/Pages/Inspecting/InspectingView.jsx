@@ -57,7 +57,7 @@ const InspectingView = (props) => {
 
   const jenisInspek = {
     1: "Fresh Order",
-    2: "Re-inspect",
+    2: "Re-Packing",
   };
 
   const jenisMakloon = {
@@ -458,7 +458,7 @@ const InspectingView = (props) => {
                         <td>
                           <Stack direction="horizontal" gap={3}>
                             <div className="text-center w-100">
-                              {data?.jenis_inspek === 1 ? "Fresh Order" : data?.jenis_inspek === 2 ? "Re-Inspect" : "-"}
+                              {data?.jenis_inspek === 1 ? "Fresh Order" : data?.jenis_inspek === 2 ? "Re-Packing" : "-"}
                             </div>
                           </Stack>
                         </td>
