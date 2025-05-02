@@ -37,6 +37,20 @@ const InspectPrint = ({ jenisProses }) => {
   const [isError, setIsError] = useState(false);
   const [loading, setLoading] = useState(true);
   const [kartuProsesItem, setKartuProsesItem] = useState([]);
+
+  const stockGreigeGrade ={
+    7: "A+",
+    8: "A*",
+    2: "B",
+    3: "C",
+    4: "D",
+    5: "E",
+    1: "A",
+    6: 'NG',
+    9: 'Putih'
+  }
+  const GRADE_A = 1;const GRADE_B = 2;const GRADE_C = 3;const GRADE_D = 4;const GRADE_E = 5;const GRADE_NG = 6;const GRADE_A_PLUS = 7;const GRADE_A_ASTERISK = 8; const GRADE_PUTIH = 9;
+
   const grades = {
     7: "A+",
     8: "A*",
@@ -199,7 +213,7 @@ const InspectPrint = ({ jenisProses }) => {
                     }).format(new Date(item.date))}
                   </td>
                   <td>{item.mesin}</td>
-                  <td>{grades[item?.stock?.grade]}</td>
+                  <td>{stockGreigeGrade[item?.stock?.grade]}</td>
                   <td>{item.panjang_m}</td>
                   {[...Array(10)].map((_, idx) => {
                     const inspect = inspectItem.filter(
@@ -209,9 +223,12 @@ const InspectPrint = ({ jenisProses }) => {
                       <td
                         key={idx}
                         className="py-0"
-                        style={{ fontSize: "10px", width: "50px" }}
+                        style={{ fontSize: "7px", width: "50px" }}
                       >
-                        <b>{inspect?.qty || ""}</b>
+                        <b style={{ fontSize: "10px", width: "50px" }}>
+                          {inspect?.qty ||""} 
+                        </b>
+                        {inspect?.no_urut ? ` (${inspect.no_urut})` : ""}
                         <div style={{ fontSize: "8px", color: "red" }}>
                           {inspect?.defect_item
                             ?.map(
