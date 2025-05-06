@@ -1,13 +1,12 @@
 import React, { useRef, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { FiPrinter } from "react-icons/fi";
-import { Row, Col, Table, Stack } from "react-bootstrap";
+import { Table, Stack } from "react-bootstrap";
 import axiosInstance from "../../axiosConfig";
 import LoadingSpinner from "../../Components/LoadingSpinner";
 import ErrorPage from "../../ErrorPage";
 import "./Inspectprint.module.css";
 import gapImage from "../../Assets/logo-gajah/gap.png";
-import { AiOutlineCalculator } from "react-icons/ai";
 
 const InspectPrint = (props) => {
   const { idInspecting } = useParams();
@@ -283,7 +282,7 @@ const InspectPrint = (props) => {
                   }).map((_, i) => {
                     const unit = data.unit;
                     const inspectItems = inspectItem
-                      .filter((item) => item.is_head === 1)
+                      .filter((item) => item.is_head === 1 && item.grade !== 5)
                       .slice(i * 12, (i + 1) * 12);
                     const rawInspectItems = inspectItem.slice(
                       i * 12,
@@ -408,7 +407,8 @@ const InspectPrint = (props) => {
                             </td>
                             {[...Array(12).keys()].map((j) => (
                               <td key={j}>
-                                {inspectItems[j]?.qty_sum}
+                                {inspectItems[j]?.qty_sum} 
+                                {/* ({inspectItems[j]?.no_urut}) */}
                                 {/* {inspectItems[j]?.join_piece ? `(${inspectItems[j]?.join_piece})` : ''} */}
                               </td>
                             ))}
@@ -455,7 +455,7 @@ const InspectPrint = (props) => {
                                     <div
                                       key={`head-${j}-${idx}-${defect.meterage}`}
                                     >
-                                      {`${defect.meterage} / ${defect.mst_kode_defect_id} / ${defect.point}`}
+                                      {`${defect.meterage} / ${defect.mst_kode_defect.no_urut} / ${defect.point}`}
                                     </div>
                                   )
                                 )}
@@ -474,7 +474,7 @@ const InspectPrint = (props) => {
                                     <div
                                       key={`tail-${j}-${idx}-${defect.meterage}`}
                                     >
-                                      {`${defect.meterage} / ${defect.mst_kode_defect_id} / ${defect.point}`}
+                                      {`${defect.meterage} / ${defect.mst_kode_defect.no_urut} / ${defect.point}`}
                                     </div>
                                   ))}
                               </td>

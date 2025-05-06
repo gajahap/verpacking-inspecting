@@ -6,6 +6,7 @@ import axiosInstance from "../../axiosConfig";
 import LoadingSpinner from "../../Components/LoadingSpinner";
 import ErrorPage from "../../ErrorPage";
 import "./Inspectprint.module.css";
+import { FaCheck } from "react-icons/fa";
 
 const InspectPrint = ({ jenisProses }) => {
   const { idInspecting } = useParams();
@@ -49,17 +50,6 @@ const InspectPrint = ({ jenisProses }) => {
     6: 'NG',
     9: 'Putih'
   }
-  const GRADE_A = 1;const GRADE_B = 2;const GRADE_C = 3;const GRADE_D = 4;const GRADE_E = 5;const GRADE_NG = 6;const GRADE_A_PLUS = 7;const GRADE_A_ASTERISK = 8; const GRADE_PUTIH = 9;
-
-  const grades = {
-    7: "A+",
-    8: "A*",
-    2: "B",
-    3: "C",
-    4: "PK",
-    5: "Sample",
-    1: "A",
-  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -100,6 +90,7 @@ const InspectPrint = ({ jenisProses }) => {
   useEffect(() => {
     console.log(inspectItem);
     console.log(data);
+    
   }, [inspectItem]);
 
   const handlePrint = () => {
@@ -233,7 +224,7 @@ const InspectPrint = ({ jenisProses }) => {
                           {inspect?.defect_item
                             ?.map(
                               (defect) =>
-                                `${defect.meterage}/${defect.mst_kode_defect_id}/${defect.point}`
+                                `${defect.meterage}/${defect.mst_kode_defect.no_urut}/${defect.point}`
                             )
                             .join(" , ") || ""}
                         </div>
@@ -364,8 +355,11 @@ const InspectPrint = ({ jenisProses }) => {
                           height: "20px",
                           border: "solid",
                           marginRight: "5px",
+                          padding: "2px",
                         }}
-                      ></div>
+                      >
+                        {data?.mo.packing_method === 1 && <FaCheck size={15}/>}
+                      </div>
                       <div>
                         <b>SINGLE FOLDED</b>
                       </div>
@@ -384,7 +378,9 @@ const InspectPrint = ({ jenisProses }) => {
                           border: "solid",
                           marginRight: "5px",
                         }}
-                      ></div>
+                      >
+                        {data?.mo.packing_method === 2 && <FaCheck size={15}/>}
+                      </div>
                       <div>
                         <b>DOUBLE FOLDED</b>
                       </div>
@@ -444,9 +440,13 @@ const InspectPrint = ({ jenisProses }) => {
               <tr>
                 <td>TGL TERIMA DARI FINISHING</td>
                 <td></td>
-                <td rowSpan={3}>SELVEDGE</td>
+                <td rowSpan={3} style={{ maxWidth: "75px", wordWrap: "break-word", wordBreak: "break-word", whiteSpace: "normal" }}>
+                  SELVEDGE
+                  <br />
+                  <p style={{ fontSize: "12px", margin: 0 }}>{data?.mo?.selvedge_stamping}</p>
+                </td>
                 <td rowSpan={3}>KETERANGAN:</td>
-                <td rowSpan={3}>SUSUT</td>
+                <td style={{ verticalAlign: "middle", textAlign: "center" }} rowSpan={3}>SUSUT</td>
                 <td>YARDS</td>
                 <td>%</td>
               </tr>
@@ -454,7 +454,45 @@ const InspectPrint = ({ jenisProses }) => {
                 <td>PIECE LENGTH</td>
                 <td></td>
                 <td rowSpan={2}></td>
-                <td rowSpan={2}></td>
+                <td rowSpan={2} className="fw-bold">
+                      {kartuProsesItem && inspectItem && data.unit === 1
+                        ? ((kartuProsesItem.reduce(
+                            (total, item) => total + item.panjang_m,
+                            0
+                          ) - (
+                            inspectItem.reduce(
+                              (total, item) =>
+                                total +
+                                (parseInt(item.qty_bit, 10) || 0) +
+                                parseInt(item.qty, 10),
+                              0
+                            )
+                          ))  /  kartuProsesItem.reduce(
+                            (total, item) => total + item.panjang_m,
+                            0
+                          ) * 100
+                        ).toFixed(2)
+                        : null}
+
+                      {kartuProsesItem && inspectItem && data.unit === 2
+                        ? (((kartuProsesItem.reduce(
+                            (total, item) => total + item.panjang_m,
+                            0
+                          ) / 0.9144) - (
+                            inspectItem.reduce(
+                              (total, item) =>
+                                total +
+                                (parseInt(item.qty_bit, 10) || 0) +
+                                parseInt(item.qty, 10),
+                              0
+                            )
+                          ))  /  (kartuProsesItem.reduce(
+                            (total, item) => total + item.panjang_m,
+                            0
+                          ) / 0.9144) * 100
+                        ).toFixed(2)
+                        : null}
+                </td>
               </tr>
               <tr>
                 <td>CONTOH</td>
