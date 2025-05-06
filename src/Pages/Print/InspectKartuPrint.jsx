@@ -217,9 +217,9 @@ const InspectPrint = ({ jenisProses }) => {
                         style={{ fontSize: "7px", width: "50px" }}
                       >
                         <b style={{ fontSize: "10px", width: "50px" }}>
-                          {inspect?.qty ||""} 
+                          {inspect?.qty ||""}
                         </b>
-                        {inspect?.no_urut ? ` (${inspect.no_urut})` : ""}
+                        {inspect?.no_urut && inspect.grade !== 5 ? ` (${inspect.no_urut})` : ""}
                         <div style={{ fontSize: "8px", color: "red" }}>
                           {inspect?.defect_item
                             ?.map(
