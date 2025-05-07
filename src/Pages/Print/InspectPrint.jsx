@@ -84,7 +84,7 @@ const InspectPrint = (props) => {
                     <div className="print:block">
                     <div className="row">
                         <div className="col-6">
-                        <table style={{ width: "100%", fontSize: "13px" }}>
+                        <table style={{ width: "100%", fontSize: "9px" }}>
                             <tbody>
                             <tr>
                                 <th style={{ width: "50%" }}>TGL INSPECT</th>
@@ -102,7 +102,7 @@ const InspectPrint = (props) => {
                         </table>
                         </div>
                         <div className="col-6">
-                        <table style={{ width: "100%", fontSize: "13px" }}>
+                        <table style={{ width: "100%", fontSize: "9px" }}>
                             <tbody>
                             <tr>
                                 <th style={{ width: "50%" }}>DESIGN</th>
@@ -119,7 +119,7 @@ const InspectPrint = (props) => {
                     {/* Tabel Area */}
                     {[...Array(Math.max(Math.ceil(inspectItem.length / 10), 4))].map((_, j) => (
                             <Table className="mt-2" bordered key={j} style={{tableLayout: "fixed", borderColor: "black",pageBreakInside: "avoid"}}>
-                            <tbody style={{ fontSize: "12px" }}>
+                            <tbody style={{ fontSize: "9px" }}>
                                 {/* <tr >
                                 <td style={{width: "10%"}} >NO. PCS</td>
                                 {[...Array(10)].map((_, i) => (
@@ -244,7 +244,7 @@ const InspectPrint = (props) => {
                     ))}
                     {/* Tabel Area */}
                     <div style={{pageBreakInside: "avoid"}}>
-                        <Row style={{ fontSize: "14px" }}>
+                        <Row style={{ fontSize: "11px" }}>
                         <div className="col-8">
                             <Row className="my-2">
                             <Stack direction="horizontal">
