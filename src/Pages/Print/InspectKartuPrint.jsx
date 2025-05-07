@@ -118,7 +118,7 @@ const InspectPrint = ({ jenisProses }) => {
           </div>
           <div className="print:block">
             <div className="row">
-              <div className="col-6">
+              {/* <div className="col-6">
                 <table style={{ width: "100%", fontSize: "9px" }}>
                   <tbody>
                     <tr>
@@ -150,6 +150,59 @@ const InspectPrint = ({ jenisProses }) => {
                     </tr>
                   </tbody>
                 </table>
+              </div> */}
+              <div className="row">
+                <div className="col-6">
+                  <table style={{ width: "100%", fontSize: "9px" }}>
+                      <tbody>
+                      <tr>
+                          <th style={{ width: "50%" }}>NO. DO</th>
+                          <td>: {data?.wo?.no}</td>
+                      </tr>
+                      <tr>
+                          <th style={{ width: "50%" }}>MOTIF</th>
+                          <td>: {data?.wo?.greige?.nama_kain}</td>
+                      </tr>
+                      <tr>
+                          <th style={{ width: "50%" }}>OPERATOR</th>
+                          <td>: {data?.created_by?.full_name}</td>
+                      </tr>
+                      <tr>
+                          <th style={{ width: "50%" }}>DESIGN</th>
+                          <td>: {data?.mo?.process === 1 ? data?.mo?.article : data?.mo?.design}</td>
+                      </tr>
+                      </tbody>
+                  </table>
+                  </div>
+                  <div className="col-6">
+                  <table style={{ width: "100%", fontSize: "9px" }}>
+                      <tbody>
+                      <tr>
+                          <th style={{ width: "50%" }}>KOMBINASI</th>
+                          <td>: {data?.kombinasi || data?.wo_color?.mo_color?.color}</td>
+                      </tr>
+                      <tr>
+                          <th style={{ width: "50%" }}>NO. MEJA</th>
+                          <td>: {data?.inspection_table}</td>
+                      </tr>
+                      <tr>
+                          <th style={{ width: "50%" }}>TGL SELESAI INSPEK</th>
+                          <td>:&nbsp;
+                            {data?.tanggal_inspeksi
+                              ? new Date(data.tanggal_inspeksi).toLocaleDateString(
+                                  "en-GB",
+                                  {
+                                    year: "numeric",
+                                    month: "2-digit",
+                                    day: "2-digit",
+                                  }
+                                )
+                              : ""}
+                          </td>
+                      </tr>
+                      </tbody>
+                  </table>
+                  </div>
               </div>
             </div>
           </div>
@@ -161,26 +214,26 @@ const InspectPrint = ({ jenisProses }) => {
           >
             <thead>
               <tr>
-                <th className="text-center" rowSpan={2}>
+                <th style={{ verticalAlign: "middle", textAlign: "center" }} rowSpan={2}>
                   Tube
                 </th>
-                <th className="text-center" rowSpan={2}>
+                <th style={{ verticalAlign: "middle", textAlign: "center" }} rowSpan={2}>
                   No
                 </th>
-                <th colSpan={4} className="text-center">
+                <th colSpan={4} style={{ verticalAlign: "middle", textAlign: "center" }}>
                   Asal Greige
                 </th>
-                <th className="text-center" rowSpan={2} colSpan={10}>
+                <th style={{ verticalAlign: "middle", textAlign: "center" }} rowSpan={2} colSpan={10}>
                   HASIL INSPECT
                 </th>
-                <th rowSpan={2}>BITS</th>
-                <th rowSpan={2}>PK</th>
-                <th rowSpan={2}>A</th>
-                <th rowSpan={2}>A*</th>
-                <th rowSpan={2}>A+</th>
-                <th rowSpan={2}>B</th>
-                <th rowSpan={2}>C</th>
-                <th rowSpan={2}>TOTAL</th>
+                <th style={{ verticalAlign: "middle", textAlign: "center" }} rowSpan={2}>BITS</th>
+                <th style={{ verticalAlign: "middle", textAlign: "center" }} rowSpan={2}>PK</th>
+                <th style={{ verticalAlign: "middle", textAlign: "center" }} rowSpan={2}>A</th>
+                <th style={{ verticalAlign: "middle", textAlign: "center" }} rowSpan={2}>A*</th>
+                <th style={{ verticalAlign: "middle", textAlign: "center" }} rowSpan={2}>A+</th>
+                <th style={{ verticalAlign: "middle", textAlign: "center" }} rowSpan={2}>B</th>
+                <th style={{ verticalAlign: "middle", textAlign: "center" }} rowSpan={2}>C</th>
+                <th style={{ verticalAlign: "middle", textAlign: "center" }} rowSpan={2}>TOTAL</th>
               </tr>
               <tr>
                 <th>Tgl</th>
@@ -452,7 +505,7 @@ const InspectPrint = ({ jenisProses }) => {
               </tr>
               <tr>
                 <td>PIECE LENGTH</td>
-                <td></td>
+                <td>{data?.mo?.piece_length}</td>
                 <td rowSpan={2}></td>
                 <td rowSpan={2} className="fw-bold">
                       {kartuProsesItem && inspectItem && data.unit === 1

@@ -358,7 +358,7 @@ const InspectingView = (props) => {
                   >
                     <Button className="bg-success text-white" size="sm">
                       <FiPrinter />
-                      Print GAP-FRM-GG- 03
+                      Print Kartu Proses
                     </Button>
                   </Link>
                 )}
@@ -367,13 +367,13 @@ const InspectingView = (props) => {
                 >
                   <Button className="bg-burgundy text-white" size="sm">
                     <FiPrinter />
-                    Print GAP-FRM-VP 03
+                    Print Inspecting Kain
                   </Button>
                 </Link>
                 <Link to={`/print/fir/${props.jenisProses}/${idInspecting}`}>
                   <Button className="bg-info text-white" size="sm">
                     <FiPrinter />
-                    Print FIR-FRM{" "}
+                    Print Fabric Inspection Report{" "}
                   </Button>
                 </Link>
                 <Button
