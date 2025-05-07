@@ -37,7 +37,7 @@ const InspectPrint = (props) => {
   const [inspectItem, setInspectItem] = useState([]);
   const [isError, setIsError] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [rawData, setRawData] = useState([]);
+  // const [rawData, setRawData] = useState([]);
 
   const grades = {
     7: "A+",
@@ -110,7 +110,7 @@ const InspectPrint = (props) => {
     axiosInstance
       .put(`${url}${idInspecting}`, dataArray)
       .then((response) => {
-        setRawData(response);
+        // setRawData(response);
         console.log(response);
       })
       .catch((error) => {

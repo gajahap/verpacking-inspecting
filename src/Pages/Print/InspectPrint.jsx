@@ -214,7 +214,7 @@ const InspectPrint = (props) => {
                                         {(![7, 1, 8, 4, 5].includes(item.grade)) && 
                                             <>
                                                 <b>{item.qty}</b> {item.join_piece && `(${item.join_piece})`}
-                                                <div style={{fontSize: "10px", color: "red"}}>{item.defect_item?.map(defect => defect.mst_kode_defect_id).join(', ') || ''}</div>
+                                                <div style={{fontSize: "10px", color: "red"}}>{item.defect_item?.map(defect => defect.mst_kode_defect.no_urut).join(', ') || ''}</div>
                                             </>
                                         }
                                     </td>
@@ -233,7 +233,7 @@ const InspectPrint = (props) => {
                                         {([4].includes(item.grade)) && 
                                             <>
                                                 <b>{item.qty}</b> {item.join_piece && `(${item.join_piece})`}
-                                                <div style={{fontSize: "10px", color: "red"}}>{item.defect_item?.map(defect => defect.mst_kode_defect_id).join(', ') || ''}</div>
+                                                <div style={{fontSize: "10px", color: "red"}}>{item.defect_item?.map(defect => defect.mst_kode_defect.no_urut).join(', ') || ''}</div>
                                             </>
                                         }
                                     </td>
