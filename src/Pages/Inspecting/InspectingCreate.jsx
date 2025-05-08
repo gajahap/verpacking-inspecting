@@ -49,6 +49,7 @@ const InspectingCreate = (props) => {
   const [modalMessage, setModalMessage] = useState("");
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [isSubmiting, setIsSubmiting] = useState(false);
+  const [gsm, setGsm] = useState(0);
 
   const navigate = useNavigate();
 
@@ -79,7 +80,7 @@ const InspectingCreate = (props) => {
               defect: null,
               stock_id: stockId,
               qty_bit: null,
-              gsm_item: null,
+              gsm_item: gsm,
               time_add: Date.now() / 1000,
             },
           ], // Tambahkan nilai baru ke dalam array
@@ -125,8 +126,12 @@ const InspectingCreate = (props) => {
       grade: parseInt(formData.get("grade").trim(), 10) || null,
       join_piece: formData.get("join_piece").trim().toUpperCase() || null,
       lot_no: formData.get("no_lot").trim() || null,
-      gsm_item: formData.get("gsm_item").trim() || null,
+      gsm_item: formData.get("gsm_item").trim() || gsm
     };
+    
+    if (formData.get("gsm_item").trim() !== gsm) {
+      setGsm(formData.get("gsm_item").trim());
+    }
 
     // Validasi atau pastikan ada nilai qty (atau bisa tambah logika validasi lainnya)
     if (updatedData.qty) {
@@ -147,6 +152,19 @@ const InspectingCreate = (props) => {
       });
     }
 
+    // Cek apakah dimasing masing inspectResult ada defect yang masih kosong
+    const inspectResultsWithEmptyDefect = inspectResult[itemId].filter(
+      (item) =>
+        item.defect?.some((defect) => defect.kode_defect === '' && defect.meter_defect === '' && defect.point === '')
+    );
+    console.log("inspectResultsWithEmptyDefect", inspectResultsWithEmptyDefect);
+    
+    if (inspectResultsWithEmptyDefect.length > 0) {
+      alert(
+        "Ada inspect result yang masih memiliki defect yang kosong. Silakan periksa kembali!"
+      );
+      return;
+    }
     // Reset state untuk menutup form atau memperbarui UI
     setVisibleCard({ id: null, index: null });
   };
@@ -428,9 +446,9 @@ const InspectingCreate = (props) => {
 
         // Tambahkan row baru ke dalam defect
         updatedState[itemId][index].defect.push({
-          meter_defect: "",
-          kode_defect: "",
-          point: "",
+          meter_defect: '',
+          kode_defect: '',
+          point: ''
         });
       }
 
