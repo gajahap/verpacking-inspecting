@@ -90,8 +90,7 @@ const InspectPrint = ({ jenisProses }) => {
   useEffect(() => {
     console.log(inspectItem);
     console.log(data);
-    
-  }, [inspectItem]);
+  }, [inspectItem,data]);
 
   const handlePrint = () => {
     const printContent = printRef.current.innerHTML;
@@ -496,7 +495,7 @@ const InspectPrint = ({ jenisProses }) => {
                 <td rowSpan={3} style={{ maxWidth: "75px", wordWrap: "break-word", wordBreak: "break-word", whiteSpace: "normal" }}>
                   SELVEDGE
                   <br />
-                  <p style={{ fontSize: "11px", margin: 0 }}>{data?.mo?.selvedge_continues}</p>
+                  <p style={{ fontSize: "11px", margin: 0 }}>{(data?.mo?.selvedge_stamping === '-') ? data?.mo?.selvedge_continues?.replace(/<[^>]*>/g, '') : data?.mo?.selvedge_stamping?.replace(/<[^>]*>/g, '')}</p>
                 </td>
                 <td rowSpan={3}>KETERANGAN:</td>
                 <td style={{ verticalAlign: "middle", textAlign: "center" }} rowSpan={3}>SUSUT</td>

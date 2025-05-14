@@ -448,7 +448,7 @@ const InspectPrint = (props) => {
                             {[...Array(12).keys()].map((j) => (
                               <td
                                 key={j}
-                                style={{ textAlign: "left", fontSize: "6px" }}
+                                style={{ textAlign: "left", fontSize: "10px"}}
                               >
                                 {inspectItems[j]?.defect_item?.map(
                                   (defect, idx) => (

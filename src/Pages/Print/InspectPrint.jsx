@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { FiPrinter } from "react-icons/fi";
-import { Row, Col, Table, Stack } from "react-bootstrap";
+import { Row, Table, Stack } from "react-bootstrap";
 import axiosInstance from '../../axiosConfig';
 import LoadingSpinner from "../../Components/LoadingSpinner";
 import ErrorPage from '../../ErrorPage';
@@ -63,7 +63,7 @@ const InspectPrint = (props) => {
   
     useEffect(() => {
       console.log(data);
-    }, [inspectItem]);
+    }, [inspectItem,data]);
 
     return (
         <>
@@ -255,7 +255,7 @@ const InspectPrint = (props) => {
                             <Row className="my-2">
                             <Stack direction="horizontal">
                                 <div className="col-4 fw-bold">STAMPING</div>
-                                <div className="col">: Face : {data?.mo?.face_stamping?.replace(/<[^>]*>/g, '')} / Selvedge : {data?.mo?.selvedge_stamping?.replace(/<[^>]*>/g, '')}</div>
+                                <div className="col">: Face : {data?.mo?.face_stamping?.replace(/<[^>]*>/g, '')} / Selvedge : {(data?.mo?.selvedge_stamping === '-') ? data?.mo?.selvedge_continues?.replace(/<[^>]*>/g, '') : data?.mo?.selvedge_stamping?.replace(/<[^>]*>/g, '')}</div>
                             </Stack>
                             </Row>
                             <Row className="my-2">
