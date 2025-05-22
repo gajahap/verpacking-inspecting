@@ -121,7 +121,7 @@ const InspectingCreate = (props) => {
             inspect_result: inspectResult
         })
         console.log(inspectResult);
-    }, [inspectResult]);
+    }, [inspectResult, formData]);
     
 
     const handleSubmit = async (e) => {

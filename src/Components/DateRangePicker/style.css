@@ -1,0 +1,17 @@
+.rdp-root {
+  --rdp-accent-color: #660033; /* Change the accent color to indigo. */
+  --rdp-accent-background-color: #f0f0f0; /* Change the accent background color. */
+  --rdp-range_middle-color: #660033;
+}
+
+.bg-burgundy {
+  background-color: #660033 !important;
+}
+
+.bg-burgundy-dark {
+  background-color: #490125 !important;
+}
+
+.bg-young-burgundy {
+  background-color: #be1640 !important;
+}

@@ -1,0 +1,29 @@
+.radio-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 16px;
+    margin-bottom: 8px;
+    position: relative;
+    padding-left: 30px;
+  }
+  
+  .radio-label input[type="radio"] {
+    display: none;
+  }
+  
+  .custom-radio {
+    position: absolute;
+    left: 0;
+    top: 2px;
+    height: 20px;
+    width: 20px;
+    border: 2px solid #660033; /* Ubah warna border */
+    border-radius: 50%;
+    background-color: white;
+  }
+  
+  .radio-label input[type="radio"]:checked + .custom-radio {
+    background-color: #660033; /* Ubah warna saat dipilih */
+  }
+  

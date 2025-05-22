@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { FiPrinter } from "react-icons/fi";
-import { Table, Stack } from "react-bootstrap";
+import { Table, Stack, Col } from "react-bootstrap";
 import axiosInstance from "../../axiosConfig";
 import LoadingSpinner from "../../Components/LoadingSpinner";
 import ErrorPage from "../../ErrorPage";
@@ -20,7 +20,7 @@ const InspectPrint = (props) => {
     style.innerHTML = `
         @media print {
             @page {
-            size: A4 ${type};
+            size: F4 ${type};
             margin: 0.5cm;
             }
         }
@@ -164,12 +164,12 @@ const InspectPrint = (props) => {
             <div className="card-body print:p-0" ref={printRef}>
               <div className="row align-items-center">
                 <div className="col-6 align-items-center">
-                  <img src={gapImage} alt="logo" style={{ width: "100px" }} />
+                  <img src={gapImage} alt="logo" style={{ width: "50px" }} />
                 </div>
                 <div className="col-6 d-flex flex-column align-items-end justify-content-end">
                   <h1 className="h6 mb-0">Form No.</h1>
                   <h1
-                    className="h2 mb-0"
+                    className="h4 mb-0"
                     style={{ textDecoration: "underline" }}
                   >
                     FABRIC INSPECTION REPORT
@@ -596,8 +596,37 @@ const InspectPrint = (props) => {
                                     </Stack>
                                   </Stack>
                                 </td>
-                                <td colSpan={8} className="">
+                                <td colSpan={3} className="">
                                   <strong>REMARKS:</strong>
+                                  <div>
+                                    
+                                  </div>
+                                </td>
+                                <td colSpan={5} className="">
+                                  <strong></strong>
+                                  <div>
+                                    <strong>KETERANGAN DEFECT:</strong>
+                                    <p style={{ fontSize: "9px" }}>
+                                      {inspectItem
+                                        .flatMap((item) => item.defect_item)
+                                        .filter((defect, index, self) =>
+                                          self.findIndex(
+                                            (d) =>
+                                              d.mst_kode_defect.no_urut === defect.mst_kode_defect.no_urut
+                                          ) === index
+                                        )
+                                        .sort(
+                                          (a, b) =>
+                                            a.mst_kode_defect.no_urut - b.mst_kode_defect.no_urut
+                                        )
+                                        .map((defect, index, arr) => (
+                                          <span key={defect.mst_kode_defect.no_urut}>
+                                            <b>{defect.mst_kode_defect.no_urut}</b> = {defect.mst_kode_defect.nama_defect} ({defect.mst_kode_defect.asal_defect})
+                                            {index !== arr.length - 1 && ' | '}
+                                          </span>
+                                        ))}
+                                    </p>
+                                  </div>
                                 </td>
                               </tr>
                               <tr style={{ border: "none" }}>

@@ -6,9 +6,10 @@ import { IoLogOutSharp } from "react-icons/io5";
 import axiosInstance from '../../../axiosConfig';
 import ConfirmModal from '../../../Components/ConfirmModal';
 import { Link } from 'react-router-dom';
-import { GiMagnifyingGlass } from "react-icons/gi";
 import { FaGear } from "react-icons/fa6";
 import { ImSearch } from "react-icons/im";
+import { RiFilePaper2Fill } from "react-icons/ri";
+import { TbReportSearch } from "react-icons/tb";
 
 
 import './Bottom.css';
@@ -89,6 +90,12 @@ const Bottom = () => {
                     <span className="" style={{ fontSize: '9px' }}>Setting</span>
                   </Stack>
                 </Link>
+                <Link  className="text-decoration-none mx-2" onClick={() => { setToastType('report-menu'); handleShowAndCloseToast();}}>
+                  <Stack direction="vertical" className="justify-content-center align-items-center text-center">
+                    <RiFilePaper2Fill size={25} />
+                    <span className="" style={{ fontSize: '9px' }}>Laporan</span>
+                  </Stack>
+                </Link>
               </Stack>
             </Col>
           </Row>
@@ -126,12 +133,40 @@ const Bottom = () => {
                   </>
                 )}
                 {toastType === 'setting-menu' && (
-                    <a href="#" className="text-decoration-none p-2 w-100" onClick={(e) => { e.preventDefault(); setShowConfirmModal(true); }}>
+                    <Link to="#" className="text-decoration-none p-2 w-100" onClick={(e) => { e.preventDefault(); setShowConfirmModal(true); }}>
                     <Stack direction="horizontal" gap={3} className="justify-content-center align-items-center">
                       <IoLogOutSharp size={25} />
                       <span className="" style={{ fontSize: '12px' }}>Logout</span>
                     </Stack>
-                  </a>
+                  </Link>
+                )}
+                {toastType === 'report-menu' && (
+                  <>
+                    <a href="/daftar-pengiriman-produksi" className="text-decoration-none p-2 w-100" onClick={(e) => { e.preventDefault(); window.location.href = '/daftar-pengiriman-produksi'; }}>
+                      <Stack direction="horizontal" gap={3} className="justify-content-center align-items-center">
+                        <TbReportSearch size={25} />
+                        <span className="" style={{ fontSize: '12px' }}>Daftar Pengiriman Produksi</span>
+                      </Stack>
+                    </a>
+                    <a href="/rekap-pengiriman-produksi" className="text-decoration-none p-2 w-100" onClick={(e) => { e.preventDefault(); window.location.href = '/rekap-pengiriman-produksi'; }}>
+                      <Stack direction="horizontal" gap={3} className="justify-content-center align-items-center">
+                        <TbReportSearch size={25} />
+                        <span className="" style={{ fontSize: '12px' }}>Rekapitulasi Pengiriman Produksi</span>
+                      </Stack>
+                    </a>
+                    <a href="/analisa-pengiriman-produksi" className="text-decoration-none p-2 w-100" onClick={(e) => { e.preventDefault(); window.location.href = '/analisa-pengiriman-produksi'; }}>
+                      <Stack direction="horizontal" gap={3} className="justify-content-center align-items-center">
+                        <TbReportSearch size={25} />
+                        <span className="" style={{ fontSize: '12px' }}>Analisa Pengiriman Produksi</span>
+                      </Stack>
+                    </a>
+                    <a href="/rekap-pengiriman-harian" className="text-decoration-none p-2 w-100" onClick={(e) => { e.preventDefault(); window.location.href = '/rekap-pengiriman-harian'; }}>
+                      <Stack direction="horizontal" gap={3} className="justify-content-center align-items-center">
+                        <TbReportSearch size={25} />
+                        <span className="" style={{ fontSize: '12px' }}>Rekapitulasi Pengiriman Harian</span>
+                      </Stack>
+                    </a>
+                  </>
                 )}
               </Stack>
             </Toast.Body>

@@ -10,8 +10,11 @@ import ErrorPage from './ErrorPage';
 import InspectPrint from './Pages/Print/InspectPrint';
 import InspectKartuPrint from './Pages/Print/InspectKartuPrint';
 import FabricInspectionReport from './Pages/Print/FabricInspectionReport';
-import LaporanStockGreige from './Pages/LaporanStockGreige';
-
+// import LaporanStockGreige from './Pages/LaporanStockGreige';
+import DaftarPengirimanProduksi from './Pages/laporan/daftar-pengiriman-produksi/DaftarPengirimanProduksi';
+import RekapPengirimanProduksi from './Pages/laporan/rekap-pengiriman-produksi/RekapPengirimanProduksi'; 
+import AnalisaPengirimanProduksi from './Pages/laporan/analisa-pengiriman-produksi/AnalisaPengirimanProduksi';
+import RekapPengirimanHarian from './Pages/laporan/rekap-pengiriman-harian/RekapPengirimanHarian';
 
 const App = () => {
   return (
@@ -39,6 +42,19 @@ const App = () => {
           <Route path="/print/fir/dyeing/:idInspecting" element={<Middleware><FabricInspectionReport jenisProses="dyeing" /></Middleware>} />
           <Route path="/print/fir/printing/:idInspecting" element={<Middleware><FabricInspectionReport jenisProses="printing" /></Middleware>} />
           <Route path="/print/fir/mkl-bj/:idInspecting" element={<Middleware><FabricInspectionReport jenisProses="mkl-bj" /></Middleware>} />
+
+
+          <Route path="/print/fir/dyeing/:idInspecting" element={<Middleware><FabricInspectionReport jenisProses="dyeing" /></Middleware>} />
+          <Route path="/print/fir/printing/:idInspecting" element={<Middleware><FabricInspectionReport jenisProses="printing" /></Middleware>} />
+          <Route path="/print/fir/mkl-bj/:idInspecting" element={<Middleware><FabricInspectionReport jenisProses="mkl-bj" /></Middleware>} />
+
+
+          <Route path="/daftar-pengiriman-produksi" element={<Middleware><DaftarPengirimanProduksi/></Middleware>} />
+          <Route path="/rekap-pengiriman-produksi" element={<Middleware><RekapPengirimanProduksi/></Middleware>} />
+          <Route path="/analisa-pengiriman-produksi" element={<Middleware><AnalisaPengirimanProduksi/></Middleware>} />
+          <Route path="/rekap-pengiriman-harian" element={<Middleware><RekapPengirimanHarian/></Middleware>} />
+
+
 
           {/* <Route path="/laporan-stock-greige" element={<Middleware><LaporanStockGreige/></Middleware>} /> */}
 
