@@ -4,15 +4,37 @@ import { FaSearch } from "react-icons/fa";
 import DateRangePicker from '../../../Components/DateRangePicker/DateRangePicker';
 import { MdPrint } from "react-icons/md";
 import Bottom from '../../Layouts/Bottom/Bottom';
+import axiosInstance from "../../../axiosConfig";
+import LoadingSpinnerModal from "../../../Components/LoadingSpinnerModal";
 
 const RekapPengirimanHarian = () => {
     const [selectedRange, setSelectedRange] = useState();
     const [params, setParams] = useState({});
+    const [data,setData] = useState([]);
     const printArea = useRef();
+    const [isLoading, setIsLoading] = useState(false);
+    const [controller, setController] = useState(new AbortController());
+    
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        setIsLoading(true);
+        const parm = {
+            start_date: '2024-06-01',
+            end_date: '2024-06-09'
+        }
         console.log(params);
+        axiosInstance
+            .get("verpacking/rekap-pengiriman-harian", { params: params, signal: controller.signal })
+            .then((response) => {
+                console.log(response.data.data);
+                setData(response.data.data);
+            })
+            .catch((error) => {
+                console.error(error);
+            }).finally(() => {
+                setIsLoading(false);
+            });
     };
 
     const handlePrint = () => {
@@ -24,10 +46,15 @@ const RekapPengirimanHarian = () => {
     const handleChangeRange = (range) => {
         setSelectedRange(range);
         if (range && range.from && range.to) {
-            setParams((prevParams) => ({ ...prevParams, start_date: range.from.toLocaleDateString('id-ID'), end_date: range.to.toLocaleDateString('id-ID') }));
+            setParams((prevParams) => ({ ...prevParams, start_date: range.from, end_date: range.to}));
         } else {
             setParams((prevParams) => ({ ...prevParams, start_date: undefined, end_date: undefined }));
         }
+    };
+    
+    const cancelRequest = () => {
+        controller.abort(); // membatalkan request
+        setController(new AbortController()); // reset controller untuk request berikutnya
     };
 
     return (
@@ -72,33 +99,39 @@ const RekapPengirimanHarian = () => {
                                         <th rowSpan={2}>Tanggal</th>
                                         <th colSpan={2}>Dyeing</th>
                                         <th colSpan={2}>Printing</th>
-                                        <th colSpan={2}>Knitting</th>
+                                        <th colSpan={2}>Beli Jadi</th>
                                         <th colSpan={2}>Makloon</th>
                                         <th colSpan={2}>Total</th>
                                     </tr>
                                     <tr className="text-center align-middle">
-                                        <th>Masuk</th>
-                                        <th>Keluar</th>
-                                        <th>Masuk</th>
-                                        <th>Keluar</th>
-                                        <th>Masuk</th>
-                                        <th>Keluar</th>
-                                        <th>Masuk</th>
-                                        <th>Keluar</th>
-                                        <th>Masuk</th>
-                                        <th>Keluar</th>
+                                        <th>Fresh Order</th>
+                                        <th>Re-packing</th>
+                                        <th>Fresh Order</th>
+                                        <th>Re-packing</th>
+                                        <th>Fresh Order</th>
+                                        <th>Re-packing</th>
+                                        <th>Fresh Order</th>
+                                        <th>Re-packing</th>
+                                        <th>Fresh Order</th>
+                                        <th>Re-packing</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>2</td>
-                                        <td>3</td>
-                                        <td>4</td>
-                                        <td>5</td>
-                                        <td>6</td>
-                                        <td>7</td>
-                                    </tr>
+                                    {Object.entries(data).map((tanggal, index) => (
+                                        <tr key={`${tanggal[0]}_${index}`}>
+                                            <td className="text-center">{tanggal[0]}</td>
+                                            <td>{Intl.NumberFormat('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(tanggal[1]['Dyeing']?.['Fresh Order']?.reduce((total, item) => total + (item.total_qty || 0), 0) || 0)}</td>
+                                            <td>{Intl.NumberFormat('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(tanggal[1]['Dyeing']?.['Re-Packing']?.reduce((total, item) => total + (item.total_qty || 0), 0) || 0)}</td>
+                                            <td>{Intl.NumberFormat('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(tanggal[1]['Printing']?.['Fresh Order']?.reduce((total, item) => total + (item.total_qty || 0), 0) || 0)}</td>
+                                            <td>{Intl.NumberFormat('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(tanggal[1]['Printing']?.['Re-Packing']?.reduce((total, item) => total + (item.total_qty || 0), 0) || 0)}</td>
+                                            <td>{Intl.NumberFormat('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(tanggal[1]['Barang Jadi']?.['Fresh Order']?.reduce((total, item) => total + (item.total_qty || 0), 0) || 0)}</td>
+                                            <td>{Intl.NumberFormat('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(tanggal[1]['Barang Jadi']?.['Re-Packing']?.reduce((total, item) => total + (item.total_qty || 0), 0) || 0)}</td>
+                                            <td>{Intl.NumberFormat('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format((tanggal[1]['Makloon Proses']?.['Fresh Order'] || []).concat(tanggal[1]['Makloon Finish']?.['Fresh Order'] || []).reduce((total, item) => total + (item.total_qty || 0), 0) || 0)}</td>
+                                            <td>{Intl.NumberFormat('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format((tanggal[1]['Makloon Proses']?.['Re-Packing'] || []).concat(tanggal[1]['Makloon Finish']?.['Re-Packing'] || []).reduce((total, item) => total + (item.total_qty || 0), 0) || 0)}</td>
+                                            <td>{Intl.NumberFormat('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(Object.values(tanggal[1]).reduce((total, jenis) => total + (jenis?.['Fresh Order']?.reduce((total, item) => total + (item.total_qty || 0), 0) || 0), 0))}</td>
+                                            <td>{Intl.NumberFormat('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(Object.values(tanggal[1]).reduce((total, jenis) => total + (jenis?.['Re-Packing']?.reduce((total, item) => total + (item.total_qty || 0), 0) || 0), 0))}</td>
+                                        </tr>
+                                    ))}
                                 </tbody>
                             </Table>
                         </div>
@@ -110,6 +143,7 @@ const RekapPengirimanHarian = () => {
                 </Card.Footer>
             </Card>      
             <Bottom />
+            <LoadingSpinnerModal show={isLoading}><Button variant="burgundy" onClick={cancelRequest}>Batal</Button></LoadingSpinnerModal>
         </Container>
 
     );
