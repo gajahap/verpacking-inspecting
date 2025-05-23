@@ -30,7 +30,7 @@ const RekapPengirimanProduksi = () => {
         setIsLoading(true);
         axiosInstance.get(url, { 
             signal: controller.signal,
-            params: parm })
+            params: sendParams })
             .then(response => {
                 console.log(response.data.data);
                 setData( { 
