@@ -90,7 +90,7 @@ const RekapPengirimanHarian = () => {
                         <div ref={printArea}>
                             <h4 className="text-center">PT. GAJAH ANGKASA PERKASA</h4>
                             <p className=" text-center m-0" style={{fontSize: '20px'}}>REKAPITULASI PENGIRIMAN HARIAN VERPACKING</p>
-                            <p className="text-center m-0">Tanggal Dari : {selectedRange ? selectedRange.from.toLocaleDateString('id-ID') : ''} s/d {selectedRange ? selectedRange.to.toLocaleDateString('id-ID') : ''}</p>
+                            <p className=" text-center m-0">Tanggal Dari : {selectedRange?.from?.toLocaleDateString('id-ID') || ''} s/d {selectedRange?.to?.toLocaleDateString('id-ID') || ''}</p>
                             <p className="text-center">(DALAM SATUAN YARD)</p>
 
                             <Table bordered>
