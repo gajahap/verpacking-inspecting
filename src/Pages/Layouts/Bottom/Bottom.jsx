@@ -10,6 +10,7 @@ import { FaGear } from "react-icons/fa6";
 import { ImSearch } from "react-icons/im";
 import { RiFilePaper2Fill } from "react-icons/ri";
 import { TbReportSearch } from "react-icons/tb";
+import { CgProfile } from "react-icons/cg";
 
 
 import './Bottom.css';
@@ -133,12 +134,21 @@ const Bottom = () => {
                   </>
                 )}
                 {toastType === 'setting-menu' && (
+                  <>
                     <Link to="#" className="text-decoration-none p-2 w-100" onClick={(e) => { e.preventDefault(); setShowConfirmModal(true); }}>
-                    <Stack direction="horizontal" gap={3} className="justify-content-center align-items-center">
-                      <IoLogOutSharp size={25} />
-                      <span className="" style={{ fontSize: '12px' }}>Logout</span>
-                    </Stack>
-                  </Link>
+                      <Stack direction="horizontal" gap={3} className="justify-content-center align-items-center">
+                        <IoLogOutSharp size={25} />
+                        <span className="" style={{ fontSize: '12px' }}>Logout</span>
+                      </Stack>
+                    </Link>
+                    <Link to="/user-configuration" className="text-decoration-none p-2 w-100">
+                      <Stack direction="horizontal" gap={3} className="justify-content-center align-items-center">
+                        <CgProfile size={25} />
+                        <span className="" style={{ fontSize: '12px' }}>User Configuration</span>
+                      </Stack>
+                    </Link>
+                  </>
+
                 )}
                 {toastType === 'report-menu' && (
                   <>

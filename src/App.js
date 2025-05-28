@@ -15,7 +15,7 @@ import DaftarPengirimanProduksi from './Pages/laporan/daftar-pengiriman-produksi
 import RekapPengirimanProduksi from './Pages/laporan/rekap-pengiriman-produksi/RekapPengirimanProduksi'; 
 import AnalisaPengirimanProduksi from './Pages/laporan/analisa-pengiriman-produksi/AnalisaPengirimanProduksi';
 import RekapPengirimanHarian from './Pages/laporan/rekap-pengiriman-harian/RekapPengirimanHarian';
-
+import UserConfiguration from './Pages/User/UserConfiguration';
 const App = () => {
   return (
     <Router>
@@ -54,7 +54,7 @@ const App = () => {
           <Route path="/analisa-pengiriman-produksi" element={<Middleware><AnalisaPengirimanProduksi/></Middleware>} />
           <Route path="/rekap-pengiriman-harian" element={<Middleware><RekapPengirimanHarian/></Middleware>} />
 
-
+          <Route path="/user-configuration" element={<Middleware><UserConfiguration/></Middleware>} />
 
           {/* <Route path="/laporan-stock-greige" element={<Middleware><LaporanStockGreige/></Middleware>} /> */}
 
