@@ -36,7 +36,7 @@ const UserConfiguration = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (formData.username !== user.username && !formData.password) {
+    if (formData.username !== user.username && !formData.old_password) {
       alert("Masukan password lama");
       return;
     }
@@ -54,12 +54,13 @@ const UserConfiguration = () => {
       return;
     }
 
-    console.log(formData);
 
     axiosInstance.post(`auth/change-password`, formData)
       .then(res => {
         console.log(res);
         if(!res.data.success) {
+          alert(res.data.message);
+        }else {
           alert(res.data.message);
         }
       })
