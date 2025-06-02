@@ -273,10 +273,9 @@ const InspectPrint = ({ jenisProses }) => {
                         </b>
                         {inspect?.no_urut && inspect.grade !== 5 ? ` (${inspect.no_urut})` : ""}
                         <div style={{ fontSize: "8px", color: "red" }}>
-                          {inspect?.defect_item
-                            ?.map(
+                          {inspect?.defect_item?.map(
                               (defect) =>
-                                `${defect.meterage}/${defect.mst_kode_defect.no_urut}/${defect.point}`
+                                `${defect.meterage}/${defect?.mst_kode_defect?.no_urut}/${defect.point}`
                             )
                             .join(" , ") || ""}
                         </div>
@@ -492,21 +491,21 @@ const InspectPrint = ({ jenisProses }) => {
               <tr>
                 <td>TGL TERIMA DARI FINISHING</td>
                 <td></td>
-                <td rowSpan={3} style={{ maxWidth: "75px", wordWrap: "break-word", wordBreak: "break-word", whiteSpace: "normal" }}>
+                <td rowSpan={4} style={{ maxWidth: "75px", wordWrap: "break-word", wordBreak: "break-word", whiteSpace: "normal" }}>
                   SELVEDGE
                   <br />
                   <p style={{ fontSize: "11px", margin: 0 }}>{(data?.mo?.selvedge_stamping === '-') ? data?.mo?.selvedge_continues?.replace(/<[^>]*>/g, '') : data?.mo?.selvedge_stamping?.replace(/<[^>]*>/g, '')}</p>
                 </td>
-                <td rowSpan={3}>KETERANGAN:</td>
-                <td style={{ verticalAlign: "middle", textAlign: "center" }} rowSpan={3}>SUSUT</td>
+                <td rowSpan={4}>KETERANGAN:</td>
+                <td style={{ verticalAlign: "middle", textAlign: "center" }} rowSpan={4}>SUSUT</td>
                 <td>YARDS</td>
                 <td>%</td>
               </tr>
               <tr>
                 <td>PIECE LENGTH</td>
                 <td>{data?.mo?.piece_length}</td>
-                <td rowSpan={2}></td>
-                <td rowSpan={2} className="fw-bold">
+                <td rowSpan={3}></td>
+                <td rowSpan={3} className="fw-bold">
                       {kartuProsesItem && inspectItem && data.unit === 1
                         ? ((kartuProsesItem.reduce(
                             (total, item) => total + item.panjang_m,
@@ -552,6 +551,12 @@ const InspectPrint = ({ jenisProses }) => {
                   {inspectItem
                     .filter((item) => item.grade === 5)
                     .reduce((total, item) => total + parseInt(item.qty, 10), 0)}
+                </td>
+              </tr>
+              <tr>
+                <td>BATCH</td>
+                <td>
+                    {data?.no_lot}
                 </td>
               </tr>
             </tbody>

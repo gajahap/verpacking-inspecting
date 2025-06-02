@@ -112,6 +112,10 @@ const InspectPrint = (props) => {
                                 <th style={{ width: "50%" }}>KOMBINASI</th>
                                 <td>: {data?.kombinasi || data?.wo_color?.mo_color?.color}</td>
                             </tr>
+                            <tr>
+                                <th style={{ width: "50%" }}>BATCH</th>
+                                <td>: {data?.no_lot ||''}</td>
+                            </tr>
                             </tbody>
                         </table>
                         </div>

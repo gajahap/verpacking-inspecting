@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { FiPrinter } from "react-icons/fi";
-import { Table, Stack, Col } from "react-bootstrap";
+import { Table, Stack } from "react-bootstrap";
 import axiosInstance from "../../axiosConfig";
 import LoadingSpinner from "../../Components/LoadingSpinner";
 import ErrorPage from "../../ErrorPage";
@@ -37,6 +37,7 @@ const InspectPrint = (props) => {
   const [inspectItem, setInspectItem] = useState([]);
   const [isError, setIsError] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [kartuProsesItem, setKartuProsesItem] = useState([]);
   // const [rawData, setRawData] = useState([]);
 
   const grades = {
@@ -142,6 +143,10 @@ const InspectPrint = (props) => {
           setInspectItem(
             response.data.data.inspecting_item.sort((a, b) => a.no_urut - b.no_urut)
           );
+          setKartuProsesItem(
+            response.data.data.kartu_process_dyeing?.kartu_proses_dyeing_item ||
+            response.data.data.kartu_process_printing.kartu_proses_printing_item
+          );
         }
       } catch (error) {
         setIsError(error.response?.status);
@@ -183,10 +188,6 @@ const InspectPrint = (props) => {
                     <table style={{ width: "100%" }}>
                       <tbody>
                         <tr>
-                          <th style={{ width: "50%" }}>SC No</th>
-                          <td>: {data?.sc?.no}</td>
-                        </tr>
-                        <tr>
                           <th style={{ width: "50%" }}>MO No</th>
                           <td>: {data?.mo?.no}</td>
                         </tr>
@@ -197,6 +198,10 @@ const InspectPrint = (props) => {
                         <tr>
                           <th style={{ width: "50%" }}>Nomor Kartu (NK)</th>
                           <td>: {data?.kartu_process_dyeing?.no}</td>
+                        </tr>
+                        <tr>
+                          <th style={{ width: "50%" }}>Batch</th>
+                          <td>: {data?.no_lot}</td>
                         </tr>
                       </tbody>
                     </table>
@@ -388,7 +393,7 @@ const InspectPrint = (props) => {
                                 textOverflow: "ellipsis",
                               }}
                             >
-                              Gsm (gr/m2)
+                              Gramasi (gr/m2)
                             </td>
                             {[...Array(12).keys()].map((j) => (
                               <td key={j}>{inspectItems[j]?.gsm_item}</td>
@@ -403,7 +408,7 @@ const InspectPrint = (props) => {
                                 textOverflow: "ellipsis",
                               }}
                             >
-                              length (yds)
+                              Length (yds)
                             </td>
                             {[...Array(12).keys()].map((j) => (
                               <td key={j}>
@@ -443,7 +448,7 @@ const InspectPrint = (props) => {
                                 textOverflow: "ellipsis",
                               }}
                             >
-                              Meter Ke-/Defect Point (inches)
+                              Meter Ke-/Defect/Point (inches)
                             </td>
                             {[...Array(12).keys()].map((j) => (
                               <td
@@ -575,7 +580,7 @@ const InspectPrint = (props) => {
                               1 && (
                             <>
                               <tr>
-                                <td colSpan={6} className="">
+                                <td colSpan={5} className="">
                                   <strong>Note:</strong>
                                   <Stack direction="horizontal" gap={3}>
                                     <p className="p-0 text-center mt-2">
@@ -590,8 +595,7 @@ const InspectPrint = (props) => {
                                         style={{ borderTop: "3px solid black" }}
                                       />
                                       <div className="p-0 text-center">
-                                        lebar Fabric (Inches) X Panjang Fabric
-                                        (Yds){" "}
+                                      Panjang Fabric (Yds) X lebar Fabric (Inches){" "}
                                       </div>
                                     </Stack>
                                   </Stack>
@@ -628,9 +632,13 @@ const InspectPrint = (props) => {
                                     </p>
                                   </div>
                                 </td>
+                                <td>
+                                  <b>JUMLAH TOTAL:</b>
+                                  <h6>{inspectItem.reduce((total, item) => total + parseInt(item.qty_sum), 0)}</h6>
+                                </td>
                               </tr>
                               <tr style={{ border: "none" }}>
-                                <td rowSpan={5} colSpan={6}>
+                                <td rowSpan={5} colSpan={5}>
                                   <strong>STANDARD POINT:</strong>
                                   <p className="p-0 text-bottom mt-2">
                                     <span className="ms-1">
@@ -647,10 +655,13 @@ const InspectPrint = (props) => {
                               </tr>
                               <tr>
                                 <td colSpan={4} className="text-center fw-bold">
-                                  PREPARED
+                                  PREPARED BY
                                 </td>
                                 <td colSpan={4} className="text-center fw-bold">
-                                  APPROVED
+                                  APPROVED BY
+                                </td>
+                                <td colSpan={4} className="text-center fw-bold">
+                                  SUSUT
                                 </td>
                               </tr>
                               <tr>
@@ -660,6 +671,45 @@ const InspectPrint = (props) => {
                                   style={{ height: "90px" }}
                                 ></td>
                                 <td rowSpan={2} colSpan={4}></td>
+                                <td className="fw-bold">
+                                {kartuProsesItem && inspectItem && data.unit === 1
+                                    ? ((kartuProsesItem.reduce(
+                                        (total, item) => total + item.panjang_m,
+                                        0
+                                      ) - (
+                                        inspectItem.reduce(
+                                          (total, item) =>
+                                            total +
+                                            (parseInt(item.qty_bit, 10) || 0) +
+                                            parseInt(item.qty, 10),
+                                          0
+                                        )
+                                      ))  /  kartuProsesItem.reduce(
+                                        (total, item) => total + item.panjang_m,
+                                        0
+                                      ) * 100
+                                    ).toFixed(2)
+                                    : null}
+
+                                  {kartuProsesItem && inspectItem && data.unit === 2
+                                    ? (((kartuProsesItem.reduce(
+                                        (total, item) => total + item.panjang_m,
+                                        0
+                                      ) / 0.9144) - (
+                                        inspectItem.reduce(
+                                          (total, item) =>
+                                            total +
+                                            (parseInt(item.qty_bit, 10) || 0) +
+                                            parseInt(item.qty, 10),
+                                          0
+                                        )
+                                      ))  /  (kartuProsesItem.reduce(
+                                        (total, item) => total + item.panjang_m,
+                                        0
+                                      ) / 0.9144) * 100
+                                    ).toFixed(2)
+                                    : null} %
+                                </td>
                               </tr>
                             </>
                           )}
