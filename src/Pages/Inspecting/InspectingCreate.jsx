@@ -654,7 +654,7 @@ const InspectingCreate = (props) => {
                   ></Form.Control>
                   <Form.Group controlId="no_lot" className="w-50 small-text">
                     <Form.Label>
-                      <strong>No. Lot</strong>
+                      <strong>No. Batch</strong>
                     </Form.Label>
                     <Form.Control
                       type="text"
@@ -666,7 +666,7 @@ const InspectingCreate = (props) => {
                           no_lot: e.target.value.toUpperCase(),
                         })
                       }
-                      placeholder="No Lot"
+                      placeholder="No. Batch"
                       className="small-text"
                       required
                     />

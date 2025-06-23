@@ -110,18 +110,6 @@ const InspectingCreate = (props) => {
         });
         handleUpdateNoUrut();
     };
-
-
-    
-
-    useEffect(() => {
-        getKodeDefectOption();
-        setFormData({
-            ...formData,
-            inspect_result: inspectResult
-        })
-        console.log(inspectResult);
-    }, [inspectResult, formData]);
     
 
     const handleSubmit = async (e) => {
@@ -139,7 +127,7 @@ const InspectingCreate = (props) => {
                     ? response.data.sort((a, b) => (a.no > b.no ? 1 : -1))
                     : []
             );
-            console.log('Data Wo',response.data);
+            // console.log('Data Wo',response.data);
             
         } catch (error) {
             console.error(error);
@@ -162,13 +150,13 @@ const InspectingCreate = (props) => {
                 no_wo: ''
             });
         }
-        console.log("INI DATA",data);
+        // console.log("INI DATA",data);
     }, [data]);
 
-    useEffect(() => {
-        // console.clear();
-        console.log('FORM DATA',formData);
-    },[formData]);
+    // useEffect(() => {
+    //     // console.clear();
+    //     console.log('FORM DATA',formData);
+    // },[formData]);
 
     const handleChoosOne = (item) => {
         setNoWo(item.no);
@@ -368,13 +356,13 @@ const InspectingCreate = (props) => {
                                         <CustomSelect options={woColorOptions} onChange={(selectedOption) => setFormData({ ...formData, color: selectedOption.value })} />
                                     </Form.Group>
                                     <Form.Group controlId="no_lot" className="w-50 small-text">
-                                        <Form.Label><strong>No Lot</strong></Form.Label>
+                                        <Form.Label><strong>No Batch</strong></Form.Label>
                                         <Form.Control
                                             type="text"
                                             name="no_lot"
                                             value={formData.no_lot || ''}  // Fallback to an empty string
                                             onChange={(e) => setFormData({ ...formData, no_lot: e.target.value.toUpperCase() })}
-                                            placeholder="No Lot"
+                                            placeholder="No. batch"
                                             className='small-text border-bold'
                                             required
                                         />

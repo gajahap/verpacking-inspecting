@@ -498,7 +498,7 @@ const InspectPrint = (props) => {
                             <td>Jumlah Point</td>
                             {[...Array(12).keys()].map((j) => (
                               <td key={j}>
-                                {inspectItems[j]?.defect_item?.reduce(
+                                {inspectItems[j]?.defect_item ? inspectItems[j]?.defect_item.reduce(
                                   (total, item) =>
                                     total + parseInt(item.point, 10),
                                   0
@@ -518,7 +518,7 @@ const InspectPrint = (props) => {
                                       (total, item) =>
                                         total + parseInt(item.point, 10),
                                       0
-                                    ) || ""}
+                                    ) : ""}
                               </td>
                             ))}
                           </tr>
@@ -634,7 +634,7 @@ const InspectPrint = (props) => {
                                 </td>
                                 <td>
                                   <b>JUMLAH TOTAL:</b>
-                                  <h6>{inspectItem.reduce((total, item) => total + parseInt(item.qty_sum), 0)}</h6>
+                                  <h6>{inspectItem.reduce((total, item) => total + (isNaN(parseInt(item.qty_sum)) ? 0 : parseInt(item.qty_sum)), 0)}</h6>
                                 </td>
                               </tr>
                               <tr style={{ border: "none" }}>
