@@ -74,7 +74,7 @@ const InspectingCreate = (props) => {
     };
 
 
-    const getKodeDefectOption = async () => {
+    const getKodeDefectOption = async (e) => {
         try {
             const response = await axiosInstance.get('master-defect/get-master-defect');
             const options = response.data.data.map(defect => ({
@@ -87,7 +87,11 @@ const InspectingCreate = (props) => {
         }
     };
 
-    
+    useEffect(() => {
+        getKodeDefectOption();
+    }, []);
+
+
     
     const handleUpdateInspectResult = (e, index) => {
         e.preventDefault();
@@ -152,11 +156,6 @@ const InspectingCreate = (props) => {
         }
         // console.log("INI DATA",data);
     }, [data]);
-
-    // useEffect(() => {
-    //     // console.clear();
-    //     console.log('FORM DATA',formData);
-    // },[formData]);
 
     const handleChoosOne = (item) => {
         setNoWo(item.no);
