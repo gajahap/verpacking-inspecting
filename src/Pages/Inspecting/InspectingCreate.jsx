@@ -550,7 +550,7 @@ const InspectingCreate = (props) => {
           <Form className="w-100" onSubmit={handleSubmit}>
             <Stack direction="horizontal" gap={2}>
               <Form.Control
-                type="search"
+                type="number"
                 value={nomorKartu}
                 onChange={handleChange}
                 placeholder={`Cari Kartu Proses`}
@@ -1030,7 +1030,7 @@ const InspectingCreate = (props) => {
                                                         className="mb-3"
                                                       >
                                                         <Form.Control
-                                                          type="text"
+                                                          type="number"
                                                           name="meter_defect"
                                                           value={
                                                             defect?.meter_defect

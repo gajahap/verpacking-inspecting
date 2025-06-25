@@ -433,7 +433,7 @@ const InspectingView = (props) => {
                       </tr>
                       <tr>
                         <td>
-                          <strong>No. Meja</strong>
+                          <strong>No. Mesin</strong>
                         </td>
                         <td>
                           <Stack direction="horizontal" gap={3}>
