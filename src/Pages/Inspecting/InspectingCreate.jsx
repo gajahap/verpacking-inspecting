@@ -167,6 +167,7 @@ const InspectingCreate = (props) => {
     }
     // Reset state untuk menutup form atau memperbarui UI
     setVisibleCard({ id: null, index: null });
+    handleUpdateNoUrut();
   };
 
   const handleDeleteInspectResult = (itemId, index) => {
@@ -214,30 +215,34 @@ const InspectingCreate = (props) => {
 
   const handleUpdateNoUrut = () => {
     setInspectResult((prevState) => {
-      // Step 1: Gabungkan semua data jadi satu array
       const allResults = [];
-
+  
+      // Step 1: Gabungkan semua data jadi satu array
       Object.entries(prevState).forEach(([itemId, results]) => {
-        results.forEach((result, index) => {
+        results.forEach((result) => {
           allResults.push({
             ...result,
             itemId,
-            index, // simpan index awal untuk nanti kalau perlu
           });
         });
       });
-
+  
       // Step 2: Urutkan berdasarkan time_add
       allResults.sort((a, b) => a.time_add - b.time_add);
-
-      // Step 3: Tambahkan no_urut global
-      allResults.forEach((result, index) => {
-        result.no_urut = index + 1;
+  
+      // Step 3: Hitung dan tambahkan no_urut hanya untuk yang grade !== 5
+      let globalIndex = 1;
+      allResults.forEach((result) => {
+        if (result.grade !== 5) {
+          result.no_urut = globalIndex++;
+        } else {
+          // Hapus no_urut jika ada, supaya tidak salah
+          delete result.no_urut;
+        }
       });
-
+  
       // Step 4: Kembalikan ke bentuk awal (per itemId)
       const updatedResults = {};
-
       allResults.forEach((result) => {
         const { itemId, ...rest } = result;
         if (!updatedResults[itemId]) {
@@ -245,10 +250,11 @@ const InspectingCreate = (props) => {
         }
         updatedResults[itemId].push(rest);
       });
-
+  
       return updatedResults;
     });
   };
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -698,7 +704,7 @@ const InspectingCreate = (props) => {
                     className="w-50 small-text"
                   >
                     <Form.Label>
-                      <strong>No. Meja</strong>
+                      <strong>No. Mesin</strong>
                     </Form.Label>
                     <Form.Control
                       type="number"
@@ -710,7 +716,7 @@ const InspectingCreate = (props) => {
                           inspection_table: e.target.value.toUpperCase(),
                         })
                       }
-                      placeholder="No Meja"
+                      placeholder="No Mesin"
                       className="small-text"
                       required
                     />
@@ -832,7 +838,7 @@ const InspectingCreate = (props) => {
                                       )
                                     }
                                   >
-                                    {result.qty} ({result.no_urut})
+                                    {result.qty} {result.no_urut ? `(${result.no_urut})` : ''}
                                   </Button>
                                   {visibleCard.id === item.id &&
                                     visibleCard.index === index && (

@@ -404,13 +404,13 @@ const InspectingCreate = (props) => {
                                         </Form.Control>
                                     </Form.Group>
                                     <Form.Group controlId="inspection_table" className="w-50 small-text">
-                                        <Form.Label><strong>No. Meja</strong></Form.Label>
+                                        <Form.Label><strong>No. Mesin</strong></Form.Label>
                                         <Form.Control
                                             type="number"
                                             name="inspection_table"
                                             value={formData.inspection_table || ''}  // Fallback to an empty string
                                             onChange={(e) => setFormData({ ...formData, inspection_table: e.target.value.toUpperCase() })}
-                                            placeholder="No Meja"
+                                            placeholder="No Mesin"
                                             className='small-text border-bold'
                                             required
                                         />
