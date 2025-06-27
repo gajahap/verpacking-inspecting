@@ -190,6 +190,7 @@ const InspectPrint = (props) => {
                                     <td >GRADE A</td>
                                     {[
                                     ...inspectItem
+                                    .filter(item => item.grade !== 5)
                                     .slice(j * 10, j * 10 + 10),
                                     ...Array(10).fill({ qty: '' })
                                 ]
@@ -209,6 +210,7 @@ const InspectPrint = (props) => {
                                     <td >GRADE C</td>
                                     {[
                                     ...inspectItem
+                                    .filter(item => item.grade !== 5)
                                     .slice(j * 10, j * 10 + 10),
                                     ...Array(10).fill({ qty: '' })
                                 ]
@@ -228,6 +230,7 @@ const InspectPrint = (props) => {
                                     <td >GRADE PK</td>
                                     {[
                                     ...inspectItem
+                                    .filter(item => item.grade !== 5)
                                     .slice(j * 10, j * 10 + 10),
                                     ...Array(10).fill({ qty: '' })
                                 ]

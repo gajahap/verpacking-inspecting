@@ -181,7 +181,7 @@ const InspectPrint = ({ jenisProses }) => {
                           <td>: {data?.kombinasi || data?.wo_color?.mo_color?.color}</td>
                       </tr>
                       <tr>
-                          <th style={{ width: "50%" }}>NO. MEJA</th>
+                          <th style={{ width: "50%" }}>NO. MESIN</th>
                           <td>: {data?.inspection_table}</td>
                       </tr>
                       <tr>
