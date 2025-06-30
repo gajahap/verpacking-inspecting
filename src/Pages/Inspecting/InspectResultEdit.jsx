@@ -32,7 +32,7 @@ const InspectResultEdit = (props) => {
       );
       const options = response.data.data.map((defect) => ({
         value: defect.id,
-        label: `${defect.no_urut} - ${defect.nama_defect}`,
+        label: `${defect.no_urut.toString().padStart(2, '0')} - ${defect.nama_defect}`,
       }));
       setKodeDefectOption(options);
     } catch (error) {

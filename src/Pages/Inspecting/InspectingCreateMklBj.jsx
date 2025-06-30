@@ -77,10 +77,10 @@ const InspectingCreate = (props) => {
     const getKodeDefectOption = async (e) => {
         try {
             const response = await axiosInstance.get('master-defect/get-master-defect');
-            const options = response.data.data.map(defect => ({
+            const options = response.data.data.map((defect) => ({
                 value: defect.id,
-                label: `${defect.no_urut} - ${defect.nama_defect}`
-            }));
+                label: `${defect.no_urut.toString().padStart(2, '0')} - ${defect.nama_defect}`,
+              }));
             setKodeDefectOption(options);
         } catch (error) {
             console.error(error);
@@ -185,7 +185,7 @@ const InspectingCreate = (props) => {
                 return;
             }
 
-            const response = await axiosInstance.post('inspecting/store-mkl-bj-inspecting',formData);
+            const response = await axiosInstance.post('inspecting/store-mkl-bj-inspecting',{...formData, inspect_result: inspectResult});
 
             if (response.data?.success) {
                 setModalMessage({ message: 'Data berhasil disimpan.', status: 200 });
@@ -200,7 +200,10 @@ const InspectingCreate = (props) => {
                 id_wo: data[0]?.id,
                 no_lot: formData.no_lot,
                 unit: formData.unit,
-                inspect_result: inspectResult
+                inspect_result: inspectResult,
+                color: formData.color,
+                jenis_makloon: formData.jenis_makloon,
+                jenis_inspek: formData.jenis_inspek
             });
         }
     };
@@ -258,6 +261,11 @@ const InspectingCreate = (props) => {
             handleStore();
         }
     };
+
+    useEffect(() => {
+        console.log(formData);
+        
+    }, [formData]);
     
         
 
@@ -413,6 +421,24 @@ const InspectingCreate = (props) => {
                                             className='small-text border-bold'
                                             required
                                         />
+                                    </Form.Group>
+                                    <Form.Group controlId="jenis_inspek" className="w-50 small-text">
+                                        <Form.Label>
+                                        <strong>Jenis Inspeksi</strong>
+                                        </Form.Label>
+                                        <Form.Control
+                                        as="select"
+                                        value={formData.jenis_inspek || ""}
+                                        onChange={(e) =>
+                                            setFormData({ ...formData, jenis_inspek: e.target.value })
+                                        }
+                                        className='small-text border-bold'
+                                        required
+                                        >
+                                        <option value="">Pilih Jenis Inspeksi</option>
+                                        <option value="1">Fresh Order</option>
+                                        <option value="2">Re-Packing</option>
+                                        </Form.Control>
                                     </Form.Group>
                                 </Stack>
                             </Form>

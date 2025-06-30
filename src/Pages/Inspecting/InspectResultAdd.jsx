@@ -25,10 +25,10 @@ const InspectResultAdd = (props) => {
         const getKodeDefectOption = async () => {
             try {
                 const response = await axiosInstance.get('master-defect/get-master-defect');
-                const options = response.data.data.map(defect => ({
+                const options = response.data.data.map((defect) => ({
                     value: defect.id,
-                    label: `${defect.no_urut} - ${defect.nama_defect}`
-                }));
+                    label: `${defect.no_urut.toString().padStart(2, '0')} - ${defect.nama_defect}`,
+                  }));
                 setKodeDefectOption(options);
             } catch (error) {
                 console.error(error);
