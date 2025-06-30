@@ -538,68 +538,70 @@ const InspectingView = (props) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {inspectItem?.map((result, index) => (
-                    <React.Fragment key={index}>
-                      <tr key={index}>
-                        <td style={{ width: "10%" }}>
-                          {index + 1}
-                          {result.join_piece}
-                        </td>
-                        <td>{result.qty}</td>
-                        <td>{grades[result.grade]}</td>
-                        <td>
-                          {result.defect_item.length > 0 ? (
-                            result.defect_item.map((defect, defectIndex) => (
-                              <span
-                                key={defectIndex}
-                                className={`d-block p-1 ${
-                                  defectIndex === result.defect_item.length - 1
-                                    ? ""
-                                    : "border-bottom-bold"
-                                }`}
-                              >
-                                {defect.meterage} /{" "}
-                                {defect.mst_kode_defect?.no_urut} /{" "}
-                                {defect.point}
+                  {inspectItem
+                    ?.sort((a, b) => a.grade === 5 ? 1 : b.grade === 5 ? -1 : 0)
+                    .map((result, index) => (
+                      <React.Fragment key={index}>
+                        <tr key={index}>
+                          <td style={{ width: "10%" }}>
+                            {index + 1}
+                            {result.join_piece}
+                          </td>
+                          <td>{result.qty}</td>
+                          <td>{grades[result.grade]}</td>
+                          <td>
+                            {result.defect_item.length > 0 ? (
+                              result.defect_item.map((defect, defectIndex) => (
+                                <span
+                                  key={defectIndex}
+                                  className={`d-block p-1 ${
+                                    defectIndex === result.defect_item.length - 1
+                                      ? ""
+                                      : "border-bottom-bold"
+                                  }`}
+                                >
+                                  {defect.meterage} /{" "}
+                                  {defect.mst_kode_defect?.no_urut} /{" "}
+                                  {defect.point}
+                                </span>
+                              ))
+                            ) : (
+                              <span className="text-danger">
+                                <i>No Defect</i>
                               </span>
-                            ))
-                          ) : (
-                            <span className="text-danger">
-                              <i>No Defect</i>
-                            </span>
-                          )}
-                        </td>
-                        <td>  
-                          {data.status < (props.jenisProses === "mkl-bj" ? 3 : 4) && (
-                            <Button
-                              variant="warning"
-                              className="text-white"
-                              size="sm"
-                              onClick={() =>
-                                setVisibleCard(
-                                  visibleCard.id === result.id
-                                    ? { id: null } // Jika tombol yang sama diklik, sembunyikan kartu
-                                    : { id: result.id } // Tampilkan kartu untuk item.id dan index tertentu
-                                )
-                              }
-                            >
-                              <FaEdit /> Edit
-                            </Button>
-                          )}
-                        </td>
-                      </tr>
-                      {visibleCard.id === result.id && (
-                        <InspectResultEdit
-                          result={result}
-                          jenisProses={props.jenisProses}
-                          closeModal={closeModal}
-                          onSuccessEdit={onSuccessEdit}
-                          inspectingItemID
-                          onDelete={onDeleteInsepctItem}
-                        />
-                      )}
-                    </React.Fragment>
-                  ))}
+                            )}
+                          </td>
+                          <td>  
+                            {data.status < (props.jenisProses === "mkl-bj" ? 3 : 4) && (
+                              <Button
+                                variant="warning"
+                                className="text-white"
+                                size="sm"
+                                onClick={() =>
+                                  setVisibleCard(
+                                    visibleCard.id === result.id
+                                      ? { id: null } // Jika tombol yang sama diklik, sembunyikan kartu
+                                      : { id: result.id } // Tampilkan kartu untuk item.id dan index tertentu
+                                  )
+                                }
+                              >
+                                <FaEdit /> Edit
+                              </Button>
+                            )}
+                          </td>
+                        </tr>
+                        {visibleCard.id === result.id && (
+                          <InspectResultEdit
+                            result={result}
+                            jenisProses={props.jenisProses}
+                            closeModal={closeModal}
+                            onSuccessEdit={onSuccessEdit}
+                            inspectingItemID
+                            onDelete={onDeleteInsepctItem}
+                          />
+                        )}
+                      </React.Fragment>
+                    ))}
                 </tbody>
                 <tfoot>
                   <tr>
