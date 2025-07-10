@@ -155,6 +155,7 @@ const InspectingView = (props) => {
             null,
           inspection_table: response.data.data.inspection_table,
           jenis_inspek: response.data.data.jenis_inspek,
+          no_memo: response.data.data.no_memo
         }));
         setWoColorsOptions([
           { value: null, label: response.data.data.kombinasi },
@@ -179,6 +180,7 @@ const InspectingView = (props) => {
           jenis_makloon: response.data.data.jenis,
           mo_color_id: response.data.data.wo_color_id,
           inspection_table: response.data.data.inspection_table,
+          no_memo: response.data.data.no_memo
         }));
         setWoColorsOptions([
           {
@@ -515,6 +517,14 @@ const InspectingView = (props) => {
                             : statusKartuDyPr[data?.status] || "-"}
                         </td>
                       </tr>
+                      <tr>
+                        <td>
+                          <strong>No Memo</strong>
+                        </td>
+                        <td>
+                          {data?.no_memo}
+                        </td>
+                      </tr>
                     </tbody>
                   </Table>
                 </Col>
@@ -703,6 +713,21 @@ const InspectingView = (props) => {
                     value={form.inspection_table}
                     onChange={(e) =>
                       setForm({ ...form, inspection_table: e.target.value })
+                    }
+                  />
+                </Form.Group>
+
+                <Form.Group className="mb-3" controlId="formBasicEmail">
+                  <Form.Label className="small-text">
+                    <strong>No. Memo</strong>
+                  </Form.Label>
+                  <Form.Control
+                    className="border-bold"
+                    type="text"
+                    placeholder="No Memo"
+                    value={form.no_memo}
+                    onChange={(e) =>
+                      setForm({ ...form, no_memo: e.target.value })
                     }
                   />
                 </Form.Group>

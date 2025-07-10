@@ -41,6 +41,7 @@ const InspectingCreate = (props) => {
     const [isChooseOne, setIsChooseOne] = useState(false);
     const [modalMessage, setModalMessage] = useState('');
     const [showConfirmModal, setShowConfirmModal] = useState(false);
+    const [gsm, setGsm] = useState(0);
 
     const navigate = useNavigate();
 
@@ -55,9 +56,10 @@ const InspectingCreate = (props) => {
             grade: 7,
             join_piece: '',
             lot_no: '',
-            gsm_item:'',
+            gsm_item:gsm,
             defect: [],
             time_add: Date.now() / 1000,
+            qty_bit:''
         }]);
 
         handleUpdateNoUrut();
@@ -262,12 +264,36 @@ const InspectingCreate = (props) => {
         }
     };
 
+    const onChangeGsm = (e) => {
+    const newGsm = e.target.value.trim();
+    setGsm(newGsm);
+
+    setInspectResult((prevInspectResult) => {
+        return prevInspectResult.map((result) => ({
+            ...result,
+            gsm_item: newGsm,
+        }));
+    });
+
+    };
+
     useEffect(() => {
-        console.log(formData);
+        console.log(inspectResult);
         
-    }, [formData]);
+    }, [inspectResult]); 
     
-        
+    // const getMemo = async (e) => {
+    //     try {
+    //         const response = await axiosInstance.get('master-defect/get-master-defect');
+    //         const options = response.data.data.map((defect) => ({
+    //             value: defect.id,
+    //             label: `${defect.no_urut.toString().padStart(2, '0')} - ${defect.nama_defect}`,
+    //           }));
+    //         setKodeDefectOption(options);
+    //     } catch (error) {
+    //         console.error(error);
+    //     }
+    // };
 
     return (
         <>
@@ -440,6 +466,33 @@ const InspectingCreate = (props) => {
                                         <option value="2">Re-Packing</option>
                                         </Form.Control>
                                     </Form.Group>
+
+                                    {formData.jenis_inspek === "2" && (
+                                        <Form.Group controlId="inspection_table" className="w-50 small-text">
+                                            <Form.Label><strong>No. Memo</strong></Form.Label>
+                                            <Form.Control
+                                                type="text"
+                                                name="no_memo"
+                                                value={formData.no_memo || ''}  // Fallback to an empty string
+                                                onChange={(e) => setFormData({ ...formData, no_memo: e.target.value.toUpperCase() })}
+                                                placeholder="No Memo"
+                                                className='small-text border-bold'
+                                            />
+                                        </Form.Group>
+                                    )}
+                                    
+                                    <Form.Group controlId="inspection_table" className="w-50 small-text">
+                                        <Form.Label><strong>Gramasi</strong></Form.Label>
+                                        <Form.Control
+                                            type="number"
+                                            name="gsm_item"
+                                            value={gsm}  // Fallback to an empty string
+                                            onChange={onChangeGsm}
+                                            placeholder="Gramasi"
+                                            className='small-text border-bold'
+                                            required
+                                        />
+                                    </Form.Group>
                                 </Stack>
                             </Form>
                         </Card>
@@ -457,7 +510,8 @@ const InspectingCreate = (props) => {
                                         <th className="text-center">Join</th>
                                         <th className="text-center">Lot</th>
                                         <th>Defect</th>
-                                        <th>GSM</th>
+                                        <th>Gramasi</th>
+                                        <th>BITS</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -610,8 +664,14 @@ const InspectingCreate = (props) => {
                                                     </Modal>
                                                 )}
                                             </td>
-                                            <td className="text-center">
+                                            {/* <td className="text-center">
                                                 <Form.Control type="number" step="0.01" value={item.gsm_item} name="gsm_item" className="small-text border-bold"  onChange={(e) => handleUpdateInspectResult(e, index)}/>
+                                            </td> */}
+                                            <td className='text-center'>
+                                                <Form.Control type="number" value={item.gsm_item} name="gsm_item" className="small-text border-bold"  disabled/>
+                                            </td>
+                                            <td className='text-center'>
+                                                <Form.Control type="number" step="1" value={item.qty_bit ? item.qty_bit : ''} name="qty_bit" className="small-text border-bold"  onChange={(e) => handleUpdateInspectResult(e, index)}/>
                                             </td>
                                         </tr>
                                     ))}

@@ -18,6 +18,7 @@ const InspectResultEdit = (props) => {
     defect: result.defect_item,
     stock_id: result.stock_id,
     gsm_item: result.gsm_item,
+    qty_bit: result.qty_bit,
   });
 
   useEffect(() => {
@@ -214,6 +215,18 @@ const InspectResultEdit = (props) => {
                     type="text"
                     name="lot_no"
                     defaultValue={formData?.lot_no}
+                    className="border-bold"
+                    onChange={handleChangeForm}
+                  />
+                </Form.Group>
+                <Form.Group as={Col} xs={4}>
+                  <Form.Label>
+                    <strong>Bits</strong>
+                  </Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="qty_bit"
+                    defaultValue={formData?.qty_bit}
                     className="border-bold"
                     onChange={handleChangeForm}
                   />

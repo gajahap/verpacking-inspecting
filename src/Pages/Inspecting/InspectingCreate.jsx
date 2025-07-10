@@ -358,7 +358,8 @@ const InspectingCreate = (props) => {
         unit: formData.unit,
         inspection_table: formData.inspection_table,
         inspect_result: inspectResult,
-        jenis_inspek: formData.jenis_inspek
+        jenis_inspek: formData.jenis_inspek,
+        no_memo: formData.no_memo
       };
   
       const url = props.jenisProses === "dyeing"
@@ -421,6 +422,8 @@ const InspectingCreate = (props) => {
         unit: formData.unit,
         inspection_table: formData.inspection_table,
         inspect_result: inspectResult,
+        no_memo: formData.no_memo,
+        
       });
       
       navigate('/');
@@ -739,6 +742,21 @@ const InspectingCreate = (props) => {
                       <option value="2">Re-Packing</option>
                     </Form.Control>
                   </Form.Group>
+
+                  {formData.jenis_inspek === "2" && (
+                      <Form.Group controlId="inspection_table" className="w-50 small-text">
+                          <Form.Label><strong>No. Memo</strong></Form.Label>
+                          <Form.Control
+                              type="text"
+                              name="no_memo"
+                              value={formData.no_memo || ''}  // Fallback to an empty string
+                              onChange={(e) => setFormData({ ...formData, no_memo: e.target.value.toUpperCase() })}
+                              placeholder="No Memo"
+                              className='small-text'
+                              required
+                          />
+                      </Form.Group>
+                  )}
 
                 </Stack>
               </Form>
