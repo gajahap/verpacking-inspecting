@@ -8,6 +8,8 @@ import ErrorPage from '../../ErrorPage';
 import './Inspectprint.module.css';
 
 const InspectPrint = (props) => {
+    // PERHATIAN!!
+    // INI ADALAH CODE UNTUK HALAMAN PRINT PACKING LIST
     const { idInspecting } = useParams();
     document.title = `Inspect ${props.jenisProses.charAt(0).toUpperCase() + props.jenisProses.slice(1)} Print : ${idInspecting}`;
     const type = "portrait";
@@ -98,16 +100,17 @@ const InspectPrint = (props) => {
                                 <th style={{ width: "50%" }}>MOTIF</th>
                                 <td>: {data?.wo?.greige?.nama_kain}</td>
                             </tr>
+                            <tr>
+                                <th style={{ width: "50%" }}>DESIGN</th>
+                                <td>: {data?.mo?.process === 1 ? data?.mo?.article : data?.mo?.design}</td>
+                            </tr>
                             </tbody>
                         </table>
                         </div>
                         <div className="col-6">
                         <table style={{ width: "100%", fontSize: "9px" }}>
                             <tbody>
-                            <tr>
-                                <th style={{ width: "50%" }}>DESIGN</th>
-                                <td>: {data?.mo?.process === 1 ? data?.mo?.article : data?.mo?.design}</td>
-                            </tr>
+
                             <tr>
                                 <th style={{ width: "50%" }}>KOMBINASI</th>
                                 <td>: {data?.kombinasi || data?.wo_color?.mo_color?.color}</td>
@@ -115,6 +118,10 @@ const InspectPrint = (props) => {
                             <tr>
                                 <th style={{ width: "50%" }}>BATCH</th>
                                 <td>: {data?.no_lot ||''}</td>
+                            </tr>
+                            <tr>
+                                <th style={{ width: "50%" }}>NO. MEMO</th>
+                                <td>: {data?.no_memo || '-'}</td>
                             </tr>
                             </tbody>
                         </table>

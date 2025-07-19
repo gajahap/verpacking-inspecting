@@ -58,6 +58,7 @@ const InspectingView = (props) => {
   const jenisInspek = {
     1: "Fresh Order",
     2: "Re-Packing",
+    3: "Hasil Perbaikan",
   };
 
   const jenisMakloon = {

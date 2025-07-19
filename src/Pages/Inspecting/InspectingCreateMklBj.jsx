@@ -464,6 +464,7 @@ const InspectingCreate = (props) => {
                                         <option value="">Pilih Jenis Inspeksi</option>
                                         <option value="1">Fresh Order</option>
                                         <option value="2">Re-Packing</option>
+                                        <option value="3">Hasil Perbaikan</option>
                                         </Form.Control>
                                     </Form.Group>
 

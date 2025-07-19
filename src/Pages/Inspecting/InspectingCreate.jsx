@@ -740,6 +740,7 @@ const InspectingCreate = (props) => {
                       <option value="">Pilih Jenis Inspeksi</option>
                       <option value="1">Fresh Order</option>
                       <option value="2">Re-Packing</option>
+                      <option value="3">Hasil Perbaikan</option>
                     </Form.Control>
                   </Form.Group>
 
@@ -886,7 +887,7 @@ const InspectingCreate = (props) => {
                                               className="justify-content-between"
                                             >
                                               <Card.Title className="me-auto">
-                                                {result.qty}
+                                                {result.qty} {result.no_urut ? `(${result.no_urut})` : ''}
                                               </Card.Title>
                                               <Stack
                                                 direction="horizontal"
