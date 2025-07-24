@@ -1495,6 +1495,7 @@ const InspectingCreate = (props) => {
                 variant="burgundy"
                 className="w-100"
                 onClick={() => setShowConfirmModal(true)}
+                disabled={isSubmiting}
               >
                 {isSubmiting ? (
                   <Spinner animation="border" size="sm" />

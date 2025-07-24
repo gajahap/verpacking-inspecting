@@ -343,7 +343,7 @@ const InspectingView = (props) => {
         <ErrorPage status={isError} />
       ) : (
         <>
-          <Container fluid className="p-4">
+          <Container fluid className="p-4" style={{marginBottom : '150px'}}>
             <Card className="mb-3 bg-burgundy-gradient bg-pattern-card py-3 px-4 text-white shadow">
               <h3 className="mb-0">
                 {" "}

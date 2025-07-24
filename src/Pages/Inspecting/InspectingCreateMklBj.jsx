@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axiosInstance from '../../axiosConfig';
 import Bottom from '../Layouts/Bottom/Bottom';
-import { Card, Button, Container, Stack, Form, Table, Badge, Row, Col,Modal } from 'react-bootstrap';
+import { Card, Button, Container, Stack, Form, Table, Badge, Row, Col,Modal,Spinner } from 'react-bootstrap';
 import { FaSearch } from 'react-icons/fa';
 import { FaArrowRight } from 'react-icons/fa';
 import { FaPlus, FaTimes, FaCheck, FaTrash, FaSave, FaEye } from 'react-icons/fa';
@@ -41,6 +41,7 @@ const InspectingCreate = (props) => {
     const [isChooseOne, setIsChooseOne] = useState(false);
     const [modalMessage, setModalMessage] = useState('');
     const [showConfirmModal, setShowConfirmModal] = useState(false);
+    const [isSubmiting, setIsSubmiting] = useState(false);
     const [gsm, setGsm] = useState(0);
 
     const navigate = useNavigate();
@@ -175,6 +176,7 @@ const InspectingCreate = (props) => {
     };
 
     const handleStore = async () => {
+        setIsSubmiting(true);
         try {
             if (!formData.no_lot || !formData.unit || !formData.color || !formData.jenis_makloon) {
                 setModalMessage({ message: 'Warna, Nomor lot, Satuan, atau jenis makloon tidak boleh kosong.', status: 422 });
@@ -207,6 +209,8 @@ const InspectingCreate = (props) => {
                 jenis_makloon: formData.jenis_makloon,
                 jenis_inspek: formData.jenis_inspek
             });
+        } finally {
+            setIsSubmiting(false);
         }
     };
 
@@ -681,7 +685,18 @@ const InspectingCreate = (props) => {
                             </Table>
                         </Card>
                         <Container fluid className="mt-4">
-                                <Button variant="burgundy" className='w-100' onClick={() => setShowConfirmModal(true)}>Kirim</Button>
+                                <Button 
+                                    variant="burgundy" 
+                                    className='w-100' 
+                                    onClick={() => setShowConfirmModal(true)}
+                                    disabled={isSubmiting}
+                                    >
+                                        {isSubmiting ? (
+                                        <Spinner animation="border" size="sm" />
+                                        ) : (
+                                        "Simpan"
+                                        )}
+                                </Button>
                         </Container>
                     </>
                 )}

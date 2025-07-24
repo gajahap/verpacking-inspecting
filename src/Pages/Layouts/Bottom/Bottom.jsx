@@ -11,6 +11,7 @@ import { ImSearch } from "react-icons/im";
 import { RiFilePaper2Fill } from "react-icons/ri";
 import { TbReportSearch } from "react-icons/tb";
 import { CgProfile } from "react-icons/cg";
+import { AiFillInfoCircle } from 'react-icons/ai';
 
 
 import './Bottom.css';
@@ -69,7 +70,7 @@ const Bottom = () => {
 
   return (
     <>  
-        <Card className="main-menu bg-burgundy-gradient position-fixed bottom-0 start-50 translate-middle-x my-4" style={{ zIndex: 999 }}>
+        <Card className="main-menu bg-burgundy-gradient position-fixed bottom-0 start-50 translate-middle-x" style={{ zIndex: 999,marginBottom: '75px' }}>
           <Row className="justify-content-md-center p-3">
             <Col md="auto">
               <Stack direction="horizontal" gap={3} className="justify-content-center">
@@ -97,10 +98,19 @@ const Bottom = () => {
                     <span className="" style={{ fontSize: '9px' }}>Laporan</span>
                   </Stack>
                 </Link>
+                <a href="/about" className="text-decoration-none mx-2">
+                  <Stack direction="vertical" className="justify-content-center align-items-center">
+                    <AiFillInfoCircle size={25} />
+                    <span className="text-center" style={{ fontSize: '9px' }}>About</span>
+                  </Stack>
+                </a>
               </Stack>
             </Col>
           </Row>
         </Card>
+        <footer className="text-center fixed-bottom bg-light p-3">
+          <span style={{ fontSize: '10px' }}> Copyright &copy; 2025 by Departemen IT Software PT. Gajah Angkasa Perkasa.</span>
+        </footer>
       {showToast && (
         <div ref={toastRef}>
           <Toast

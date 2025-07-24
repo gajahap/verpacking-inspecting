@@ -360,3 +360,7 @@ input[type=number] {
     border-top: none !important;
     border-bottom: none !important;
   }
+
+  .font-semibold{
+    font-weight: 600 !important;
+  }

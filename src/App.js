@@ -16,6 +16,7 @@ import RekapPengirimanProduksi from './Pages/laporan/rekap-pengiriman-produksi/R
 import AnalisaPengirimanProduksi from './Pages/laporan/analisa-pengiriman-produksi/AnalisaPengirimanProduksi';
 import RekapPengirimanHarian from './Pages/laporan/rekap-pengiriman-harian/RekapPengirimanHarian';
 import UserConfiguration from './Pages/User/UserConfiguration';
+import About from './Pages/About';
 const App = () => {
   return (
     <Router>
@@ -55,6 +56,8 @@ const App = () => {
           <Route path="/rekap-pengiriman-harian" element={<Middleware><RekapPengirimanHarian/></Middleware>} />
 
           <Route path="/user-configuration" element={<Middleware><UserConfiguration/></Middleware>} />
+
+          <Route path="/about" element={<Middleware><About/></Middleware>} />
 
           {/* <Route path="/laporan-stock-greige" element={<Middleware><LaporanStockGreige/></Middleware>} /> */}
 
