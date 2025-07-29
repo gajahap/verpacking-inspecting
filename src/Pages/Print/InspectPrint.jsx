@@ -128,71 +128,21 @@ const InspectPrint = (props) => {
                         </div>
                     </div>
                     {/* Tabel Area */}
-                    {[...Array(Math.max(Math.ceil(inspectItem.length / 10), 4))].map((_, j) => (
+                    {[...Array(Math.max(Math.max(inspectItem.length / 10), 4))].map((_, j) => (
                             <Table className="mt-2" bordered key={j} style={{tableLayout: "fixed", borderColor: "black",pageBreakInside: "avoid"}}>
                             <tbody style={{ fontSize: "9px" }}>
-                                {/* <tr >
-                                <td style={{width: "10%"}} >NO. PCS</td>
-                                {[...Array(10)].map((_, i) => (
-                                    <td style={{width: "8",fontSize: "9px"}} key={i}>{j * 10 + i + 1}</td>
-                                ))}
-                                </tr>
                                 <tr>
-                                <td style={{width: "10%"}}>GRADE A</td>
-                                {[
-                                    ...inspectItem
-                                    .filter(item => [7, 1, 8].includes(item.grade))
-                                    .slice(j * 10, j * 10 + 10),
-                                    ...Array(10).fill({ qty: '' })
-                                ]
-                                    .slice(0, 10)
-                                    .map((item, i) => (
-                                    <td style={{width: "8",fontSize: "14px"}} key={i} className="py-0">
-                                        <b>{item.qty}</b> {item.join_piece && "(" + item.join_piece + ")"}
-                                        <div style={{fontSize: "10px", color: "red"}}>{item.defect_item?.map(defect => defect.mst_kode_defect_id).join(' , ') || ''}</div>
-                                    </td>
-                                    ))}
+                                    <td style={{ width: "10%" }}>NO. PCS</td>
+                                    {[...Array(10)].map((_, i) => {
+                                        const item = inspectItem.filter(item => item.grade !== 5)[j * 10 + i];
+                                        return (
+                                        <td key={i} style={{ width: "8%", fontSize: "9px" }}>
+                                            {j * 10 + i + 1}  {item?.lot_no ? `(Lot :${item?.lot_no})` : ''}
+                                        </td>
+                                        );
+                                    })}
                                 </tr>
-                                <tr>
-                                <td style={{width: "10%"}}>GRADE C</td>
-                                {[
-                                    ...inspectItem
-                                    .filter(item => ![7, 1, 8, 4,5].includes(item.grade))
-                                    .slice(j * 10, j * 10 + 10),
-                                    ...Array(10).fill({ qty: '' })
-                                ]
-                                    .slice(0, 10)
-                                    .map((item, i) => (
-                                    <td style={{width: "8" ,fontSize: "14px"}} key={i} className="py-0">
-                                        <b>{item.qty}</b> {item.join_piece && "(" + item.join_piece + ")"}
-                                        <div style={{fontSize: "10px", color: "red"}}>{item.defect_item?.map(defect => defect.mst_kode_defect_id).join(' , ') || ''}</div>
 
-                                    </td>
-                                ))}
-                                </tr>
-                                <tr>
-                                <td style={{width: "10%"}}>GRADE PK</td>
-                                {[
-                                    ...inspectItem
-                                    .filter(item => [4].includes(item.grade))
-                                    .slice(j * 10, j * 10 + 10),
-                                    ...Array(10).fill({ qty: '' })
-                                ]
-                                    .slice(0, 10)
-                                    .map((item, i) => (
-                                    <td style={{width: "8" ,fontSize: "14px"}} key={i} className="py-0">
-                                        <b>{item.qty}</b> {item.join_piece && "(" + item.join_piece + ")"}
-                                        <div style={{fontSize: "10px", color: "red"}}>{item.defect_item?.map(defect => defect.mst_kode_defect_id).join(' , ') || ''}</div>
-
-                                    </td>
-                                ))}
-                                </tr> */}
-                                <tr >
-                                    <td style={{width: "10%"}} >NO. PCS</td>
-                                    {[...Array(10)].map((_, i) => (
-                                        <td style={{width: "8",fontSize: "9px"}} key={i}>{j * 10 + i + 1}</td>
-                                    ))}
-                                </tr>
                                 <tr>
                                     <td >GRADE A</td>
                                     {[

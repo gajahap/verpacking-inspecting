@@ -186,6 +186,12 @@ const Bottom = () => {
                         <span className="" style={{ fontSize: '12px' }}>Rekapitulasi Pengiriman Harian</span>
                       </Stack>
                     </a>
+                    <a href="/grafik-defect" className="text-decoration-none p-2 w-100" onClick={(e) => { e.preventDefault(); window.location.href = '/grafik-defect'; }}>
+                      <Stack direction="horizontal" gap={3} className="justify-content-center align-items-center">
+                        <TbReportSearch size={25} />
+                        <span className="" style={{ fontSize: '12px' }}>Grafik Defect</span>
+                      </Stack>
+                    </a>
                   </>
                 )}
               </Stack>

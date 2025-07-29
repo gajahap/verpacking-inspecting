@@ -3,16 +3,19 @@ import { Container, Row, Col, Card, Table, Form, Button, Pagination } from "reac
 import { FaSearch } from "react-icons/fa";
 import DateRangePicker from '../../../Components/DateRangePicker/DateRangePicker';
 import { MdPrint } from "react-icons/md";
+import { RiFileExcel2Fill } from "react-icons/ri";
 import Bottom from '../../Layouts/Bottom/Bottom';
 import axiosInstance from "../../../axiosConfig";
 import LoadingSpinnerModal from "../../../Components/LoadingSpinnerModal";
 import CustomRadioButton from "../../../Components/RadioButton/CustomRadioButton";
 import CustomSelect from "../../../Components/CustomSelectThin";
+import * as XLSX from 'xlsx';
 
 const DaftarPengirimanProduksi = () => {
     const [selectedRange, setSelectedRange] = useState();
     const [sendParams, setSendParams] = useState({});
     const printArea = useRef();
+    const tableRef = useRef();
     const [data, setData] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 50;
@@ -221,9 +224,18 @@ const DaftarPengirimanProduksi = () => {
 
       const orderedGradeCodes = [1, 7, 8, 2, 3, 4, 5];
 
+    //handle untuk konversi table ke excel
+    const handleExportTableToExcel = () => {
+        const table = document.getElementById('tabelPengiriman');
+        const ws = XLSX.utils.table_to_sheet(table); // Convert dari HTML table ke worksheet
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+        XLSX.writeFile(wb, 'daftar-pengiriman-produksi.xlsx');
+      };
+
 
     return (
-        <Container fluid className="py-4 px-4">
+        <Container fluid className="py-4 px-4 vh-100" style={{ marginBottom: "200px" }}>
             <Card>
                 <Card.Header className="bg-burgundy-gradient bg-pattern-container">
                     <Card.Title className="text-white">Daftar Pengiriman Produksi</Card.Title>
@@ -349,6 +361,9 @@ const DaftarPengirimanProduksi = () => {
                             <Button variant="burgundy" className="me-2" onClick={handlePrint}>
                                 <MdPrint /> Print
                             </Button>
+                            <Button variant="success" className="me-2" onClick={handleExportTableToExcel}>
+                                <RiFileExcel2Fill /> Export to Excel
+                            </Button>
                         </div>
                         {/* Pagination */}
                         <div className="mt-3 overflow-auto">
@@ -359,7 +374,7 @@ const DaftarPengirimanProduksi = () => {
                             <p className="print-title">DAFTAR PENGIRIMAN PRODUKSI</p>
                             <p>Tanggal Dari : {selectedRange?.from?.toLocaleDateString('id-ID') || ''} s/d {selectedRange?.to?.toLocaleDateString('id-ID') || ''}</p>
                             
-                            <Table>
+                            <Table ref={tableRef} id="tabelPengiriman">
                                 <thead>
                                     <tr className="border-bold-y">
                                         <th>No Kirim</th>
@@ -378,7 +393,7 @@ const DaftarPengirimanProduksi = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {currentItems.map((item, index) => (
+                                    {data.map((item, index) => (
                                         <React.Fragment key={index}>
                                             <tr>
                                                 <td className="no-border">{item.no_kirim}</td>

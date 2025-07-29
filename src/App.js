@@ -17,6 +17,7 @@ import AnalisaPengirimanProduksi from './Pages/laporan/analisa-pengiriman-produk
 import RekapPengirimanHarian from './Pages/laporan/rekap-pengiriman-harian/RekapPengirimanHarian';
 import UserConfiguration from './Pages/User/UserConfiguration';
 import About from './Pages/About';
+import GrafikDefect from './Pages/laporan/grafik-defect/GrafikDefect';
 const App = () => {
   return (
     <Router>
@@ -58,6 +59,8 @@ const App = () => {
           <Route path="/user-configuration" element={<Middleware><UserConfiguration/></Middleware>} />
 
           <Route path="/about" element={<Middleware><About/></Middleware>} />
+
+          <Route path="/grafik-defect" element={<Middleware><GrafikDefect/></Middleware>} />
 
           {/* <Route path="/laporan-stock-greige" element={<Middleware><LaporanStockGreige/></Middleware>} /> */}
 

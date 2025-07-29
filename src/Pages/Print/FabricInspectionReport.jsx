@@ -365,7 +365,7 @@ const InspectPrint = (props) => {
                             </td>
                             {[...Array(12).keys()].map((j) => (
                               <td key={j}>
-                                {inspectItems[j] ? 12 * i + j + 1 : ""}
+                                {inspectItems[j] ? (12 * i + j + 1) + ` (${inspectItems[j]?.no_urut})` : ""}
                               </td>
                             ))}
                           </tr>
