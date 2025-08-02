@@ -289,10 +289,7 @@ const InspectPrint = (props) => {
                     const inspectItems = inspectItem
                       .filter((item) => item.is_head === 1 && item.grade !== 5)
                       .slice(i * 12, (i + 1) * 12);
-                    const rawInspectItems = inspectItem.slice(
-                      i * 12,
-                      (i + 1) * 12
-                    );
+                    const rawInspectItems = inspectItem;
                     return (
                       <Table
                         key={i}
@@ -450,40 +447,40 @@ const InspectPrint = (props) => {
                             >
                               Meter Ke-/Defect/Point (inches)
                             </td>
-                            {[...Array(12).keys()].map((j) => (
-                              <td
-                                key={j}
-                                style={{ textAlign: "left", fontSize: "10px"}}
-                              >
-                                {inspectItems[j]?.defect_item?.map(
-                                  (defect, idx) => (
-                                    <div
-                                      key={`head-${j}-${idx}-${defect.meterage}`}
-                                    >
-                                      {`${defect.meterage} / ${defect.mst_kode_defect.no_urut} / ${defect.point}`}
-                                    </div>
-                                  )
-                                )}
-                                {rawInspectItems
-                                  .filter(
-                                    (rawInspectItem) =>
-                                      rawInspectItem?.join_piece ===
-                                        inspectItems[j]?.join_piece &&
-                                      rawInspectItem?.is_head === 0
-                                  )
-                                  .flatMap(
-                                    (rawInspectItem) =>
-                                      rawInspectItem?.defect_item || []
-                                  )
-                                  .map((defect, idx) => (
-                                    <div
-                                      key={`tail-${j}-${idx}-${defect.meterage}`}
-                                    >
-                                      {`${defect.meterage} / ${defect.mst_kode_defect.no_urut} / ${defect.point}`}
-                                    </div>
-                                  ))}
-                              </td>
-                            ))}
+                              {[...Array(12).keys()].map((j) => (
+                                <td
+                                  key={j}
+                                  style={{ textAlign: "left", fontSize: "10px"}}
+                                >
+                                  {inspectItems[j]?.defect_item?.map(
+                                    (defect, idx) => (
+                                      <div
+                                        key={`head-${j}-${idx}-${defect.meterage}`}
+                                      >
+                                        {`${defect.meterage} / ${defect.mst_kode_defect.no_urut} / ${defect.point}`}
+                                      </div>
+                                    )
+                                  )}
+                                  {rawInspectItems
+                                    .filter(
+                                      (rawInspectItem) =>
+                                        rawInspectItem?.join_piece ===
+                                          inspectItems[j]?.join_piece &&
+                                        rawInspectItem?.is_head === 0
+                                    )
+                                    .flatMap(
+                                      (rawInspectItem) =>
+                                        rawInspectItem?.defect_item || []
+                                    )
+                                    .map((defect, idx) => (
+                                      <div
+                                        key={`tail-${j}-${idx}-${defect.meterage}`}
+                                      >
+                                        {`${defect.meterage} / ${defect.mst_kode_defect.no_urut} / ${defect.point}`}
+                                      </div>
+                                    ))}
+                                </td>
+                              ))}
                           </tr>
                           <tr>
                             <td
