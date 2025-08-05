@@ -192,6 +192,12 @@ const Bottom = () => {
                         <span className="" style={{ fontSize: '12px' }}>Grafik Defect</span>
                       </Stack>
                     </a>
+                    <a href="/search-defect-per-motif" className="text-decoration-none p-2 w-100" onClick={(e) => { e.preventDefault(); window.location.href = '/search-defect-per-motif'; }}>
+                      <Stack direction="horizontal" gap={3} className="justify-content-center align-items-center">
+                        <TbReportSearch size={25} />
+                        <span className="" style={{ fontSize: '12px' }}>Search Defect By Motif</span>
+                      </Stack>
+                    </a>
                   </>
                 )}
               </Stack>

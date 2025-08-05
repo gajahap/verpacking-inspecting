@@ -161,8 +161,8 @@ const DaftarPengirimanProduksi = () => {
     };
 
     // Pagination calculation
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const indexOfLastItem = currentPage === 0 ? data.length : currentPage * itemsPerPage;
+    const indexOfFirstItem = currentPage === 0 ? 0 : indexOfLastItem - itemsPerPage;
     const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
     const totalPages = Math.ceil(data.length / itemsPerPage);
 
@@ -185,6 +185,15 @@ const DaftarPengirimanProduksi = () => {
             );
         }
 
+        items.push(
+            <Pagination.Item
+                key={0}
+                active={0 === currentPage}
+                onClick={() => paginate(0)}
+            >
+                All
+            </Pagination.Item>
+        );
         return <Pagination>{items}</Pagination>;
     };
 
@@ -226,8 +235,8 @@ const DaftarPengirimanProduksi = () => {
 
     //handle untuk konversi table ke excel
     const handleExportTableToExcel = () => {
-        const table = document.getElementById('tabelPengiriman');
-        const ws = XLSX.utils.table_to_sheet(table); // Convert dari HTML table ke worksheet
+        const table = tableRef.current;
+        const ws = XLSX.utils.table_to_sheet(table, { raw: true }); // Convert dari HTML table ke worksheet
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
         XLSX.writeFile(wb, 'daftar-pengiriman-produksi.xlsx');
@@ -393,7 +402,7 @@ const DaftarPengirimanProduksi = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {data.map((item, index) => (
+                                    {currentItems.map((item, index) => (
                                         <React.Fragment key={index}>
                                             <tr>
                                                 <td className="no-border">{item.no_kirim}</td>

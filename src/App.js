@@ -18,6 +18,7 @@ import RekapPengirimanHarian from './Pages/laporan/rekap-pengiriman-harian/Rekap
 import UserConfiguration from './Pages/User/UserConfiguration';
 import About from './Pages/About';
 import GrafikDefect from './Pages/laporan/grafik-defect/GrafikDefect';
+import SearchDefectPerMotif from './Pages/laporan/search-defect-per-motif/SearchDefectPerMotif';
 const App = () => {
   return (
     <Router>
@@ -61,6 +62,8 @@ const App = () => {
           <Route path="/about" element={<Middleware><About/></Middleware>} />
 
           <Route path="/grafik-defect" element={<Middleware><GrafikDefect/></Middleware>} />
+
+          <Route path="/search-defect-per-motif" element={<Middleware><SearchDefectPerMotif/></Middleware>} />
 
           {/* <Route path="/laporan-stock-greige" element={<Middleware><LaporanStockGreige/></Middleware>} /> */}
 
