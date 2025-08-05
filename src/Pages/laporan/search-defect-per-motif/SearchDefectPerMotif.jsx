@@ -27,7 +27,6 @@ const SearchDefectPerMotif = () => {
             console.log('data yang dikirm',params);
             const response = await axiosInstance.get(`defect-item/get-defect-tgl-kirim`, {params: params});
             setData(response.data.data);
-            console.log("res:",response.data.data);
         }
        } catch (error) {
          console.log(error.response);
