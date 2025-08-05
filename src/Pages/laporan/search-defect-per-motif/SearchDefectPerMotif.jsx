@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import { Container, Card, Form, Button,Stack ,Table } from 'react-bootstrap';
 import axiosInstance from '../../../axiosConfig';
 import Bottom from '../../Layouts/Bottom/Bottom';
+import DateRangePicker from '../../../Components/DateRangePicker/DateRangePicker';
 
 const SearchDefectPerMotif = () => {
     document.title = "Search Defect Per Motif";
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [params,setParams] = useState({});
+    const [selectedRange, setSelectedRange] = useState();
      const fetchDataIndex = async () => {
        setIsLoading(true);
        try {
@@ -23,10 +25,9 @@ const SearchDefectPerMotif = () => {
             return;
         } else{
             console.log('data yang dikirm',params);
-            
-            const response = await axiosInstance.get(`defect-item/get-defect-tgl-kirim`, params);
+            const response = await axiosInstance.get(`defect-item/get-defect-tgl-kirim`, {params: params});
             setData(response.data.data);
-            console.log(response.data.data);
+            console.log("res:",response.data.data);
         }
        } catch (error) {
          console.log(error.response);
@@ -44,7 +45,23 @@ const SearchDefectPerMotif = () => {
         }));
       };
 
-
+      const handleChangeRange = (range) => {
+        setSelectedRange(range);
+    
+        if (range?.from && range?.to) {
+            setParams((prevParams) => ({
+                ...prevParams,
+                start_date: range.from,
+                end_date: range.to,
+            }));
+        } else {
+            setParams((prevParams) => ({
+                ...prevParams,
+                start_date: null,
+                end_date: null,
+            }));
+        }
+    };
         
     return (
         <>
@@ -64,16 +81,11 @@ const SearchDefectPerMotif = () => {
                             <h1 className='text-white'>Rekap Defect By Motif dan Grade</h1>
                             <Form className="mt-4 d-flex justify-content-between gap-2 w-50 align-items-end">
                                 <Form.Group controlId="tahun" className='flex-grow-1'>
-                                    <Form.Label className="text-white">Tanggal Awal</Form.Label>
-                                    <Form.Control type="date" name="start_date" onChange={handleChangeParams} maxLength={4} />
-                                </Form.Group>
-                                <Form.Group controlId="tahun" className='flex-grow-1'>
-                                    <Form.Label className="text-white">Tanggal Akhir</Form.Label>
-                                    <Form.Control type="date" name="end_date" onChange={handleChangeParams} maxLength={4} />
-                                </Form.Group>
-                                <Form.Group controlId="tahun" className='flex-grow-1'>
-                                    <Form.Label className="text-white"></Form.Label>
-                                    <Button variant="burgundy" className='mt-auto' onClick={fetchDataIndex}>Cari</Button>
+                                    <Form.Label className="text-white">Tanggal</Form.Label>
+                                    <Stack direction="horizontal" gap={3}>
+                                        <DateRangePicker value={selectedRange} onChange={handleChangeRange}/>
+                                        <Button variant="burgundy" className='mt-auto' onClick={fetchDataIndex}>Cari</Button>
+                                    </Stack>
                                 </Form.Group>
                             </Form>
                         </div>
