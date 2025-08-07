@@ -56,7 +56,7 @@ const GrafikDefect = () => {
                                 <Form.Group controlId="tahun" className='flex-grow-1'>
                                     <Form.Control type="number" value={year} onChange={e => setYear(e.target.value)} maxLength={4} />
                                 </Form.Group>
-                                <Button variant="burgundy" onClick={fetchDataIndex}>Cari</Button>
+                                <Button variant="burgundy" onClick={fetchDataIndex} disabled={isLoading}>{isLoading ? <><Spinner animation="border" size="sm" /> tunggu sebentar</> : 'Cari'}</Button>
                             </Form>
                         </div>
                         <Card className='p-4'>
