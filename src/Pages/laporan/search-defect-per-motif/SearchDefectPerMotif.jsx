@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Container, Card, Form, Button,Stack ,Table } from 'react-bootstrap';
+import { Container, Card, Form, Button,Stack ,Table, Spinner } from 'react-bootstrap';
 import axiosInstance from '../../../axiosConfig';
 import Bottom from '../../Layouts/Bottom/Bottom';
 import DateRangePicker from '../../../Components/DateRangePicker/DateRangePicker';
@@ -83,7 +83,9 @@ const SearchDefectPerMotif = () => {
                                     <Form.Label className="text-white">Tanggal</Form.Label>
                                     <Stack direction="horizontal" gap={3}>
                                         <DateRangePicker value={selectedRange} onChange={handleChangeRange}/>
-                                        <Button variant="burgundy" className='mt-auto' onClick={fetchDataIndex}>Cari</Button>
+                                        <Button variant="burgundy" className='mt-auto' onClick={fetchDataIndex} disabled={isLoading}>
+                                            {isLoading ? <><Spinner animation="border" size="sm" />  Tunggu sebentar</> : 'Cari'}
+                                        </Button>
                                     </Stack>
                                 </Form.Group>
                             </Form>
