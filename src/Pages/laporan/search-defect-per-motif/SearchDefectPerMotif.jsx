@@ -108,7 +108,7 @@ const SearchDefectPerMotif = () => {
                                             <tr key={index}>
                                                 <td>{index + 1}</td>
                                                 <td>{item.no_urut}</td>
-                                                <td style={{textAlign: 'left'}}>{item.nama_defect}</td>
+                                                <td>{item.nama_defect}</td>
                                                 <td style={{whiteSpace: 'pre-wrap', textAlign: 'center'}} className='text-left'>
                                                     {item.grade_2.length > 0 ? item.grade_2.map((grade2, i) => (
                                                         <div key={i} style={{textAlign: 'left'}}>{`${grade2.nama_kain} = ${grade2.meterage}`}</div>
@@ -123,6 +123,20 @@ const SearchDefectPerMotif = () => {
                                             </tr>
                                         ))}
                                     </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colSpan="5" style={{ textAlign: "right", fontWeight: "bold" }}>
+                                                Grand Total:
+                                            </td>
+                                            <td style={{ fontWeight: "bold" }}>
+                                                {data.reduce(
+                                                (sum, item) =>
+                                                    sum + (item.total_grade_2 || 0) + (item.total_grade_3 || 0),
+                                                0
+                                                )}
+                                            </td>
+                                        </tr>
+                                    </tfoot>
                                 </Table>
                             </Card.Body>
                         </Card>
