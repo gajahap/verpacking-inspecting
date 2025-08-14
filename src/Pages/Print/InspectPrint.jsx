@@ -123,6 +123,10 @@ const InspectPrint = (props) => {
                                 <th style={{ width: "50%" }}>NO. MEMO</th>
                                 <td>: {data?.no_memo || '-'}</td>
                             </tr>
+                            <tr>
+                                <th style={{ width: "50%" }}>INSPECTOR</th>
+                                <td>: {data?.created_by.full_name}</td>
+                            </tr>
                             </tbody>
                         </table>
                         </div>
