@@ -109,7 +109,7 @@ const SearchDefectPerMotif = () => {
                                                 <td>{index + 1}</td>
                                                 <td>{item.no_urut}</td>
                                                 <td style={{textAlign: 'left'}}>{item.nama_defect}</td>
-                                                <td style={{whiteSpace: 'pre-wrap', textAlign: 'center'}} className='text-left'>
+                                                {/* <td style={{whiteSpace: 'pre-wrap', textAlign: 'center'}} className='text-left'>
                                                     {item.grade_2.length > 0 ? item.grade_2.map((grade2, i) => (
                                                         <div key={i} style={{textAlign: 'left'}}>{`${grade2.nama_kain} = ${grade2.meterage}`}</div>
                                                     )) : '-'}
@@ -118,6 +118,31 @@ const SearchDefectPerMotif = () => {
                                                     {item.grade_3.length > 0 ? item.grade_3.map((grade3, i) => (
                                                         <div key={i} style={{textAlign: 'left'}}>{`${grade3.nama_kain} = ${grade3.meterage}`}</div>
                                                     )) : '-'}
+                                                </td> */}
+                                                <td style={{ whiteSpace: 'pre-wrap', textAlign: 'center' }} className="text-left">
+                                                    {item.grade_2.length > 0
+                                                        ? item.grade_2
+                                                            .slice() // supaya tidak merubah array aslinya
+                                                            .sort((a, b) => Number(b.meterage) - Number(a.meterage))
+                                                            .map((grade2, i) => (
+                                                                <div key={i} style={{ textAlign: 'left' }}>
+                                                                    {`${grade2.nama_kain} = ${grade2.meterage}`}
+                                                                </div>
+                                                            ))
+                                                        : '-'}
+                                                </td>
+
+                                                <td style={{ whiteSpace: 'pre-wrap', textAlign: 'center' }} className="text-left">
+                                                    {item.grade_3.length > 0
+                                                        ? item.grade_3
+                                                            .slice()
+                                                            .sort((a, b) => Number(b.meterage) - Number(a.meterage))
+                                                            .map((grade3, i) => (
+                                                                <div key={i} style={{ textAlign: 'left' }}>
+                                                                    {`${grade3.nama_kain} = ${grade3.meterage}`}
+                                                                </div>
+                                                            ))
+                                                        : '-'}
                                                 </td>
                                                 <td>{item.total_grade_2 + item.total_grade_3}</td>
                                             </tr>
