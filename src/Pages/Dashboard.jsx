@@ -16,6 +16,7 @@ const Dashboard = () => {
   document.title = 'Vinspect GAP | Dashboard';
   const [data, setData] = useState({});
   const [inspectRecent, setInspectRecent] = useState([]);
+  const [inspctMklbjRecent, setInspctMklbjRecent] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [chartData, setChartData] = useState({});
   const [chartlabels, setChartLabels] = useState([]);
@@ -27,7 +28,9 @@ const Dashboard = () => {
       const response = await axiosInstance.get('dashboard/index');
       setData(response.data);
       console.log(response.data);
-      setInspectRecent(response.data.recent_kartu_proses_dyeing);
+      setInspectRecent(response.data.last_inspecting);
+      setInspctMklbjRecent(response.data.last_inspecting_mklbj);
+
       // setChartData(Object.values(response.data.inspectings_per_year));
       // setChartLabels(Object.keys(response.data.inspectings_per_year));
     } catch (error) {
@@ -139,7 +142,48 @@ const Dashboard = () => {
                     </p>
                   </div>
                   <div className="py-3">
+                    <Card className="p-4">
                     <h6>Inspect Terakhir:</h6>
+                    <p style={{ fontSize: "12px" }} className='m-0'>Dyeing & Printing</p>
+                    <Stack direction="horizontal" gap={3} style={{ overflow: "auto", paddingBlock: "5px" }}>
+                      {inspectRecent.map((inspect, index) => (
+                        <Link
+                          key={index}
+                          to={
+                            inspect.jenis_process === 1
+                              ? `/inspecting-dyeing/${inspect.id}`
+                              : `/inspecting-printing/${inspect.id}`
+                          }
+                          className="text-decoration-none"
+                        >
+                          <Badge bg="burgundy" className="text-white p-2">
+                            {inspect.jenis_process === 1
+                              ? inspect.kartu_process_dyeing?.no
+                              : inspect.kartu_process_printing?.no}
+                          </Badge>
+                        </Link>
+                      ))}
+                    </Stack>
+                    <hr />
+                    <p style={{ fontSize: "12px" }} className='m-0'>Makloon & Barang Jadi</p>
+                    <Stack direction="horizontal" gap={3} style={{ overflow: "auto", paddingBlock: "5px" }}>
+                      {inspctMklbjRecent.map((inspect, index) => (
+                        <Link
+                          key={index}
+                          to={ `/inspecting-mkl-bj/${inspect.id}`}
+                          className="text-decoration-none"
+                        >
+                          <Badge bg="burgundy" className="text-white p-2">
+                            {inspect?.wo?.no}({inspect?.wo_color?.mo_color?.color}) / {inspect?.no_lot}
+                          </Badge>
+                        </Link>
+                      ))}
+                    </Stack>
+                    </Card>
+
+                  </div>
+                  {/* <div className="py-3">
+                    <h6>Inspect Terakhir Makloon Barang Jadi:</h6>
                     <Stack direction="horizontal" gap={3} style={{ overflow: "auto", paddingBlock: "5px" }}>
                       {inspectRecent.map((inspect, index) => (
                         <Link
@@ -159,7 +203,7 @@ const Dashboard = () => {
                         </Link>
                       ))}
                     </Stack>
-                  </div>
+                  </div> */}
                 </Stack>
                 <Card className="p-4" style={{ marginBottom: "8rem" , minHeight: "50vh"}}>
                   <Row className="g-3">

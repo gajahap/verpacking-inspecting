@@ -11,6 +11,7 @@ import {
   Stack,
   Button,
   Modal,
+  Spinner,
 } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import LoadingSpinner from "../../Components/LoadingSpinner";
@@ -41,6 +42,7 @@ const InspectingView = (props) => {
   const [isError, setIsError] = useState(false);
   const [showModalAdd, setShowModalAdd] = useState(false);
   const [form, setForm] = useState({});
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const [showModal, setShowModal] = useState(false);
 
@@ -181,7 +183,8 @@ const InspectingView = (props) => {
           jenis_makloon: response.data.data.jenis,
           mo_color_id: response.data.data.wo_color_id,
           inspection_table: response.data.data.inspection_table,
-          no_memo: response.data.data.no_memo
+          no_memo: response.data.data.no_memo,
+          jenis_inspek: response.data.data.jenis_inspek
         }));
         setWoColorsOptions([
           {
@@ -203,9 +206,9 @@ const InspectingView = (props) => {
     fetchData();
   }, [fetchData]);
 
-  useEffect(() => {
-    console.log("Update form: ", form);
-  }, [form]);
+  // useEffect(() => {
+  //   console.log("Update form: ", form);
+  // }, [form]);
 
   const onSuccessEdit = () => {
     setVisibleCard({ id: null });
@@ -223,6 +226,7 @@ const InspectingView = (props) => {
 
   const handleSubmitEditHeader = (e) => {
     e.preventDefault();
+    setIsUpdating(true);
     const url =
       props.jenisProses === "mkl-bj"
         ? "inspecting/update-inspecting-mklbj"
@@ -246,6 +250,8 @@ const InspectingView = (props) => {
         });
         console.log(error);
         console.log("payload request:", form);
+      }).finally(() => {
+        setIsUpdating(false);
       });
   };
 
@@ -461,7 +467,7 @@ const InspectingView = (props) => {
                         <td>
                           <Stack direction="horizontal" gap={3}>
                             <div className="text-center w-100">
-                              {data?.jenis_inspek === 1 ? "Fresh Order" : data?.jenis_inspek === 2 ? "Re-Packing" : "-"}
+                              {jenisInspek[data.jenis_inspek] || "-"}
                             </div>
                           </Stack>
                         </td>
@@ -653,12 +659,6 @@ const InspectingView = (props) => {
                 <Modal.Title>{data?.kartu_process_dyeing?.no}</Modal.Title>
               </Modal.Header>
               <Modal.Body>
-                {alertMessage.show && (
-                  <CustomAlert
-                    variants={[alertMessage.success ? "success" : "danger"]}
-                    text={alertMessage.message}
-                  />
-                )}
                 <Form.Group className="mb-3" controlId="formBasicEmail">
                   <Form.Label className="small-text">
                     <strong>No. Wo</strong>
@@ -807,13 +807,19 @@ const InspectingView = (props) => {
                     placeholder="Pilih"
                   />
                 </Form.Group>
+                {alertMessage.show && (
+                  <CustomAlert
+                    variants={[alertMessage.success ? "success" : "danger"]}
+                    text={alertMessage.message}
+                  />
+                )}
               </Modal.Body>
               <Modal.Footer>
                 <Button variant="danger" onClick={() => setShowModal(false)}>
                   Close
                 </Button>
-                <Button type="submit" variant="success">
-                  Save
+                <Button type="submit" variant="success" disabled={isUpdating}>
+                  {isUpdating ? <Spinner animation="border" size="sm" /> : "Save"}
                 </Button>
               </Modal.Footer>
             </Form>

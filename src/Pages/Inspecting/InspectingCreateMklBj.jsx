@@ -502,9 +502,6 @@ const InspectingCreate = (props) => {
                             </Form>
                         </Card>
                         <Card className='p-3 shadow-sm rounded-0'>
-                            <div className='mb-3'>
-                                <Button variant="success" className='text-white' size='sm' onClick={handleAddInspectResult}>Tambah Item</Button>
-                            </div>
                             <Table bordered responsive className="small-text m-0">
                                 <thead>
                                     <tr>
@@ -683,6 +680,9 @@ const InspectingCreate = (props) => {
 
                                 </tbody>
                             </Table>
+                            <div className='mt-3'>
+                                <Button variant="success" className='text-white' size='sm' onClick={handleAddInspectResult}>Tambah Item</Button>
+                            </div>
                         </Card>
                         <Container fluid className="mt-4">
                                 <Button 
