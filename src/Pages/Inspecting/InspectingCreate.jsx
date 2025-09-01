@@ -16,10 +16,11 @@ import {
 } from "react-bootstrap";
 import { FaSearch } from "react-icons/fa";
 import { FaArrowRight } from "react-icons/fa";
-import { FaPlus, FaTimes, FaCheck, FaTrash, FaSave } from "react-icons/fa";
+import { FaPlus, FaTimes, FaCheck, FaTrash, FaSave, FaEdit } from "react-icons/fa";
 import CustomSelect from "../../Components/CustomSelect";
 import MessageModal from "../../Components/MessageModal";
 import ConfirmModal from "../../Components/ConfirmModal";
+import CustomAlert from "../../Components/CustomAlert";
 import { useNavigate } from "react-router-dom";
 const InspectingCreate = (props) => {
   document.title = `Inspecting ${
@@ -50,7 +51,17 @@ const InspectingCreate = (props) => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [isSubmiting, setIsSubmiting] = useState(false);
   const [gsm, setGsm] = useState(0);
-
+  const [showEditNoWoModal, setShowEditNoWoModal] = useState(false);
+  const [noWoToSearch, setNoWoToSearch] = useState('');
+  const [woOptions, setWoOptions] = useState([]);
+  const [newSelectedWo, setNewSelectedWo] = useState(null);
+  const [alertMessage, setAlertMessage] = useState([
+    {
+      show: false,
+      success: false,
+      message: "",
+    },
+  ]);
   const navigate = useNavigate();
 
   const handleCloseModal = () => {
@@ -257,7 +268,7 @@ const InspectingCreate = (props) => {
   
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
     try {
       const endpoint =
         props.jenisProses === "dyeing"
@@ -369,7 +380,7 @@ const InspectingCreate = (props) => {
       const response = await axiosInstance.post(url, payload);
   
       // Log response untuk debug
-      console.log("Server response:", response);
+      // console.log("Server response:", response);
   
       const resData = response.data;
   
@@ -549,6 +560,57 @@ const InspectingCreate = (props) => {
     }
   };
 
+    const handleCariNoWo = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await axiosInstance.get('wo/search-wo', {
+                params: {
+                    no: noWoToSearch,
+                },
+            });
+            console.log('Data Wo',response.data);
+            setWoOptions(response.data);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const handleGantiWo = async (wo) => {
+        try {
+            const response = await axiosInstance.put(`wo/ganti-wo/${data[0].id}`, {
+              kartu_proses_id: newSelectedWo.kartu_proses_id,
+              mo_id: newSelectedWo.mo_id,
+              sc_greige_id: newSelectedWo.sc_greige_id,
+              sc_id: newSelectedWo.sc_id,
+              wo_color_id: newSelectedWo.wo_color_id,
+              wo_id: newSelectedWo.wo_id
+            });
+            console.log(response);
+            setAlertMessage({
+              show: true,
+              success: true,
+              message: response.data.message,
+            });
+            setNewSelectedWo(null);
+        } catch (error) {
+            console.error(error);
+        }finally {
+          console.log('payload', newSelectedWo);
+          handleSubmit();
+        }
+    };
+
+    useEffect(() => {
+      if (alertMessage.show) {
+        const timer = setTimeout(() => {
+          setAlertMessage((prev) => ({ ...prev, show: false })); // Hide the alert
+          setShowEditNoWoModal(false)
+        }, 3000);
+  
+        // Cleanup the timer when the component unmounts or alertMessage changes
+        return () => clearTimeout(timer);
+      }
+    }, [alertMessage]);
   return (
     <>
       <Container fluid className="p-4" style={{ marginBottom: "8rem" }}>
@@ -621,7 +683,7 @@ const InspectingCreate = (props) => {
                     <td>
                       <strong>No. WO</strong>
                     </td>
-                    <td>{formData.no_wo || "-"}</td>
+                    <td>{formData.no_wo || "-"} {formData?.no_wo && <FaEdit size={20} style={{marginLeft: "10px"}} onClick={() => setShowEditNoWoModal(true)} />}</td>
                   </tr>
                 </tbody>
               </Table>
@@ -1521,6 +1583,103 @@ const InspectingCreate = (props) => {
         onConfirm={handleFormConfirm}
         title="Konfirmasi"
       />
+      <Modal
+        show={showEditNoWoModal}
+        onHide={() => setShowEditNoWoModal(false)}
+        centered
+      >
+        <Modal.Header closeButton className="bg-burgundy-gradient text-white">
+          <Modal.Title>Edit No. WO</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form onSubmit={handleCariNoWo}>
+            <Form.Group>
+              <p><i>WO saat ini:</i><br /></p>
+              <h4>{formData.no_wo}</h4>
+              <Stack direction="horizontal" gap={2}>
+                <Form.Control
+                  type="text"
+                  value={noWoToSearch}
+                  onChange={(e) =>
+                    setNoWoToSearch(e.target.value)
+                  }
+                  
+                />
+                <Button
+                  variant="burgundy"
+                  style={{ width: '35%' }}
+                  type="submit"
+                >
+                  Cari WO
+                </Button>
+              </Stack>
+            </Form.Group>
+          </Form>
+          <Card style={{height: '300px', overflowY: 'scroll'}} className="my-2">
+            <Card.Body>
+              <Table>
+                <thead>
+                  <tr>
+                    <th>No. WO</th>
+                    <th>Color</th>
+                    <th>Pilih</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {woOptions.map((item, index) => (
+                    <React.Fragment key={index}>
+                      {item.mo_colors.map((colorItem, colorIndex) => (
+                        <tr key={`${index}-${colorIndex}-${colorItem.color}-${item.no}`}>
+                          <td>{colorIndex === 0 ? item.no : ''}</td>
+                          <td>{colorItem.color}</td>
+                          <td>
+                            <Button
+                              className="border"
+                              variant={item?.id === newSelectedWo?.wo_id && colorItem?.wo_color_id === newSelectedWo?.wo_color_id ? 'burgundy' : 'white'} 
+                              onClick={() => setNewSelectedWo({
+                                kartu_proses_id: data[0].id,
+                                wo_id: item.id,
+                                mo_id: item.mo_id,
+                                sc_greige_id: item.sc_greige_id,
+                                sc_id: item.sc_id,
+                                wo_color_id: colorItem.wo_color_id
+                              })}
+                              >
+                                <FaCheck className="text-white"/>
+                            </Button>
+                          </td>
+                        </tr>
+                      ))}
+                    </React.Fragment>
+                  ))}
+              </tbody>
+              </Table>
+            </Card.Body>
+          </Card>
+          {alertMessage.show && (
+              <CustomAlert
+                variants={[alertMessage.success ? "success" : "danger"]}
+                text={alertMessage.message}
+              />
+            )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="danger"
+            onClick={() => setShowEditNoWoModal(false)}
+          >
+            Batal
+          </Button>
+          <Button
+            variant="success"
+            onClick={() => {
+              handleGantiWo();
+            }}
+          >
+            Simpan
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 };
