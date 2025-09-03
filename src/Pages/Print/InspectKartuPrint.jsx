@@ -496,7 +496,7 @@ const InspectPrint = ({ jenisProses }) => {
                   <br />
                   <p style={{ fontSize: "11px", margin: 0 }}>{(data?.mo?.selvedge_stamping === '-') ? data?.mo?.selvedge_continues?.replace(/<[^>]*>/g, '') : data?.mo?.selvedge_stamping?.replace(/<[^>]*>/g, '')}</p>
                 </td>
-                <td rowSpan={4}>KETERANGAN:</td>
+                <td rowSpan={4}>KETERANGAN : <br /> {data?.note}</td>
                 <td style={{ verticalAlign: "middle", textAlign: "center" }} rowSpan={4}>SUSUT</td>
                 <td>YARDS</td>
                 <td>%</td>

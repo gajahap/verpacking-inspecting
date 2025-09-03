@@ -370,7 +370,8 @@ const InspectingCreate = (props) => {
         inspection_table: formData.inspection_table,
         inspect_result: inspectResult,
         jenis_inspek: formData.jenis_inspek,
-        no_memo: formData.no_memo
+        no_memo: formData.no_memo,
+        note: formData.note
       };
   
       const url = props.jenisProses === "dyeing"
@@ -611,6 +612,11 @@ const InspectingCreate = (props) => {
         return () => clearTimeout(timer);
       }
     }, [alertMessage]);
+
+    useEffect(() => {
+      console.log("Data Header",formData);
+      
+    }, [formData]);
   return (
     <>
       <Container fluid className="p-4" style={{ marginBottom: "8rem" }}>
@@ -713,115 +719,132 @@ const InspectingCreate = (props) => {
           <>
             <Card className="p-4 my-3 shadow-sm">
               <Form>
-                <Stack
-                  direction="horizontal"
-                  gap={3}
-                  className="justify-content-center"
-                >
-                  <Form.Control
-                    type="hidden"
-                    name="inspecting_id"
-                    value={data[0].id}
-                  ></Form.Control>
-                  <Form.Group controlId="no_lot" className="w-50 small-text">
-                    <Form.Label>
-                      <strong>No. Batch</strong>
-                    </Form.Label>
-                    <Form.Control
-                      type="text"
-                      name="no_lot"
-                      value={formData.no_lot || ""} // Fallback to an empty string
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          no_lot: e.target.value.toUpperCase(),
-                        })
-                      }
-                      placeholder="No. Batch"
-                      className="small-text"
-                      required
-                    />
-                  </Form.Group>
-                  <Form.Group controlId="unit" className="w-50 small-text">
-                    <Form.Label>
-                      <strong>Satuan</strong>
-                    </Form.Label>
-                    <Form.Control
-                      as="select"
-                      value={formData.unit || ""} // Fallback to an empty string
-                      onChange={(e) =>
-                        setFormData({ ...formData, unit: e.target.value })
-                      }
-                      placeholder="Satuan"
-                      className="small-text"
-                      required
-                    >
-                      <option value="">Pilih Satuan</option>
-                      {Object.entries(units).map(([key, value]) => (
-                        <option key={key} value={key}>
-                          {value}
-                        </option>
-                      ))}
-                    </Form.Control>
-                  </Form.Group>
-                  <Form.Group
-                    controlId="inspection_table"
-                    className="w-50 small-text"
-                  >
-                    <Form.Label>
-                      <strong>No. Mesin</strong>
-                    </Form.Label>
-                    <Form.Control
-                      type="number"
-                      name="inspection_table"
-                      value={formData.inspection_table || ""} // Fallback to an empty string
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          inspection_table: e.target.value.toUpperCase(),
-                        })
-                      }
-                      placeholder="No Mesin"
-                      className="small-text"
-                      required
-                    />
-                  </Form.Group>
-                  <Form.Group controlId="jenis_inspek" className="w-50 small-text">
-                    <Form.Label>
-                      <strong>Jenis Inspeksi</strong>
-                    </Form.Label>
-                    <Form.Control
-                      as="select"
-                      value={formData.jenis_inspek || ""}
-                      onChange={(e) =>
-                        setFormData({ ...formData, jenis_inspek: e.target.value })
-                      }
-                      className="small-text"
-                      required
-                    >
-                      <option value="">Pilih Jenis Inspeksi</option>
-                      <option value="1">Fresh Order</option>
-                      <option value="2">Re-Packing</option>
-                      <option value="3">Hasil Perbaikan</option>
-                    </Form.Control>
-                  </Form.Group>
-
+                <Row>
+                  <Col lg={3} md={4} sm={6} className="mb-3">
+                    <Form.Group controlId="no_lot" className="small-text">
+                      <Form.Label>
+                        <strong>No. Batch</strong>
+                      </Form.Label>
+                      <Form.Control
+                        type="text"
+                        name="no_lot"
+                        value={formData.no_lot || ""} // Fallback to an empty string
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            no_lot: e.target.value.toUpperCase(),
+                          })
+                        }
+                        placeholder="No. Batch"
+                        className="small-text"
+                        required
+                      />
+                    </Form.Group>
+                  </Col>
+                  <Col lg={3} md={4} sm={6} className="mb-3">
+                    <Form.Group controlId="unit" className="small-text">
+                      <Form.Label>
+                        <strong>Satuan</strong>
+                      </Form.Label>
+                      <Form.Control
+                        as="select"
+                        value={formData.unit || ""} // Fallback to an empty string
+                        onChange={(e) =>
+                          setFormData({ ...formData, unit: e.target.value })
+                        }
+                        placeholder="Satuan"
+                        className="small-text"
+                        required
+                      >
+                        <option value="">Pilih Satuan</option>
+                        {Object.entries(units).map(([key, value]) => (
+                          <option key={key} value={key}>
+                            {value}
+                          </option>
+                        ))}
+                      </Form.Control>
+                    </Form.Group>
+                  </Col>
+                  <Col lg={3} md={4} sm={6} className="mb-3">
+                    <Form.Group controlId="inspection_table" className="small-text">
+                      <Form.Label>
+                        <strong>No. Mesin</strong>
+                      </Form.Label>
+                      <Form.Control
+                        type="number"
+                        name="inspection_table"
+                        value={formData.inspection_table || ""} // Fallback to an empty string
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            inspection_table: e.target.value.toUpperCase(),
+                          })
+                        }
+                        placeholder="No Mesin"
+                        className="small-text"
+                        required
+                      />
+                    </Form.Group>
+                  </Col>
+                  <Col lg={3} md={4} sm={6} className="mb-3">
+                    <Form.Group controlId="jenis_inspek" className="small-text">
+                      <Form.Label>
+                        <strong>Jenis Inspeksi</strong>
+                      </Form.Label>
+                      <Form.Control
+                        as="select"
+                        value={formData.jenis_inspek || ""}
+                        onChange={(e) =>
+                          setFormData({ ...formData, jenis_inspek: e.target.value })
+                        }
+                        className="small-text"
+                        required
+                      >
+                        <option value="">Pilih Jenis Inspeksi</option>
+                        <option value="1">Fresh Order</option>
+                        <option value="2">Re-Packing</option>
+                        <option value="3">Hasil Perbaikan</option>
+                      </Form.Control>
+                    </Form.Group>
+                  </Col>
+                  <Col lg={4} md={4} sm={4} className="mb-3">
+                    <Form.Group controlId="note" className="small-text">
+                      <Form.Label>
+                        <strong>Keterangan</strong>
+                      </Form.Label>
+                      <Form.Control
+                        as="textarea"
+                        rows={3}
+                        name="note"
+                        value={formData.note || ""} // Fallback to an empty string
+                        onChange={(e) =>
+                          setFormData({ ...formData, note: e.target.value })
+                        }
+                        className="small-text"
+                      />
+                    </Form.Group>
+                  </Col>
                   {formData.jenis_inspek === "2" && (
-                      <Form.Group controlId="inspection_table" className="w-50 small-text">
-                          <Form.Label><strong>No. Memo</strong></Form.Label>
-                          <Form.Control
-                              type="text"
-                              name="no_memo"
-                              value={formData.no_memo || ''}  // Fallback to an empty string
-                              onChange={(e) => setFormData({ ...formData, no_memo: e.target.value.toUpperCase() })}
-                              placeholder="No Memo"
-                              className='small-text'
-                              required
-                          />
+                    <Col lg={3} md={4} sm={6} className="mb-3">
+                      <Form.Group controlId="no_memo" className="small-text">
+                        <Form.Label>
+                          <strong>No. Memo</strong>
+                        </Form.Label>
+                        <Form.Control
+                          type="text"
+                          name="no_memo"
+                          value={formData.no_memo || ""} // Fallback to an empty string
+                          onChange={(e) =>
+                            setFormData({ ...formData, no_memo: e.target.value.toUpperCase() })
+                          }
+                          placeholder="No Memo"
+                          className="small-text"
+                          required
+                        />
                       </Form.Group>
+                    </Col>
                   )}
-
-                </Stack>
+                </Row>
               </Form>
             </Card>
             <Card className="p-3 shadow-sm rounded-0">

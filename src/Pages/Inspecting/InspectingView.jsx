@@ -158,7 +158,8 @@ const InspectingView = (props) => {
             null,
           inspection_table: response.data.data.inspection_table,
           jenis_inspek: response.data.data.jenis_inspek,
-          no_memo: response.data.data.no_memo
+          no_memo: response.data.data.no_memo,
+          note: response.data.data.note
         }));
         setWoColorsOptions([
           { value: null, label: response.data.data.kombinasi },
@@ -184,7 +185,8 @@ const InspectingView = (props) => {
           mo_color_id: response.data.data.wo_color_id,
           inspection_table: response.data.data.inspection_table,
           no_memo: response.data.data.no_memo,
-          jenis_inspek: response.data.data.jenis_inspek
+          jenis_inspek: response.data.data.jenis_inspek,
+          note: response.data.data.note
         }));
         setWoColorsOptions([
           {
@@ -341,6 +343,10 @@ const InspectingView = (props) => {
     }
   };
 
+  useEffect(() => {
+    console.log("form: ", form);
+  }, [form]);
+
   return (
     <>
       {loading ? (
@@ -472,12 +478,6 @@ const InspectingView = (props) => {
                           </Stack>
                         </td>
                       </tr>
-                    </tbody>
-                  </Table>
-                </Col>
-                <Col lg={6} md={6} sm={6}>
-                  <Table bordered responsive striped className="small-text m-0">
-                    <tbody>
                       <tr>
                         <td>
                           <strong>Warna</strong>
@@ -486,6 +486,12 @@ const InspectingView = (props) => {
                           {data?.kombinasi || data?.wo_color?.mo_color?.color}
                         </td>
                       </tr>
+                    </tbody>
+                  </Table>
+                </Col>
+                <Col lg={6} md={6} sm={6}>
+                  <Table bordered responsive striped className="small-text m-0">
+                    <tbody>
                       {props.jenisProses !== "mkl-bj" && (
                         <tr>
                           <td>
@@ -530,6 +536,14 @@ const InspectingView = (props) => {
                         </td>
                         <td>
                           {data?.no_memo}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <strong>Note</strong>
+                        </td>
+                        <td>
+                          {data?.note}
                         </td>
                       </tr>
                     </tbody>
@@ -807,6 +821,20 @@ const InspectingView = (props) => {
                     placeholder="Pilih"
                   />
                 </Form.Group>
+                <Form.Group className="mb-3" controlId="formBasicEmail">
+                  <Form.Label className="small-text">
+                    <strong>Note</strong>
+                  </Form.Label>
+                  <Form.Control
+                    as="textarea"
+                    rows={3}
+                    value={form.note}
+                    onChange={(e) => setForm({ ...form, note: e.target.value })}
+                    placeholder="Tulis catatan"
+                    className="border-bold"
+                  />
+                </Form.Group>
+
                 {alertMessage.show && (
                   <CustomAlert
                     variants={[alertMessage.success ? "success" : "danger"]}
