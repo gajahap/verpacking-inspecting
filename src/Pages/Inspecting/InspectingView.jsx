@@ -330,9 +330,15 @@ const InspectingView = (props) => {
     setShowConfirmModal(false);
     if (confirmed) {
       try {
-        await axiosInstance.delete(
-          `inspecting/delete-inspecting-item/${inspectItemWillDeleted}`
-        );
+        if (props.jenisProses !== "mkl-bj") {
+          await axiosInstance.delete(
+            `inspecting/delete-inspecting-item/${inspectItemWillDeleted}`
+          );
+        }else{
+          await axiosInstance.delete(
+            `inspecting/delete-inspecting-item-mklbj/${inspectItemWillDeleted}`
+          );
+        }
         closeModal();
         setModalMessage({ message: "Data berhasil dihapus.", status: 200 });
         await fetchData();
