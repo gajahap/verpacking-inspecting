@@ -42,6 +42,7 @@ const InspectingCreate = (props) => {
     const [modalMessage, setModalMessage] = useState('');
     const [showConfirmModal, setShowConfirmModal] = useState(false);
     const [isSubmiting, setIsSubmiting] = useState(false);
+    const [isCanCallPrevInput, setIsCanCallPrevInput] = useState(false);
     const [gsm, setGsm] = useState(0);
 
     const navigate = useNavigate();
@@ -151,7 +152,20 @@ const InspectingCreate = (props) => {
                 value: item.wo_color_id,
                 label: item.color
             })));
+            
+            // jika ada data wo degan wo_id yang sama di local storage maka setisCanCall true
+            if (localStorage.getItem('formData')) {
+                const formData = JSON.parse(localStorage.getItem('formData'));
+                if (formData.wo_id === data[0].id) {
+                    setIsCanCallPrevInput(true);
+                }else{
+                    setIsCanCallPrevInput(false);
+                }
+            }
+
+            setIsChooseOne(true);
         }else{
+            setIsCanCallPrevInput(false);
             setFormData({
                 wo_id: '',
                 no_wo: ''
@@ -177,6 +191,10 @@ const InspectingCreate = (props) => {
 
     const handleStore = async () => {
         setIsSubmiting(true);
+        // simpan ke local storage
+        localStorage.setItem('inspectResult', JSON.stringify(inspectResult));
+        localStorage.setItem('formData', JSON.stringify(formData));
+
         try {
             if (!formData.no_lot || !formData.unit || !formData.color || !formData.jenis_makloon) {
                 setModalMessage({ message: 'Warna, Nomor lot, Satuan, atau jenis makloon tidak boleh kosong.', status: 422 });
@@ -194,6 +212,10 @@ const InspectingCreate = (props) => {
             if (response.data?.success) {
                 setModalMessage({ message: 'Data berhasil disimpan.', status: 200 });
                 console.log(response.data);
+
+                //hapus localstorage jika berhasil
+                localStorage.removeItem('inspectResult');
+                localStorage.removeItem('formData');
                 
                 navigate(`/inspecting-mkl-bj/${response.data.data.id}`);
             }
@@ -281,6 +303,21 @@ const InspectingCreate = (props) => {
 
     };
 
+    
+    const handleCallPrevInput = (e) => {
+        e.preventDefault();
+        //ambil dari local storage
+        const dataHeader = localStorage.getItem('formData');
+        const dataInspect = localStorage.getItem('inspectResult');
+        if (dataHeader) {
+          setFormData(JSON.parse(dataHeader));
+        }
+        if (dataInspect) {
+          setInspectResult(JSON.parse(dataInspect));
+        }
+        alert("berhasil mengambil data sebelumnya");
+      };
+
     // useEffect(() => {
     //     console.log(formData);
         
@@ -321,10 +358,20 @@ const InspectingCreate = (props) => {
                         </Stack>
                         {isSearch && (
                             <>
-                                <div className="my-2">
+                                <div className="my-2 d-flex gap-2">
                                     <Badge bg={data.length > 1 || data.length === 0 ? "danger" : "success"}>
                                         {data.length > 1 ? `${data.length} Kartu Ditemukan` : data.length === 1 ? <> 1 Wo telah di pilih   <FaCheck /></> : "Tidak ada kartu yang ditemukan"}
                                     </Badge>
+                                    {isCanCallPrevInput && (
+                                        <Button
+                                        variant="burgundy"
+                                        size="sm"
+                                        onClick={handleCallPrevInput}
+                                    >
+                                        Ambil data input sebelumnya
+                                    </Button>  
+                                    )}
+                                    
                                 </div>
                                 {data.length > 1 && data.map((item, index) => (
                                     <div key={index} className="my-2">
@@ -372,7 +419,7 @@ const InspectingCreate = (props) => {
                                     <Col lg={3} md={4} sm={6} className="mb-3">
                                         <Form.Group controlId="unit" className="small-text">
                                             <Form.Label><strong>Warna</strong></Form.Label>
-                                            <CustomSelect options={woColorOptions} onChange={(selectedOption) => setFormData({ ...formData, color: selectedOption.value })} />
+                                            <CustomSelect options={woColorOptions} value={woColorOptions.find((option) => option.value === formData.color)} onChange={(selectedOption) => setFormData({ ...formData, color: selectedOption.value })} />
                                         </Form.Group>
                                     </Col>
                                     <Col lg={3} md={4} sm={6} className="mb-3">

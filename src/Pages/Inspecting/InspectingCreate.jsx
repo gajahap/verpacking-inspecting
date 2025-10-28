@@ -55,6 +55,7 @@ const InspectingCreate = (props) => {
   const [noWoToSearch, setNoWoToSearch] = useState('');
   const [woOptions, setWoOptions] = useState([]);
   const [newSelectedWo, setNewSelectedWo] = useState(null);
+  const [isCanCallPrevInput, setIsCanCallPrevInput] = useState(false);
   const [alertMessage, setAlertMessage] = useState([
     {
       show: false,
@@ -293,6 +294,16 @@ const InspectingCreate = (props) => {
               (a, b) => a.tube - b.tube
             )
           );
+          // cek apakah ada data input sebelumnya yang no kartunya sama di local storage
+          const dataKartuProsesItem = localStorage.getItem("formData");
+          const dataKartuProsesItemJson = JSON.parse(dataKartuProsesItem);
+
+          if (dataKartuProsesItemJson && dataKartuProsesItemJson.no_kartu === response.data.data[0]?.no) {
+            setIsCanCallPrevInput(true);
+          }else {
+            setIsCanCallPrevInput(false);
+          }
+          
         } else {
           setKartuProsesItem(
             (response.data.data[0]?.kartu_proses_printing_item || []).sort(
@@ -345,7 +356,10 @@ const InspectingCreate = (props) => {
 
   const handleStore = async () => {
     setIsSubmiting(true);
-  
+    //simpan dulu data ke localstorage
+    localStorage.setItem("inspectResult", JSON.stringify(inspectResult));
+    localStorage.setItem("formData", JSON.stringify(formData));
+    
     try {
       // Validasi awal
       if (!formData.no_lot || !formData.unit || !formData.jenis_inspek) {
@@ -388,7 +402,7 @@ const InspectingCreate = (props) => {
       if (response.status === 200 && resData?.data?.id) {
         setModalMessage({ message: "Data berhasil disimpan.", status: 200 });
   
-        // Reset form
+        // Reset form 
         setNomorKartu("");
         setInspectResult({});
         setIsChooseOne(false);
@@ -404,7 +418,11 @@ const InspectingCreate = (props) => {
         });
         setData([]);
         setKartuProsesItem([]);
-  
+
+        // hapus localstorage jika sudah berhasil
+        localStorage.removeItem("inspectResult");
+        localStorage.removeItem("formData");
+
         // Redirect
         const target = props.jenisProses === "dyeing"
           ? `/inspecting-dyeing/${resData.data.id}`
@@ -423,22 +441,9 @@ const InspectingCreate = (props) => {
       setModalMessage({
         message:
           error.response?.data?.message ||
-          "Gagal menyimpan data. Silakan coba lagi.",
+          "Gagal menyimpan data. Silakan coba lagi beberapa saat lagi.",
         status: error.response?.status || 500,
       });
-  
-      // Optional: kirim log payload ke log server jika perlu audit/debug
-      console.log("Payload terkirim:", {
-        id: data[0]?.id,
-        no_lot: formData.no_lot,
-        unit: formData.unit,
-        inspection_table: formData.inspection_table,
-        inspect_result: inspectResult,
-        no_memo: formData.no_memo,
-        
-      });
-      
-      navigate('/');
 
     } finally {
       setIsSubmiting(false);
@@ -601,6 +606,21 @@ const InspectingCreate = (props) => {
         }
     };
 
+    //fungsi untuk handle call back prev input
+    const handleCallPrevInput = (e) => {
+      e.preventDefault();
+      //ambil dari local storage
+      const dataHeader = localStorage.getItem('formData');
+      const dataInspect = localStorage.getItem('inspectResult');
+      if (dataHeader) {
+        setFormData(JSON.parse(dataHeader));
+      }
+      if (dataInspect) {
+        setInspectResult(JSON.parse(dataInspect));
+      }
+      alert("berhasil mengambil data sebelumnya");
+    };
+
     useEffect(() => {
       if (alertMessage.show) {
         const timer = setTimeout(() => {
@@ -614,7 +634,7 @@ const InspectingCreate = (props) => {
     }, [alertMessage]);
 
     useEffect(() => {
-      console.log("Data Header",formData);
+      // console.log("Data Header",formData);
       
     }, [formData]);
   return (
@@ -639,7 +659,7 @@ const InspectingCreate = (props) => {
             </Stack>
             {isSearch && (
               <>
-                <div className="my-2">
+                <div className="my-2 d-flex  gap-2">
                   <Badge
                     bg={
                       data.length > 1 || data.length === 0
@@ -658,6 +678,16 @@ const InspectingCreate = (props) => {
                       "Tidak ada kartu yang ditemukan"
                     )}
                   </Badge>
+                  {isCanCallPrevInput && (
+                    <Button
+                    variant="burgundy"
+                    size="sm"
+                    onClick={handleCallPrevInput}
+                  >
+                    Ambil data input sebelumnya
+                  </Button>  
+                  )}
+
                 </div>
                 {data.length > 1 &&
                   data.map((item, index) => (
