@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axiosInstance from "../../axiosConfig";
-import { Card, Button, Stack, Form, Row, Col, Modal } from "react-bootstrap";
+import { Card, Button, Stack, Form, Row, Col, Modal, Spinner } from "react-bootstrap";
 import { FaPlus, FaTimes, FaTrash, FaSave } from "react-icons/fa";
 import CustomSelect from "../../Components/CustomSelect";
 const InspectResultEdit = (props) => {
   const [kodeDefectOption, setKodeDefectOption] = useState([]);
+  const [loading, setLoading] = useState(false);
   const result = props.result;
 
   const [formData, setFormData] = useState({
@@ -48,6 +49,7 @@ const InspectResultEdit = (props) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const url =
         props.jenisProses === "mkl-bj"
@@ -60,6 +62,8 @@ const InspectResultEdit = (props) => {
     } catch (error) {
       console.error(error);
       console.log("payload request:", formData);
+    }finally {
+      setLoading(false);
     }
   };
 
@@ -332,8 +336,8 @@ const InspectResultEdit = (props) => {
                 </Col>
               </Row>
 
-              <Button size="sm" type="submit" variant="success">
-                <FaSave /> Simpan
+              <Button size="sm" type="submit" variant="success" disabled={loading}>
+                {loading ? <Spinner animation="border" size="sm" /> : <FaSave />} Simpan
               </Button>
             </Form>
           </Card.Body>

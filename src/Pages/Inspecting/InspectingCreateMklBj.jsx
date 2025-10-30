@@ -9,6 +9,7 @@ import CustomSelect from '../../Components/CustomSelect';
 import MessageModal from '../../Components/MessageModal';
 import ConfirmModal from '../../Components/ConfirmModal';
 import { useNavigate } from 'react-router-dom';
+import { showConfirm } from "../../Components/ConfirmToast";
 const InspectingCreate = (props) => {
     document.title = `Inspecting ${props.jenisProses.charAt(0).toUpperCase() + props.jenisProses.slice(1)} Create `;
     const [noWo, setNoWo] = useState('');
@@ -210,26 +211,41 @@ const InspectingCreate = (props) => {
             const response = await axiosInstance.post('inspecting/store-mkl-bj-inspecting',{...formData, inspect_result: inspectResult});
 
             if (response.data?.success) {
-                setModalMessage({ message: 'Data berhasil disimpan.', status: 200 });
                 console.log(response.data);
 
                 //hapus localstorage jika berhasil
                 localStorage.removeItem('inspectResult');
                 localStorage.removeItem('formData');
-                
+                await showConfirm("Data berhasil disimpan. mohon jangan klik tombol simpan berulang-ulang, karena jika berhasil anda akan langsung diarahkan ke halaman detail.", false);
                 navigate(`/inspecting-mkl-bj/${response.data.data.id}`);
             }
         } catch (error) {
-            setModalMessage({ message: 'Data gagal disimpan.', status: 422 });
-            console.error(error);
-            console.log('Request Payload:', {
-                id_wo: data[0]?.id,
-                no_lot: formData.no_lot,
-                unit: formData.unit,
-                inspect_result: inspectResult,
-                color: formData.color,
-                jenis_makloon: formData.jenis_makloon,
-                jenis_inspek: formData.jenis_inspek
+            console.error("Store Error:", error);
+
+            // --- Logika Penanganan Exception yang Diperbaiki ---
+            let errorMessage = "Terjadi kesalahan yang tidak diketahui. Silakan coba lagi.";
+            let errorStatus = 500;
+            
+            if (error.response) {
+                // 1. Kesalahan Respons Server (e.g., 400 Bad Request, 404 Not Found, 500 Internal Server Error)
+                // Axios menerima respons dari server, tetapi respons tersebut adalah kode error (>= 400).
+                errorMessage = error.response.data?.message || `Kesalahan dari server: Status ${error.response.status}.`;
+                errorStatus = error.response.status;
+            } else if (error.request) {
+                // 2. Tidak Ada Respons (Masalah Jaringan/Timeout)
+                // Permintaan dikirim, tetapi server tidak merespons (e.g., koneksi terputus, timeout).
+                errorMessage = "Gagal terhubung ke server. Periksa koneksi internet Anda atau coba lagi.";
+                errorStatus = 503; // Service Unavailable
+            } else {
+                // 3. Kesalahan Lain
+                // Kesalahan saat mengatur permintaan (e.g., error di kode frontend yang tidak terkait network).
+                errorMessage = error.message || "Kesalahan klien/aplikasi. Periksa konfigurasi.";
+                errorStatus = 500;
+            }
+    
+            setModalMessage({
+                message: errorMessage,
+                status: errorStatus,
             });
         } finally {
             setIsSubmiting(false);

@@ -26,6 +26,7 @@ import ErrorPage from "../../ErrorPage";
 import InspectResultAdd from "./InspectResultAdd";
 import { FiPrinter } from "react-icons/fi";
 import { Link } from "react-router-dom";
+import { showConfirm } from "../../Components/ConfirmToast";
 
 const InspectingView = (props) => {
   const { idInspecting } = useParams();
@@ -353,6 +354,17 @@ const InspectingView = (props) => {
     console.log("form: ", form);
   }, [form]);
 
+
+  //hapus semua defect 
+  const handleDeleteAllDefect = async () => {
+    const url = props.jenisProses === 'mkl-bj' ? 'inspecting/delete-all-defects-mklbj' : 'inspecting/delete-all-defects';
+    const ok = await showConfirm("Apakah anda yakin?", { useCancelButton: true });
+    if (!ok) return;
+    await axiosInstance.delete(`${url}/${idInspecting}`);
+    fetchData();
+    await showConfirm("Data Defect berhasil dihapus", { useCancelButton: false });
+  }
+
   return (
     <>
       {loading ? (
@@ -366,7 +378,9 @@ const InspectingView = (props) => {
               <h3 className="mb-0">
                 {" "}
                 {props.jenisProses.toUpperCase()} :{" "}
-                {props.jenisProses === "dyeing"
+                {props.jenisProses === "mkl-bj"
+                  ? `${data?.wo?.no}  (${data?.wo_color?.mo_color?.color}) ${data?.no_lot}` || "-"
+                  : props.jenisProses === "dyeing"
                   ? data?.kartu_process_dyeing?.no || "-"
                   : data?.kartu_process_printing?.no || "-"}
               </h3>
@@ -559,6 +573,11 @@ const InspectingView = (props) => {
             </Card>
 
             <Card className="p-3 my-3 rounded-0 shadow-sm">
+              <div className="py-2">
+              <Button variant="danger" onClick={handleDeleteAllDefect} size="sm">
+                Hapus semua defect
+              </Button>
+              </div>
               <Table
                 bordered
                 responsive

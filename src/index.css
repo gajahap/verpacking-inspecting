@@ -368,3 +368,58 @@ input[type=number] {
   .container-padding-bottom {
     padding-bottom: 9000px; /* atau sesuai tinggi Bottom */
   }
+
+
+  .confirm-portal-overlay{
+    position: fixed;
+    inset: 0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background: rgba(0,0,0,0.45);
+    z-index: 9999;
+    padding: 20px;
+    backdrop-filter: blur(2px);
+  }
+  .confirm-portal-card{
+    width: 100%;
+    max-width: 420px;
+    background: #fff;
+    border: 1px solid #ffffff;
+    color: #000;
+    border-radius: 12px;
+    padding: 20px;
+    transform: translateY(-8px);
+    animation: slideUp .18s ease-out forwards;
+  }
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(8px) scale(.995); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .confirm-message{
+    margin: 0 0 16px 0;
+    font-size: 15px;
+    text-align: center;
+    font-weight: 600;
+  }
+  .confirm-actions{
+    display:flex;
+    gap: 8px;
+    justify-content:flex-end;
+  }
+  .btn-confirm{
+    background: #660033;
+    border: none;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  .btn-cancel{
+    background: #be1640;
+    border: none;
+    color: #e5e7eb;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
