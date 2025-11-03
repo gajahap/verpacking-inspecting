@@ -192,10 +192,11 @@ const InspectingCreate = (props) => {
 
     const handleStore = async () => {
         setIsSubmiting(true);
-        // simpan ke local storage
+    
+        // Simpan ke local storage sebagai backup draft
         localStorage.setItem('inspectResult', JSON.stringify(inspectResult));
         localStorage.setItem('formData', JSON.stringify(formData));
-
+    
         try {
             if (!formData.no_lot || !formData.unit || !formData.color || !formData.jenis_makloon) {
                 setModalMessage({ message: 'Warna, Nomor lot, Satuan, atau jenis makloon tidak boleh kosong.', status: 422 });
@@ -207,38 +208,44 @@ const InspectingCreate = (props) => {
                 setModalMessage({ message: 'Jumlah hasil inspect tidak boleh kosong.', status: 422 });
                 return;
             }
-
+            
+            // --- PANGGILAN API ---
             const response = await axiosInstance.post('inspecting/store-mkl-bj-inspecting',{...formData, inspect_result: inspectResult});
-
+    
             if (response.data?.success) {
-                console.log(response.data);
-
-                //hapus localstorage jika berhasil
+                // Log respons sukses (opsional, tapi informatif)
+                console.log("Store Success Response:", response.data); 
+    
+                // Hapus localstorage jika berhasil
                 localStorage.removeItem('inspectResult');
                 localStorage.removeItem('formData');
-                await showConfirm("Data berhasil disimpan. mohon jangan klik tombol simpan berulang-ulang, karena jika berhasil anda akan langsung diarahkan ke halaman detail.", false);
+                
+                await showConfirm("Data berhasil disimpan. mohon jangan klik tombol simpan berulang-ulang, karena jika berhasil anda akan langsung diarahkan ke halaman detail.", { useCancelButton: false, confirmText : 'OK' });
                 navigate(`/inspecting-mkl-bj/${response.data.data.id}`);
             }
         } catch (error) {
-            console.error("Store Error:", error);
-
-            // --- Logika Penanganan Exception yang Diperbaiki ---
+            
+            // Cetak objek error secara lengkap agar developer mudah debugging
+            console.error("Store Error Detail:", error); 
+    
+            // --- Logika Penanganan Exception yang Disempurnakan ---
             let errorMessage = "Terjadi kesalahan yang tidak diketahui. Silakan coba lagi.";
             let errorStatus = 500;
             
             if (error.response) {
-                // 1. Kesalahan Respons Server (e.g., 400 Bad Request, 404 Not Found, 500 Internal Server Error)
-                // Axios menerima respons dari server, tetapi respons tersebut adalah kode error (>= 400).
+                // 1. Kesalahan Respons Server
                 errorMessage = error.response.data?.message || `Kesalahan dari server: Status ${error.response.status}.`;
                 errorStatus = error.response.status;
             } else if (error.request) {
                 // 2. Tidak Ada Respons (Masalah Jaringan/Timeout)
-                // Permintaan dikirim, tetapi server tidak merespons (e.g., koneksi terputus, timeout).
-                errorMessage = "Gagal terhubung ke server. Periksa koneksi internet Anda atau coba lagi.";
-                errorStatus = 503; // Service Unavailable
+                // Menambahkan kode error spesifik jika tersedia (misalnya code ETIMEDOUT)
+                const isTimeout = error.code === 'ECONNABORTED' || error.message.includes('timeout');
+                errorMessage = isTimeout 
+                    ? "Permintaan ke server melebihi batas waktu (timeout). Silakan coba lagi."
+                    : "Gagal terhubung ke server. Periksa koneksi internet Anda atau coba lagi.";
+                errorStatus = isTimeout ? 408 : 503; 
             } else {
-                // 3. Kesalahan Lain
-                // Kesalahan saat mengatur permintaan (e.g., error di kode frontend yang tidak terkait network).
+                // 3. Kesalahan Lain (Klien/Aplikasi)
                 errorMessage = error.message || "Kesalahan klien/aplikasi. Periksa konfigurasi.";
                 errorStatus = 500;
             }
@@ -248,7 +255,8 @@ const InspectingCreate = (props) => {
                 status: errorStatus,
             });
         } finally {
-            setIsSubmiting(false);
+            // Memastikan loading state selalu dimatikan, terlepas dari hasil try/catch
+            setIsSubmiting(false); 
         }
     };
 

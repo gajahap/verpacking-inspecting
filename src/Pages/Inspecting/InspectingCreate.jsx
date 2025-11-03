@@ -426,7 +426,7 @@ const InspectingCreate = (props) => {
             localStorage.removeItem("formData");
 
             // Redirect
-            await showConfirm("Data berhasil disimpan. mohon jangan klik tombol simpan berulang-ulang, karena jika berhasil anda akan langsung diarahkan ke halaman detail.", { useCancelButton: false });
+            await showConfirm("Data berhasil disimpan. mohon jangan klik tombol simpan berulang-ulang, karena jika berhasil anda akan langsung diarahkan ke halaman detail.", { useCancelButton: false, confirmText : 'OK' });
             const target = props.jenisProses === "dyeing"
                 ? `/inspecting-dyeing/${resData.data.id}`
                 : `/inspecting-printing/${resData.data.id}`;
