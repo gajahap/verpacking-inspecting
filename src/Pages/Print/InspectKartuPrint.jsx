@@ -87,10 +87,6 @@ const InspectPrint = ({ jenisProses }) => {
     fetchData();
   }, [idInspecting, jenisProses]);
 
-  useEffect(() => {
-    console.log(inspectItem);
-    console.log(data);
-  }, [inspectItem,data]);
 
   const handlePrint = () => {
     const printContent = printRef.current.innerHTML;

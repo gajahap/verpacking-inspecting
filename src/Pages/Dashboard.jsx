@@ -27,7 +27,6 @@ const Dashboard = () => {
     try {
       const response = await axiosInstance.get('dashboard/index');
       setData(response.data);
-      console.log(response.data);
       setInspectRecent(response.data.last_inspecting);
       setInspctMklbjRecent(response.data.last_inspecting_mklbj);
 
@@ -35,7 +34,6 @@ const Dashboard = () => {
       // setChartLabels(Object.keys(response.data.inspectings_per_year));
     } catch (error) {
       setIsError(error.response?.status || 'Error');
-      console.log(error.response);
     } finally {
       setIsLoading(false);
     }
@@ -46,12 +44,10 @@ const Dashboard = () => {
       setIsSearchForGrafik(true);
       const response = await axiosInstance.get('dashboard/grafik');
       setData(response.data);
-      console.log(response.data);
       setChartData(Object.values(response.data.inspectings_per_year));
       setChartLabels(Object.keys(response.data.inspectings_per_year));
     } catch (error) {
       setIsError(error.response?.status || 'Error');
-      console.log(error.response);
     } finally {
       setIsSearchForGrafik(false);
     }
@@ -60,10 +56,6 @@ const Dashboard = () => {
   useEffect(() => {
     fetchDataIndex();
   }, []);
-
-  useEffect(() => {
-    console.log(inspectRecent);
-  }, [inspectRecent]);
 
   const dataChart = {
     labels: chartlabels.map((key) => new Date(Date.parse(key)).toLocaleString('default', { month: 'short' })),

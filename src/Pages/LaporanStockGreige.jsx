@@ -45,12 +45,9 @@ const LaporanStockGreige = () => {
         axiosInstance.get(`greige/rekap-stock-greige`, { params: combineParams })
             .then(response => {
                 setData(response.data.data);
-                console.log(response.data.data);
-
             })
             .catch(error => {
                 console.error(error);
-                console.log("payload", combineParams);
             })
             .finally(() => {
                 setSearchingProcess(false);

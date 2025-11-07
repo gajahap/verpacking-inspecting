@@ -102,7 +102,6 @@ const InspectPrint = (props) => {
         // nilai_poin: data?.sc_greige?.lebar_kain
       });
     }
-    console.log("ARRAY :", dataArray);
     const url =
       props.jenisProses === "mkl-bj"
         ? "inspecting/kalkukasi/mkl-bj/"
@@ -112,7 +111,6 @@ const InspectPrint = (props) => {
       .put(`${url}${idInspecting}`, dataArray)
       .then((response) => {
         // setRawData(response);
-        console.log(response);
       })
       .catch((error) => {
         console.error(error);
@@ -121,10 +119,6 @@ const InspectPrint = (props) => {
         // window.location.reload();
       });
   };
-
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
 
   useEffect(() => {
     const fetchDataAsync = async () => {

@@ -24,7 +24,6 @@ const InspectResultEdit = (props) => {
 
   useEffect(() => {
     console.clear();
-    console.log(props.result);
   }, [props]);
 
   const getKodeDefectOption = async () => {
@@ -44,7 +43,6 @@ const InspectResultEdit = (props) => {
 
   useEffect(() => {
     getKodeDefectOption();
-    console.log(formData);
   }, [formData]);
 
   const handleSubmit = async (e) => {
@@ -56,12 +54,9 @@ const InspectResultEdit = (props) => {
           ? "inspecting/update-inspecting-mklbj/item"
           : "inspecting/get-inspecting/update";
       const response = await axiosInstance.put(`${url}/${result.id}`, formData);
-      console.log("payload request:", formData);
-      console.log(response.data);
       props.onSuccessEdit();
     } catch (error) {
       console.error(error);
-      console.log("payload request:", formData);
     }finally {
       setLoading(false);
     }
@@ -94,7 +89,6 @@ const InspectResultEdit = (props) => {
       ...prevFormData,
       defect: prevFormData.defect.filter((_, i) => i !== index),
     }));
-    console.log(formData);
   };
 
   return (

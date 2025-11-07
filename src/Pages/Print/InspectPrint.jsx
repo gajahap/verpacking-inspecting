@@ -63,9 +63,6 @@ const InspectPrint = (props) => {
       fetchDataAsync();
     }, [idInspecting, props.jenisProses]);
   
-    useEffect(() => {
-      console.log(data);
-    }, [inspectItem,data]);
 
     return (
         <>

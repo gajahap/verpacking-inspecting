@@ -165,7 +165,6 @@ const InspectingView = (props) => {
         setWoColorsOptions([
           { value: null, label: response.data.data.kombinasi },
         ]);
-        console.log(response.data.data);
       } else {
         const response = await axiosInstance.get(
           `inspecting/get-inspecting-mkl-bj/${idInspecting}`
@@ -195,7 +194,6 @@ const InspectingView = (props) => {
             label: response.data.data.wo_color.mo_color.color,
           },
         ]);
-        console.log(response.data.data);
       }
     } catch (error) {
       setIsError(error.response?.status);
@@ -209,9 +207,7 @@ const InspectingView = (props) => {
     fetchData();
   }, [fetchData]);
 
-  // useEffect(() => {
-  //   console.log("Update form: ", form);
-  // }, [form]);
+
 
   const onSuccessEdit = () => {
     setVisibleCard({ id: null });
@@ -242,7 +238,6 @@ const InspectingView = (props) => {
           success: true,
           message: response.data.message,
         });
-        console.log(response.data);
         fetchData();
       })
       .catch((error) => {
@@ -251,8 +246,6 @@ const InspectingView = (props) => {
           success: false,
           message: "Tak dapat merubah data saat ini, coba beberapa saat lagi.",
         });
-        console.log(error);
-        console.log("payload request:", form);
       }).finally(() => {
         setIsUpdating(false);
       });
@@ -266,8 +259,6 @@ const InspectingView = (props) => {
         },
       });
       console.clear();
-
-      console.log(response.data);
 
       const woOptions = response.data.map((item) => ({
         value: item.id,
@@ -297,14 +288,11 @@ const InspectingView = (props) => {
         sc_id: sc_id,
         sc_greige_id: sc_greige_id,
       }));
-      console.log("warna yang di ambil :", warna);
       //map to woColorsOptions
       const woColorsOptions = warna.map((item) => ({
         value: item.wo_color_id,
         label: item.color,
       }));
-
-      console.log();
 
       setWoColorsOptions(woColorsOptions);
     } else {
@@ -349,11 +337,6 @@ const InspectingView = (props) => {
       setInspectItemWillDeleted(null);
     }
   };
-
-  useEffect(() => {
-    console.log("form: ", form);
-  }, [form]);
-
 
   //hapus semua defect 
   const handleDeleteAllDefect = async () => {

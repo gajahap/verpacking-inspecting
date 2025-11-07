@@ -136,7 +136,6 @@ const InspectingCreate = (props) => {
                     ? response.data.sort((a, b) => (a.no > b.no ? 1 : -1))
                     : []
             );
-            // console.log('Data Wo',response.data);
             
         } catch (error) {
             console.error(error);
@@ -172,7 +171,6 @@ const InspectingCreate = (props) => {
                 no_wo: ''
             });
         }
-        // console.log("INI DATA",data);
     }, [data]);
 
     const handleChoosOne = (item) => {
@@ -214,7 +212,6 @@ const InspectingCreate = (props) => {
     
             if (response.data?.success) {
                 // Log respons sukses (opsional, tapi informatif)
-                console.log("Store Success Response:", response.data); 
     
                 // Hapus localstorage jika berhasil
                 localStorage.removeItem('inspectResult');
@@ -287,7 +284,6 @@ const InspectingCreate = (props) => {
     
     const handleChangeDefect = (e,index, defectIndex, namaAttrDefect) => {
         const { name, value = undefined } = namaAttrDefect ? { name: namaAttrDefect, value: e.value } : e.target;
-        console.log(name, value);
         
         //panggil inspectResult yang berindex array index
         const item = inspectResult[index];
@@ -341,11 +337,6 @@ const InspectingCreate = (props) => {
         }
         alert("berhasil mengambil data sebelumnya");
       };
-
-    // useEffect(() => {
-    //     console.log(formData);
-        
-    // }, [formData]); 
     
     // const getMemo = async (e) => {
     //     try {

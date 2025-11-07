@@ -170,7 +170,7 @@ const InspectingCreate = (props) => {
       (item) =>
         item.defect?.some((defect) => defect.kode_defect === '' && defect.meter_defect === '' && defect.point === '')
     );
-    console.log("inspectResultsWithEmptyDefect", inspectResultsWithEmptyDefect);
+    // console.log("inspectResultsWithEmptyDefect", inspectResultsWithEmptyDefect);
     
     if (inspectResultsWithEmptyDefect.length > 0) {
       alert(
@@ -223,7 +223,7 @@ const InspectingCreate = (props) => {
 
   useEffect(() => {
     getKodeDefectOption();
-    console.log("INI INSPEK: ", inspectResult);
+    // console.log("INI INSPEK: ", inspectResult);
   }, [inspectResult]);
 
   const handleUpdateNoUrut = () => {
@@ -318,9 +318,9 @@ const InspectingCreate = (props) => {
     }
   };
 
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
+  // useEffect(() => {
+  //   console.log(data);
+  // }, [data]);
 
   useEffect(() => {
     if (data.length === 1) {
@@ -597,7 +597,7 @@ const InspectingCreate = (props) => {
                     no: noWoToSearch,
                 },
             });
-            console.log('Data Wo',response.data);
+            // console.log('Data Wo',response.data);
             setWoOptions(response.data);
         } catch (error) {
             console.error(error);
@@ -614,7 +614,7 @@ const InspectingCreate = (props) => {
               wo_color_id: newSelectedWo.wo_color_id,
               wo_id: newSelectedWo.wo_id
             });
-            console.log(response);
+            // console.log(response);
             setAlertMessage({
               show: true,
               success: true,
@@ -624,7 +624,7 @@ const InspectingCreate = (props) => {
         } catch (error) {
             console.error(error);
         }finally {
-          console.log('payload', newSelectedWo);
+          // console.log('payload', newSelectedWo);
           handleSubmit();
         }
     };

@@ -35,7 +35,6 @@ const Login = () => {
         password,
         force_login: isForceLogin
       });
-      console.log("RES", response.data.data);
 
       if (!response.data.success) {
         setModalMessage(response.data.message);
@@ -46,7 +45,6 @@ const Login = () => {
       const token = response.data.token;
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(response.data.data));
-      console.log(token);
       navigate('/');
     } catch (error) {
       console.error(error);

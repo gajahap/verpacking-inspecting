@@ -39,7 +39,6 @@ const InspectResultAdd = (props) => {
             try {
                 const endpoint = props.jenisProses === 'dyeing' ? 'kartu-proses-dyeing/get-kartu-proses-dyeing/{id}' : 'kartu-proses-printing/get-kartu-proses-printing/{id}';
                 const response = await axiosInstance.get(endpoint.replace('{id}', props.inspectingData?.kartu_process_dyeing_id || props.inspectingData?.kartu_process_printing_id));
-                console.log("INSPECTING ITEM",response.data.data);
                 
                 const data  = response.data.data[`kartu_proses_${props.jenisProses}_item`];
                 const options = data.map(item => ({
@@ -63,10 +62,8 @@ const InspectResultAdd = (props) => {
         e.preventDefault();
         setIsSubmiting(true);
         try {
-            console.log('Submitting:', formData);
             const url = props.jenisProses === 'mkl-bj' ? 'inspecting/add-inspect-mklbj-result' : 'inspecting/add-inspect-result';
             const response = await axiosInstance.post(url, formData);
-            console.log('Response:', response.data);
             props.onSuccessAdd();
         } catch (error) {
             console.error(error);
@@ -101,10 +98,6 @@ const InspectResultAdd = (props) => {
             defect: prevFormData.defect.filter((_, i) => i !== index)
         }));
     };
-
-    useEffect(() => {
-        console.log("DATA YANG AKAN DI TAMBAH",formData);
-    }, [formData]);
 
     return (
         <>
