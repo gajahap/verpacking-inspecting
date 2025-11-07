@@ -38,6 +38,7 @@ const InspectPrint = (props) => {
   const [isError, setIsError] = useState(false);
   const [loading, setLoading] = useState(true);
   const [kartuProsesItem, setKartuProsesItem] = useState([]);
+  const [inspectItemsGroupByGrade, setInspectItemsGroupByGrade] = useState([]);
   // const [rawData, setRawData] = useState([]);
 
   const grades = {
@@ -150,6 +151,43 @@ const InspectPrint = (props) => {
     };
     fetchDataAsync();
   }, [idInspecting, props.jenisProses]);
+
+
+
+  useEffect(() => {
+
+    //const untuk menampung data olahan
+    const inspectItemsGroupByGrade = [];
+
+    //urutkan inspectItem berdasarkan 1,7,8,2,3,4,5
+    inspectItem.sort((a, b) => {
+      const order = [1, 7, 8, 2, 3, 4, 5];
+      return order.indexOf(a.grade) - order.indexOf(b.grade);
+    });
+
+    // map seluruh inspect item
+    inspectItem.forEach((inspectItem) => {
+      // cek apakah grade sudah ada di array
+      const index = inspectItemsGroupByGrade.findIndex(
+        (item) => item.grade === inspectItem.grade
+      );
+      if (index === -1) {
+        inspectItemsGroupByGrade.push({
+          grade: inspectItem.grade,
+          inspecting_item: [inspectItem],
+        });
+      } else {
+        inspectItemsGroupByGrade[index].inspecting_item.push(inspectItem);
+      }
+    });
+    setInspectItemsGroupByGrade(inspectItemsGroupByGrade);
+  }, [inspectItem]);
+  
+  useEffect(() => {
+    console.log(inspectItemsGroupByGrade);
+    
+  }, [inspectItemsGroupByGrade]);
+  
 
   return (
     <>
@@ -702,7 +740,82 @@ const InspectPrint = (props) => {
                                     : null} %
                                 </td>
                               </tr>
-                            </>
+                              <tr></tr>
+                              <tr></tr>
+                              <tr style={{ border: "none" }}>
+                                <td colSpan={5} style={{ border: "1px solid" }} className="text-center fw-bold"> Hasil Inspecting (Yard)</td>
+                                <td colSpan={9} style={{ border: "none" }}></td>
+                              </tr>
+                              <tr style={{ border: "none" }}>
+                                <td colSpan={2} style={{ border: "1px solid" }}> Grade</td>
+                                <td colSpan={2} style={{ border: "1px solid" }}>Total Panjang</td>
+                                <td style={{ border: "1px solid" }}>Persentase</td>
+                                <td colSpan={9} style={{ border: "none" }}></td>
+                              </tr>
+                              {/* { inspectItemsGroupByGrade && Object.keys (inspectItemsGroupByGrade).map((item, index) => (
+                                <tr key={index} style={{ border: "none" }}>
+                                  <td colSpan={2} style={{ border: "1px solid" }}>{grades[item]}</td>
+
+                                  <td colSpan={2} style={{ border: "1px solid" }}>
+                                    {inspectItemsGroupByGrade[item].reduce((total, el) => total + (parseInt(el.qty_sum) || 0), 0)}
+                                  </td>
+
+                                  <td style={{ border: "1px solid" }}>
+                                    {(() => {
+                                      const totalGrade = inspectItemsGroupByGrade[item].reduce(
+                                        (total, el) => total + (parseInt(el.qty_sum) || 0),
+                                        0
+                                      );
+                                      const totalAll = inspectItem.reduce(
+                                        (total, el) => total + (parseInt(el.qty_sum) || 0),
+                                        0
+                                      );
+
+                                      const percentage = totalAll > 0 ? (totalGrade / totalAll) * 100 : 0;
+
+                                      return `${percentage.toFixed(2)}%`;
+                                    })()}
+                                  </td>
+
+                                  <td colSpan={9} style={{ border: "none" }}></td>
+                                </tr>
+                              ))} */}
+                              {inspectItemsGroupByGrade && (inspectItemsGroupByGrade).map((item, index) => (
+                                <tr key={index} style={{ border: "none" }}>
+                                  <td colSpan={2} style={{ border: "1px solid" }}>{grades[item.grade]}</td>
+
+                                  <td colSpan={2} style={{ border: "1px solid" }}>
+                                    {item.inspecting_item.reduce((total, el) => total + (parseInt(el.qty_sum) || 0), 0)}
+                                  </td>
+
+                                  <td style={{ border: "1px solid" }}>
+                                    {(() => {
+                                      const totalGrade = item.inspecting_item.reduce(
+                                        (total, el) => total + (parseInt(el.qty_sum) || 0),
+                                        0
+                                      );
+                                      const totalAll = inspectItem.reduce(
+                                        (total, el) => total + (parseInt(el.qty_sum) || 0),
+                                        0
+                                      );
+
+                                      const percentage = totalAll > 0 ? (totalGrade / totalAll) * 100 : 0;
+
+                                      return `${percentage.toFixed(2)}%`;
+                                    })()}
+                                  </td>
+                                  
+                                  <td colSpan={9} style={{ border: "none" }}></td>
+                                </tr>
+                              ))}
+                              <tr style={{ border: "none" }} >
+                                <td colSpan={2} style={{ border: "1px solid" }} className="fw-bold">Jumlah</td>
+                                <td colSpan={3} style={{ border: "1px solid" }} className="fw-bold">{inspectItem.reduce((total, item) => total + (isNaN(parseInt(item.qty_sum)) ? 0 : parseInt(item.qty_sum)), 0)}</td>
+                                <td colSpan={9} style={{ border: "none" }}></td>
+                              </tr>
+
+
+                            </> 
                           )}
                         </tbody>
                       </Table>
