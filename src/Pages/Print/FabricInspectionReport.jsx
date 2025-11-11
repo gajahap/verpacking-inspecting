@@ -1,12 +1,13 @@
 import React, { useRef, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { FiPrinter } from "react-icons/fi";
-import { Table, Stack } from "react-bootstrap";
+import { Table, Stack, Spinner } from "react-bootstrap";
 import axiosInstance from "../../axiosConfig";
 import LoadingSpinner from "../../Components/LoadingSpinner";
 import ErrorPage from "../../ErrorPage";
 import "./Inspectprint.module.css";
 import gapImage from "../../Assets/logo-gajah/gap.png";
+import { showConfirm } from "../../Components/ConfirmToast";
 
 const InspectPrint = (props) => {
   const { idInspecting } = useParams();
@@ -39,6 +40,7 @@ const InspectPrint = (props) => {
   const [loading, setLoading] = useState(true);
   const [kartuProsesItem, setKartuProsesItem] = useState([]);
   const [inspectItemsGroupByGrade, setInspectItemsGroupByGrade] = useState([]);
+  const [isCalculating,setIsCalculating] = useState(false);
   // const [rawData, setRawData] = useState([]);
 
   const grades = {
@@ -66,7 +68,8 @@ const InspectPrint = (props) => {
     window.print();
   };
 
-  const handleGetRawData = () => {
+  const handleGetRawData = async () => {
+    setIsCalculating(true);
     const dataArray = [];
     const items = data.inspecting_item
       ? data.inspecting_item
@@ -76,79 +79,108 @@ const InspectPrint = (props) => {
       : data.inspecting_mklbj_item.filter((item) => item.is_head === 1);
     for (let i = 0; i < itemsFiltered.length; i++) {
       dataArray.push({
-        id: items
-          .filter((item) => item.join_piece === itemsFiltered[i].join_piece)
-          .map((item) => ({
-            inspecting_item_id: item.id,
-            grade: item.grade,
-          })),
-        nilai_poin: items
-          .filter((item) => item.join_piece === itemsFiltered[i].join_piece)
-          .map((item) => item.defect_item)
-          .flat()
-          .reduce(
-            (total, item) =>
-              total +
-              (parseInt(item.point) * 3600) /
-                (itemsFiltered[i].qty_sum *
-                  width[
-                    data?.sc_greige?.lebar_kain ||
-                      data?.wo?.sc_greige?.lebar_kain
-                  ] *
-                  (data.unit === 2 ? 0.9144 : 1)),
-            0
-          )
-          .toFixed(1),
-
-        // nilai_poin: data?.sc_greige?.lebar_kain
+        id:
+          itemsFiltered[i].join_piece === null
+            ? [
+                {
+                  inspecting_item_id: itemsFiltered[i].id,
+                  grade: itemsFiltered[i].grade,
+                },
+              ]
+            : items
+                .filter((item) => item.join_piece === itemsFiltered[i].join_piece)
+                .map((item) => ({
+                  inspecting_item_id: item.id,
+                  grade: item.grade,
+                })),
+      
+        nilai_poin:
+          itemsFiltered[i].join_piece === null
+            ? itemsFiltered[i].defect_item
+                .map((item) => item.point)
+                .flat()
+                .reduce(
+                  (total, item) =>
+                    total +
+                    (parseInt(item) * 3600) /
+                      (itemsFiltered[i].qty_sum *
+                        width[
+                          data?.sc_greige?.lebar_kain ||
+                            data?.wo?.sc_greige?.lebar_kain
+                        ] *
+                        (data.unit === 2 ? 0.9144 : 1)),
+                  0
+                )
+                .toFixed(1)
+            : items
+                .filter((item) => item.join_piece === itemsFiltered[i].join_piece)
+                .map((item) => item.defect_item)
+                .flat()
+                .reduce(
+                  (total, item) =>
+                    total +
+                    (parseInt(item.point) * 3600) /
+                      (itemsFiltered[i].qty_sum *
+                        width[
+                          data?.sc_greige?.lebar_kain ||
+                            data?.wo?.sc_greige?.lebar_kain
+                        ] *
+                        (data.unit === 2 ? 0.9144 : 1)),
+                  0
+                )
+                .toFixed(1),
       });
     }
+    
     const url =
       props.jenisProses === "mkl-bj"
         ? "inspecting/kalkukasi/mkl-bj/"
         : "inspecting/kalkukasi/";
     // kirim data array ke get-inspecting/kalkukasi/{id}
-    axiosInstance
-      .put(`${url}${idInspecting}`, dataArray)
-      .then((response) => {
-        // setRawData(response);
-      })
-      .catch((error) => {
-        console.error(error);
-      })
-      .finally(() => {
-        // window.location.reload();
-      });
+    try {
+      const response = await axiosInstance.put(`${url}${idInspecting}`, dataArray);
+      await showConfirm("Berhasil mengkalkulasi data.", { useCancelButton: false, confirmText : 'OK' });
+      fetchDataAsync();
+    } catch (error) {
+      console.error(error);
+    } finally{
+      setIsCalculating(false);
+    }
+  };
+
+  
+  
+  
+  const fetchDataAsync = async () => {
+    try {
+      const url =
+        props.jenisProses === "mkl-bj"
+          ? "inspecting/get-inspecting-mkl-bj"
+          : "inspecting/get-inspecting";
+      const response = await axiosInstance.get(`${url}/${idInspecting}`);
+      setData(response.data.data);
+
+      if (props.jenisProses === "mkl-bj") {
+        setInspectItem(
+          response.data.data.inspecting_mklbj_item.sort((a, b) => a.no_urut - b.no_urut)
+        );
+      } else {
+        setInspectItem(
+          response.data.data.inspecting_item.sort((a, b) => a.no_urut - b.no_urut)
+        );
+        setKartuProsesItem(
+          response.data.data.kartu_process_dyeing?.kartu_proses_dyeing_item ||
+          response.data.data.kartu_process_printing.kartu_proses_printing_item
+        );
+      }
+    } catch (error) {
+      setIsError(error.response?.status);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
-    const fetchDataAsync = async () => {
-      try {
-        const url =
-          props.jenisProses === "mkl-bj"
-            ? "inspecting/get-inspecting-mkl-bj"
-            : "inspecting/get-inspecting";
-        const response = await axiosInstance.get(`${url}/${idInspecting}`);
-        setData(response.data.data);
-        if (props.jenisProses === "mkl-bj") {
-          setInspectItem(
-            response.data.data.inspecting_mklbj_item.sort((a, b) => a.no_urut - b.no_urut)
-          );
-        } else {
-          setInspectItem(
-            response.data.data.inspecting_item.sort((a, b) => a.no_urut - b.no_urut)
-          );
-          setKartuProsesItem(
-            response.data.data.kartu_process_dyeing?.kartu_proses_dyeing_item ||
-            response.data.data.kartu_process_printing.kartu_proses_printing_item
-          );
-        }
-      } catch (error) {
-        setIsError(error.response?.status);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchDataAsync();
   }, [idInspecting, props.jenisProses]);
 
@@ -182,12 +214,6 @@ const InspectPrint = (props) => {
     });
     setInspectItemsGroupByGrade(inspectItemsGroupByGrade);
   }, [inspectItem]);
-  
-  useEffect(() => {
-    console.log(inspectItemsGroupByGrade);
-    
-  }, [inspectItemsGroupByGrade]);
-  
 
   return (
     <>
@@ -834,9 +860,23 @@ const InspectPrint = (props) => {
             <button
               onClick={handleGetRawData}
               className="btn bg-warning m-2 no-print"
-            >
-              <FiPrinter className="me-2" />
-              <b>Kalkulasi Point</b>
+            > 
+            {isCalculating ? (
+              <Spinner
+                as="span"
+                animation="border"
+                size="sm"
+                role="status"
+                aria-hidden="true"
+              />
+            ): (
+              <>
+                <FiPrinter className="me-2" />
+                <b>Kalkulasi Point</b>
+              </>
+
+            )}
+
             </button>
           </div>
         </div>
