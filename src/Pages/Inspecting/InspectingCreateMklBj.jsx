@@ -36,6 +36,28 @@ const InspectingCreate = (props) => {
         3: 'Barang Jadi',
         4: 'Fresh',
     }
+
+    const lebarKain = {
+        1: 44,
+        2: 58,
+        3: 64,
+        4: 66,
+        5: 68,
+        6: 72,
+        7: 69,
+        8: 70,
+        9: 71,
+        10: 74,
+        11: 76,
+        12: 78,
+        13: 80,
+        14: 82,
+        15: 84,
+        16: 86,
+        17: 88,
+        18: 90
+      }
+
     const [inspectResult, setInspectResult] = useState([]);
     const [visibleCard, setVisibleCard] = useState({ id: null, index: null });
     const [kodeDefectOption, setKodeDefectOption] = useState([]);
@@ -99,15 +121,54 @@ const InspectingCreate = (props) => {
 
     
     const handleUpdateInspectResult = (e, index) => {
-        e.preventDefault();
-        const {name,value} = e.target;
-        
-        setInspectResult((prevInspectResult) => {
-            const newInspectResult = [...prevInspectResult];
-            newInspectResult[index][name] = value;
-            return newInspectResult;
+        const { name, value } = e.target;
+
+        setInspectResult(prevState => {
+          // Clone array
+          const newState = (typeof structuredClone === "function")
+            ? structuredClone(prevState)
+            : JSON.parse(JSON.stringify(prevState));
+      
+          const currentItem = newState[index];
+      
+          // ===== CHECK JOIN PIECE CHANGE =====
+          const isJoinPieceChange = name === "join_piece";
+          const oldJoinPiece = prevState[index].join_piece;
+          const newJoinPiece = isJoinPieceChange ? value.toUpperCase() : oldJoinPiece;
+      
+          // === STEP 1: Update item utama ===
+          currentItem[name] = isJoinPieceChange ? newJoinPiece : value;
+      
+          // === STEP 2: Jika join_piece berubah → regrade group lama ===
+          if (isJoinPieceChange && oldJoinPiece !== "") {
+            const oldGroup = prevState.filter(item => item.join_piece === oldJoinPiece);
+      
+            oldGroup.forEach(oldItem => {
+              const idx = newState.findIndex(x => x.no_urut === oldItem.no_urut);
+              if (idx !== -1) {
+                const updatedDefect = newState[idx].defect || [];
+                const g = gradingValidation(updatedDefect, newState, idx);
+                newState[idx].grade = g.grade;
+              }
+            });
+          }
+      
+          // === STEP 3: Grade item utama + group baru ===
+          const gradeResult = gradingValidation(currentItem.defect || [], newState, index);
+          currentItem.grade = gradeResult.grade;
+      
+          // === STEP 4: Update group join_piece baru ===
+          if (gradeResult.groupItems && gradeResult.groupItems.length > 0) {
+            gradeResult.groupItems.forEach(item => {
+              const idx = newState.findIndex(x => x.no_urut === item.no_urut);
+              if (idx !== -1) {
+                newState[idx].grade = gradeResult.grade;
+              }
+            });
+          }
+      
+          return newState;
         });
-        
     };
     
     
@@ -272,37 +333,142 @@ const InspectingCreate = (props) => {
 
     };
 
+    const gradingValidation = (newDefects, state, index) => {
+        const currentItem = state[index];
+      
+        // === Cari group berdasarkan join_piece ===
+        const groupItems = state.filter(
+          (item, i) =>
+            item.join_piece !== "" &&
+            item.join_piece === currentItem.join_piece &&
+            i !== index
+        );
+      
+        // === Combine defect current item + group items ===
+        const allDefects = [
+          ...groupItems.map(item => item.defect || []),
+          newDefects
+        ].flat();
+      
+        // === Hitung total point ===
+        const totalPoint = allDefects.reduce(
+          (sum, d) => sum + (d.point ? parseInt(d.point, 10) : 0),
+          0
+        );
+      
+        // === Hitung nilai poin ===
+        const totalQty =
+          currentItem.qty * 1 +
+          groupItems.reduce((sum, item) => sum + (item.qty * 1), 0);
+      
+        const a = totalPoint * 3600;
+        const b = totalQty * 58; // misal pakai default lebar kain
+      
+        const nilaiPoin = parseFloat((a / b).toFixed(1));
+      
+        // Grade
+        let grade =
+          nilaiPoin <= 24 ? 1 :
+          nilaiPoin <= 30 ? 2 :
+          3;
+      
+        return { nilaiPoin, grade, groupItems };
+      };
+      
+
 
       const handleRemoveDefect = (index, defectIndex) => {
-        setInspectResult((prevState) => {
-            const newInspectResult = [...prevState];
-            newInspectResult[index].defect = newInspectResult[index].defect || []; // Ambil data yang sudah ada untuk item
-            newInspectResult[index].defect.splice(defectIndex, 1); // Hapus item
-            return newInspectResult;
+        setInspectResult(prevState => {
+          const currentItem = prevState[index];
+      
+          // Hapus defect secara immutable
+          const updatedDefects = (currentItem.defect || []).filter((_, i) => i !== defectIndex);
+      
+          // Hitung grade baru
+          const gradeResult = gradingValidation(
+            updatedDefects,
+            prevState,
+            index
+          );
+        //   console.log("gradeResult", gradeResult);
+      
+          // Update item utama
+          const updatedItem = {
+            ...currentItem,
+            defect: updatedDefects.length > 0 ? updatedDefects : [],
+            grade: gradeResult.grade
+          };
+      
+          // Clone state
+          const newState = structuredClone(prevState);
+      
+          // Update item utama
+          newState[index] = updatedItem;
+      
+          // UPDATE SEMUA item yang join_piece sama (NON-NESTED)
+          if (gradeResult.groupItems?.length > 0) {
+            gradeResult.groupItems.forEach(item => {
+              const idx = newState.findIndex(x => x.no_urut === item.no_urut);
+              if (idx !== -1) {
+                newState[idx] = {
+                  ...newState[idx],
+                  grade: gradeResult.grade
+                };
+              }
+            });
+          }
+      
+          return newState;
         });
-    };
-    
-    const handleChangeDefect = (e,index, defectIndex, namaAttrDefect) => {
-        const { name, value = undefined } = namaAttrDefect ? { name: namaAttrDefect, value: e.value } : e.target;
-        
-        //panggil inspectResult yang berindex array index
-        const item = inspectResult[index];
+      };
+      
+    const handleChangeDefect = (e, index, defectIndex, namaAttrDefect) => {
+        const { name, value = undefined } = namaAttrDefect
+          ? { name: namaAttrDefect, value: e.value }
+          : e.target;
+      
+        setInspectResult(prevState => {
+      
+          // Clone prevState agar aman
+          const newState = (typeof structuredClone === "function")
+            ? structuredClone(prevState)
+            : JSON.parse(JSON.stringify(prevState));
+      
+          const currentItem = newState[index];
+      
+          // === STEP 1: update defect di item utama ===
+          const updatedDefects = currentItem.defect.map((d, i) =>
+            i === defectIndex ? { ...d, [name]: value } : d
+          );
+      
+          currentItem.defect = updatedDefects;
+      
+          // === STEP 2: hitung grade baru item utama + group join_piece ===
+          const gradeResult = gradingValidation(
+            updatedDefects,
+            newState,
+            index
+          );
 
-        //update defect yang berindex array defectIndex
-        item.defect[defectIndex] = {
-            ...item.defect[defectIndex],
-            [name]: value
-        };
-
-        //update inspectResult yang berindex array index
-        setInspectResult((prevState) => {
-            const newInspectResult = [...prevState];
-            newInspectResult[index] = item;
-            return newInspectResult;
+        //   console.log('gr',gradeResult);
+          
+      
+          currentItem.grade = gradeResult.grade;
+      
+          // === STEP 3: update semua item yang join_piece sama ===
+          if (gradeResult.groupItems && gradeResult.groupItems.length > 0) {
+            gradeResult.groupItems.forEach(item => {
+              const idx = newState.findIndex(x => x.no_urut === item.no_urut);
+              if (idx !== -1) {
+                newState[idx].grade = gradeResult.grade;
+              }
+            });
+          }
+      
+          return newState;
         });
-        
-        
-    };
+      };
+      
     const handleFormConfirm = (confirmed) => {
         setShowConfirmModal(false);
         if (confirmed) {
@@ -350,6 +516,10 @@ const InspectingCreate = (props) => {
     //         console.error(error);
     //     }
     // };
+    // useEffect(() => {
+    //     console.log('ini inspect result',inspectResult);
+        
+    // }, [inspectResult]);
 
     return (
         <>
@@ -567,6 +737,19 @@ const InspectingCreate = (props) => {
                                                 onChange={(e) => setFormData({ ...formData, note: e.target.value })}
                                                 placeholder="Keterangan"
                                                 className='small-text border-bold'
+                                            />
+                                        </Form.Group>
+                                    </Col>
+                                    <Col lg={3} md={4} sm={6} className="mb-3">
+                                        <Form.Group controlId="note" className="small-text">
+                                            <Form.Label><strong>Lebar Kain</strong></Form.Label>
+                                            <Form.Control
+                                                as="textarea"
+                                                name="note"
+                                                value={lebarKain[data[0]?.sc_greige?.lebar_kain || null] || 58}  // Fallback to an empty string
+                                                className='small-text border-bold'
+                                                readOnly
+                                                disabled
                                             />
                                         </Form.Group>
                                     </Col>

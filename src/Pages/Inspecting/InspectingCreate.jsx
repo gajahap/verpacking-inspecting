@@ -43,6 +43,28 @@ const InspectingCreate = (props) => {
     3: "Pcs",
     4: "Kilogram",
   };
+
+  const lebarKain = {
+    1: 44,
+    2: 58,
+    3: 64,
+    4: 66,
+    5: 68,
+    6: 72,
+    7: 69,
+    8: 70,
+    9: 71,
+    10: 74,
+    11: 76,
+    12: 78,
+    13: 80,
+    14: 82,
+    15: 84,
+    16: 86,
+    17: 88,
+    18: 90
+  }
+
   const [inputVisibility, setInputVisibility] = useState({});
   const [inspectResult, setInspectResult] = useState({});
   const [visibleCard, setVisibleCard] = useState({ id: null, index: null });
@@ -70,7 +92,7 @@ const InspectingCreate = (props) => {
     setModalMessage("");
   };
 
-  const handleAddInspectResult = (e, itemId, stockId) => {
+  const handleAddInspectResult = (e, itemId, stockId, inches) => {
     e.preventDefault();
 
     const input = e.target.querySelector("input"); // Ambil input dari form
@@ -86,13 +108,14 @@ const InspectingCreate = (props) => {
             ...currentResults,
             {
               qty: parseInt(value, 10),
-              grade: 7,
+              grade: 1,
               no_urut: 0,
-              join_piece: null,
-              lot_no: null,
-              defect: null,
+              join_piece: '',
+              lot_no: '',
+              defect: [],
               stock_id: stockId,
-              qty_bit: null,
+              inches: lebarKain[inches],
+              qty_bit: '',
               gsm_item: gsm,
               time_add: Date.now() / 1000,
             },
@@ -135,10 +158,10 @@ const InspectingCreate = (props) => {
 
     // Ambil nilai input dan hapus spasi berlebih
     const updatedData = {
-      qty: parseInt(formData.get("qty").trim(), 10) || null,
-      grade: parseInt(formData.get("grade").trim(), 10) || null,
-      join_piece: formData.get("join_piece").trim().toUpperCase() || null,
-      lot_no: formData.get("no_lot").trim() || null,
+      qty: parseInt(formData.get("qty").trim(), 10) || '',
+      grade: parseInt(formData.get("grade").trim(), 10) || '',
+      join_piece: formData.get("join_piece").trim().toUpperCase() || '',
+      lot_no: formData.get("lot_no").trim() || '',
       gsm_item: formData.get("gsm_item").trim() || gsm
     };
     
@@ -168,7 +191,7 @@ const InspectingCreate = (props) => {
     // Cek apakah dimasing masing inspectResult ada defect yang masih kosong
     const inspectResultsWithEmptyDefect = inspectResult[itemId].filter(
       (item) =>
-        item.defect?.some((defect) => defect.kode_defect === '' && defect.meter_defect === '' && defect.point === '')
+        item.defect?.some((defect) => defect.kode_defect === '' || defect.meter_defect === '' || defect.point === '')
     );
     // console.log("inspectResultsWithEmptyDefect", inspectResultsWithEmptyDefect);
     
@@ -318,9 +341,6 @@ const InspectingCreate = (props) => {
     }
   };
 
-  // useEffect(() => {
-  //   console.log(data);
-  // }, [data]);
 
   useEffect(() => {
     if (data.length === 1) {
@@ -506,60 +526,151 @@ const InspectingCreate = (props) => {
     });
   };
 
-  const handleRemoveDefect = (itemId, index, defectIndex) => {
-    setInspectResult((prevState) => {
-      const currentResults = prevState[itemId][index].defect || []; // Ambil data yang sudah ada untuk item\
 
-      const newResults = currentResults.filter((_, i) => i !== defectIndex); // Hapus item yang dipilih
-
-      const updatedItem = {
-        ...prevState[itemId][index],
-        defect: newResults.length > 0 ? newResults : null,
-      };
-      return {
-        ...prevState,
-        [itemId]: [
-          ...prevState[itemId].slice(0, index),
-          updatedItem,
-          ...prevState[itemId].slice(index + 1),
-        ],
-      };
-    });
+  const gradingValidation = (newResults, prevState, itemId, index) => {
+    const currentPrev = prevState[itemId][index];
+  
+    const newPrevStateWithFilteredItems = {};
+  
+    // Cari semua item yang join_piece sama
+    for (const key in prevState) {
+      const filtered = prevState[key].filter(item =>
+        item.join_piece === currentPrev.join_piece &&
+        currentPrev.join_piece !== null &&
+        item.no_urut !== currentPrev.no_urut
+      );
+  
+      if (filtered.length > 0) {
+        newPrevStateWithFilteredItems[key] = filtered;
+      }
+    }
+  
+    // Gabungkan defect milik item lain + item yang sedang diedit
+    const allOtherDefects = Object.values(newPrevStateWithFilteredItems)
+      .flat()
+      .map(item => item.defect ?? []);
+  
+    const combinedItems = [...allOtherDefects, newResults];
+  
+    const totalPoin = combinedItems
+      .flat()
+      .reduce((total, d) => total + (d.point ? parseInt(d.point, 10) : 0), 0);
+  
+    const totalQty =
+      parseInt(currentPrev.qty, 10) +
+      Object.values(newPrevStateWithFilteredItems)
+        .flat()
+        .reduce((total, item) => total + parseInt(item.qty, 10), 0);
+  
+    const a = totalPoin * 3600;
+    const b = totalQty * lebarKain[data[0].sc_greige.lebar_kain];
+    const nilaiPoin = parseFloat((a / b).toFixed(1));
+  
+    let grade = 3;
+    if (nilaiPoin <= 24) grade = 1;
+    else if (nilaiPoin <= 30) grade = 2;
+  
+    return { nilaiPoin, grade, newPrevStateWithFilteredItems };
   };
 
-  const handleChangeDefect = (
-    e,
-    itemId,
-    index,
-    defectIndex,
-    namaAttrDefect
-  ) => {
+  const handleRemoveDefect = (itemId, index, defectIndex) => {
+    setInspectResult(prevState => {
+      const currentItem = prevState[itemId][index];
+  
+      // Hapus defect secara immutable
+      const updatedDefects = currentItem.defect.filter((_, i) => i !== defectIndex);
+  
+      // Hitung grade terbaru
+      const gradeResult = gradingValidation(updatedDefects, prevState, itemId, index);
+      // console.log("grading", gradeResult);
+  
+      // Update item utama
+      const updatedItem = {
+        ...currentItem,
+        defect: updatedDefects.length > 0 ? updatedDefects : null,
+        grade: gradeResult.grade,
+      };
+  
+      // SALIN prevState secara aman
+      const newState = structuredClone(prevState);
+  
+      // Update item utama
+      newState[itemId][index] = updatedItem;
+  
+      // Update item lain yang join_piece sama
+      if (gradeResult.newPrevStateWithFilteredItems) {
+        Object.entries(gradeResult.newPrevStateWithFilteredItems).forEach(
+          ([key, arr]) => {
+            arr.forEach(item => {
+              const idx = newState[key].findIndex(x => x.no_urut === item.no_urut);
+              if (idx !== -1) {
+                newState[key][idx] = {
+                  ...newState[key][idx],
+                  grade: gradeResult.grade
+                };
+              }
+            });
+          }
+        );
+      }
+  
+      return newState;
+    });
+  };
+  
+
+  const handleChangeDefect = (e, itemId, index, defectIndex, namaAttrDefect) => {
     const { name, value = undefined } = namaAttrDefect
       ? { name: namaAttrDefect, value: e.value }
       : e.target;
-
-    setInspectResult((prevState) => {
-      const currentResults = prevState[itemId][index].defect || []; // Ambil data yang sudah ada untuk item
-      const newResults = currentResults.map((result, i) => {
-        if (i === defectIndex) {
-          return {
-            ...result,
-            [name]: value,
-          };
-        }
-        return result;
-      });
-      const updatedItem = { ...prevState[itemId][index], defect: newResults };
-      return {
-        ...prevState,
-        [itemId]: [
-          ...prevState[itemId].slice(0, index),
-          updatedItem,
-          ...prevState[itemId].slice(index + 1),
-        ],
+  
+    setInspectResult(prevState => {
+      const currentItem = prevState[itemId][index];
+  
+      // Update defect array secara immutable
+      const updatedDefects = currentItem.defect.map((d, i) =>
+        i === defectIndex ? { ...d, [name]: value } : d
+      );
+  
+      // Hitung grade terbaru
+      const gradeResult = gradingValidation(updatedDefects, prevState, itemId, index);
+      // console.log("grading", gradeResult);
+      
+  
+      // Update item utama
+      const updatedItem = {
+        ...currentItem,
+        defect: updatedDefects,
+        grade: gradeResult.grade
       };
+  
+      // SALIN prevState secara aman
+      const newState = structuredClone(prevState);
+  
+      // Update item utama ke newState
+      newState[itemId][index] = updatedItem;
+  
+      // Update item-item lain yang join_piece sama
+      if (gradeResult.newPrevStateWithFilteredItems) {
+        Object.entries(gradeResult.newPrevStateWithFilteredItems).forEach(
+          ([key, arr]) => {
+            arr.forEach(item => {
+              const idx = newState[key].findIndex(x => x.no_urut === item.no_urut);
+              if (idx !== -1) {
+                newState[key][idx] = {
+                  ...newState[key][idx],
+                  grade: gradeResult.grade
+                };
+              }
+            });
+          }
+        );
+      }
+  
+      return newState;
     });
   };
+  
 
   const handleChangeBits = (e, itemId) => {
     e.preventDefault();
@@ -644,6 +755,10 @@ const InspectingCreate = (props) => {
       alert("berhasil mengambil data sebelumnya");
     };
 
+    // useEffect(() => {
+    //   // console.log('inspectResult', inspectResult);
+      
+    // }, [inspectResult]);
     useEffect(() => {
       if (alertMessage.show) {
         const timer = setTimeout(() => {
@@ -656,10 +771,100 @@ const InspectingCreate = (props) => {
       }
     }, [alertMessage]);
 
-    useEffect(() => {
-      // console.log("Data Header",formData);
-      
-    }, [formData]);
+
+    const handleChangeGrade = (e, itemId,index) => {
+      e.preventDefault();
+      const { value } = e.target;
+  
+      const intValue = parseInt(value, 10);
+  
+      setInspectResult((prevState) => {
+        const updatedItem = {
+          ...prevState[itemId][index], // Access child at index
+          grade: intValue, // Update bits to the specified value
+        };
+        return {
+          ...prevState,
+          [itemId]: prevState[itemId].map((item, i) => i === index ? updatedItem : item),
+        };
+      });
+    };
+
+
+    const handleChangeValueInspectResult = (e, itemId, index) => {
+      const { name, value } = e.target;
+    
+      setInspectResult(prevState => {
+        // CLONE prevState (safe)
+        const newState = (typeof structuredClone === "function")
+          ? structuredClone(prevState)
+          : JSON.parse(JSON.stringify(prevState));
+    
+        const currentItem = newState[itemId][index];
+    
+        // SIMPAN join_piece lama & baru
+        const isJoinPieceChange = name === "join_piece";
+        const oldJoinPiece = prevState[itemId][index].join_piece;
+        const newJoinPiece = isJoinPieceChange ? value.toUpperCase() : oldJoinPiece;
+    
+        // === STEP 1: UPDATE ITEM UTAMA ===
+        currentItem[name] = isJoinPieceChange ? newJoinPiece : value;
+    
+        // Pastikan defect array tetap dipakai yg terbaru
+        const updatedDefects = currentItem.defect || [];
+    
+        // === STEP 2: Jika join_piece berubah → REGRADE KELOMPOK LAMA ===
+        if (isJoinPieceChange && oldJoinPiece !== null) {
+          // Cari kelompok lama yang join_piecenya sama
+          const oldGroup = [];
+          for (const key in prevState) {
+            prevState[key].forEach(item => {
+              if (item.join_piece === oldJoinPiece) {
+                oldGroup.push({ key, no_urut: item.no_urut });
+              }
+            });
+          }
+    
+          // Regrade setiap item dalam kelompok lama
+          oldGroup.forEach(({ key, no_urut }) => {
+            const idx = newState[key].findIndex(x => x.no_urut === no_urut);
+            if (idx !== -1) {
+              const item = newState[key][idx];
+              const g = gradingValidation(item.defect || [], newState, key, idx);
+              newState[key][idx].grade = g.grade;
+            }
+          });
+        }
+    
+        // === STEP 3: Hitung grade item utama & kelompok baru ===
+        const gradeResult = gradingValidation(updatedDefects, newState, itemId, index);
+        currentItem.grade = gradeResult.grade;
+
+        // console.log('grading',gradeResult);
+        
+    
+        // === STEP 4: Update item yang join_piece sama (kelompok baru) ===
+        if (gradeResult.newPrevStateWithFilteredItems) {
+          Object.entries(gradeResult.newPrevStateWithFilteredItems).forEach(
+            ([key, arr]) => {
+              arr.forEach(item => {
+                const idx = newState[key].findIndex(x => x.no_urut === item.no_urut);
+                if (idx !== -1) {
+                  newState[key][idx] = {
+                    ...newState[key][idx],
+                    grade: gradeResult.grade
+                  };
+                }
+              });
+            }
+          );
+        }
+    
+        return newState;
+      });
+    };
+    
+
   return (
     <>
       <Container fluid className="p-4" style={{ marginBottom: "8rem" }}>
@@ -995,7 +1200,7 @@ const InspectingCreate = (props) => {
                                       )
                                     }
                                   >
-                                    {result.qty} {result.no_urut ? `(${result.no_urut})` : ''}
+                                    {result.qty} {result.no_urut ? `(${result.no_urut})` : ''} {result.join_piece ? `(${result.join_piece})` : ''}
                                   </Button>
                                   {visibleCard.id === item.id &&
                                     visibleCard.index === index && (
@@ -1025,7 +1230,7 @@ const InspectingCreate = (props) => {
                                               className="justify-content-between"
                                             >
                                               <Card.Title className="me-auto">
-                                                {result.qty} {result.no_urut ? `(${result.no_urut})` : ''}
+                                                {result.qty} {result.no_urut ? `(${result.no_urut})` : ''} {result.join_piece ? ` (${result.join_piece})` : ''} , (lebar kain: {lebarKain[data[0].sc_greige.lebar_kain]})
                                               </Card.Title>
                                               <Stack
                                                 direction="horizontal"
@@ -1033,8 +1238,8 @@ const InspectingCreate = (props) => {
                                               >
                                                 <Button
                                                   size="sm"
-                                                  variant="warning"
-                                                  className="text-danger"
+                                                  variant="danger"
+                                                  className="text-white"
                                                   onClick={() =>
                                                     handleDeleteInspectResult(
                                                       item.id,
@@ -1045,7 +1250,7 @@ const InspectingCreate = (props) => {
                                                   <FaTrash />{" "}
                                                   <strong>Hapus</strong>
                                                 </Button>
-                                                <Button
+                                                {/* <Button
                                                   size="sm"
                                                   variant="danger"
                                                   onClick={() =>
@@ -1056,7 +1261,7 @@ const InspectingCreate = (props) => {
                                                   }
                                                 >
                                                   <FaTimes />
-                                                </Button>
+                                                </Button> */}
                                               </Stack>
                                             </Stack>
                                           </Card.Header>
@@ -1078,9 +1283,16 @@ const InspectingCreate = (props) => {
                                               <Form.Group className="mb-3">
                                                 <Form.Control
                                                   type="number"
-                                                  defaultValue={result.qty}
+                                                  value={result?.qty}
                                                   className="border-bold"
                                                   name="qty"
+                                                  onChange={(e) =>
+                                                    handleChangeValueInspectResult(
+                                                      e,
+                                                      item.id,
+                                                      index
+                                                    )
+                                                  }
                                                 />
                                               </Form.Group>
                                               <Form.Group className="mb-3">
@@ -1104,7 +1316,14 @@ const InspectingCreate = (props) => {
                                                     className="border-bold"
                                                     name="grade"
                                                     required
-                                                    defaultValue={result.grade}
+                                                    value={result.grade}
+                                                    onChange={(e) =>
+                                                      handleChangeGrade(
+                                                        e,
+                                                        item.id,
+                                                        index
+                                                      )
+                                                    }
                                                   >
                                                     <option value={7}>
                                                       A+
@@ -1130,14 +1349,22 @@ const InspectingCreate = (props) => {
                                                   <Form.Control
                                                     type="text"
                                                     name="join_piece"
-                                                    defaultValue={
-                                                      result.join_piece
-                                                    }
+                                                    value={result?.join_piece ? result.join_piece.toUpperCase() : ""}
                                                     className="border-bold"
-                                                    onChange={(e) =>
-                                                      (e.target.value =
-                                                        e.target.value.toUpperCase())
-                                                    }
+                                                    onChange={(e) => {
+                                                      const { name, value } = e.target;
+
+                                                      handleChangeValueInspectResult(
+                                                        {
+                                                          target: {
+                                                            name,
+                                                            value: value.toUpperCase(), // langsung di-clean saat input
+                                                          },
+                                                        },
+                                                        item.id,
+                                                        index
+                                                      );
+                                                    }}
                                                   />
                                                 </Form.Group>
                                                 <Form.Group as={Col} xs={4}>
@@ -1146,9 +1373,10 @@ const InspectingCreate = (props) => {
                                                   </Form.Label>
                                                   <Form.Control
                                                     type="text"
-                                                    name="no_lot"
-                                                    defaultValue={result.lot_no}
+                                                    name="lot_no"
+                                                    value={result?.lot_no}
                                                     className="border-bold"
+                                                    onChange={(e) => handleChangeValueInspectResult(e,item.id,index)}
                                                   />
                                                 </Form.Group>
                                               </Row>
@@ -1317,7 +1545,8 @@ const InspectingCreate = (props) => {
                                 handleAddInspectResult(
                                   e,
                                   item.id,
-                                  item.stock_id
+                                  item.stock_id,
+                                  data[0].sc_greige.lebar_kain
                                 )
                               }
                             >
