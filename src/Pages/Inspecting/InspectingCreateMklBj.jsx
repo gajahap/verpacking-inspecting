@@ -197,6 +197,7 @@ const InspectingCreate = (props) => {
                     ? response.data.sort((a, b) => (a.no > b.no ? 1 : -1))
                     : []
             );
+            // console.log(response.data);
             
         } catch (error) {
             console.error(error);
@@ -340,6 +341,7 @@ const InspectingCreate = (props) => {
         const groupItems = state.filter(
           (item, i) =>
             item.join_piece !== "" &&
+            item.join_piece !== null &&
             item.join_piece === currentItem.join_piece &&
             i !== index
         );
@@ -362,9 +364,10 @@ const InspectingCreate = (props) => {
           groupItems.reduce((sum, item) => sum + (item.qty * 1), 0);
       
         const a = totalPoint * 3600;
-        const b = totalQty * 58; // misal pakai default lebar kain
+        const b = totalQty * lebarKain[data[0].sc_greige?.lebar_kain]; // misal pakai default lebar kain
       
         const nilaiPoin = parseFloat((a / b).toFixed(1));
+        
       
         // Grade
         let grade =
@@ -450,7 +453,7 @@ const InspectingCreate = (props) => {
             index
           );
 
-        //   console.log('gr',gradeResult);
+          console.log('gr',gradeResult);
           
       
           currentItem.grade = gradeResult.grade;

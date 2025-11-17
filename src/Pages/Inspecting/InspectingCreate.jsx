@@ -536,7 +536,8 @@ const InspectingCreate = (props) => {
     for (const key in prevState) {
       const filtered = prevState[key].filter(item =>
         item.join_piece === currentPrev.join_piece &&
-        currentPrev.join_piece !== null &&
+        currentPrev.join_piece !== null && 
+        currentPrev.join_piece !== '' &&
         item.no_urut !== currentPrev.no_urut
       );
   
@@ -634,7 +635,7 @@ const InspectingCreate = (props) => {
   
       // Hitung grade terbaru
       const gradeResult = gradingValidation(updatedDefects, prevState, itemId, index);
-      // console.log("grading", gradeResult);
+      console.log("grading", gradeResult);
       
   
       // Update item utama
@@ -840,7 +841,7 @@ const InspectingCreate = (props) => {
         const gradeResult = gradingValidation(updatedDefects, newState, itemId, index);
         currentItem.grade = gradeResult.grade;
 
-        // console.log('grading',gradeResult);
+        console.log('grading',gradeResult);
         
     
         // === STEP 4: Update item yang join_piece sama (kelompok baru) ===
