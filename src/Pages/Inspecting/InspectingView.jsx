@@ -89,6 +89,27 @@ const InspectingView = (props) => {
     4: "BATAL",
   };
 
+  const lebarKain = {
+    1: 44,
+    2: 58,
+    3: 64,
+    4: 66,
+    5: 68,
+    6: 72,
+    7: 69,
+    8: 70,
+    9: 71,
+    10: 74,
+    11: 76,
+    12: 78,
+    13: 80,
+    14: 82,
+    15: 84,
+    16: 86,
+    17: 88,
+    18: 90
+  }
+
   const unitOptions = Object.keys(units).map((key) => ({
     value: key,
     label: units[key],
@@ -129,6 +150,7 @@ const InspectingView = (props) => {
   }, [alertMessage]);
 
   const fetchData = useCallback(async () => {
+    setLoading(true);
     try {
       if (props.jenisProses !== "mkl-bj") {
         const response = await axiosInstance.get(
@@ -170,6 +192,8 @@ const InspectingView = (props) => {
           `inspecting/get-inspecting-mkl-bj/${idInspecting}`
         );
         setData(response.data.data);
+        console.log('data',response.data.data);
+        
         setInspectItem(
           response.data.data.inspecting_mklbj_item.sort((a, b) => a.no_urut - b.no_urut)
         );
@@ -319,6 +343,7 @@ const InspectingView = (props) => {
     setShowConfirmModal(false);
     if (confirmed) {
       try {
+
         if (props.jenisProses !== "mkl-bj") {
           await axiosInstance.delete(
             `inspecting/delete-inspecting-item/${inspectItemWillDeleted}`
@@ -328,6 +353,51 @@ const InspectingView = (props) => {
             `inspecting/delete-inspecting-item-mklbj/${inspectItemWillDeleted}`
           );
         }
+        // jika memiliki join_piece sebelumnnya maka re-grading
+        const thisitem = inspectItem.find((item) => item.id === inspectItemWillDeleted);
+        const joinPieceItem = inspectItem.filter((item) => item.join_piece === thisitem.join_piece && item.id !== thisitem.id && item.join_piece !== null && item.join_piece !== '');
+        const totalQty = joinPieceItem.reduce((total, item) => total + parseInt(item.qty), 0);
+
+        //total defect poin yang ada di item.defect_item
+        const totalAllDefectPoint = joinPieceItem.reduce(
+          (sum, item) =>
+            sum +
+            item.defect_item.reduce(
+              (s, d) => s + (d.point ? parseInt(d.point, 10) : 0),
+              0
+            ),
+          0
+        );
+        
+        const nilaiPoin = ((totalAllDefectPoint * 3600) / (totalQty * lebarKain[data?.sc_greige?.lebar_kain])).toFixed(1);
+        let grade = 3;
+        if (nilaiPoin <= 24) grade = 1;
+        else if (nilaiPoin <= 30) grade = 2;
+        
+        const url =
+        props.jenisProses === "mkl-bj"
+          ? "inspecting/update-inspecting-mklbj/item"
+          : "inspecting/get-inspecting/update";
+
+        await Promise.all(
+          joinPieceItem.map((item) =>
+            axiosInstance.put(`${url}/${item.id}`, {
+              inspecting_id: item.inspecting_id,
+              inspecting_item_id: item.id,
+              qty: item.qty,
+              grade: grade,
+              join_piece: item.join_piece,
+              is_head: item.is_head,
+              lot_no: item.lot_no,
+              defect: item.defect_item,
+              stock_id: item.stock_id,
+              gsm_item: item.gsm_item,
+              qty_bit: item.qty_bit,
+            })
+          )
+        );
+        
+
         closeModal();
         setModalMessage({ message: "Data berhasil dihapus.", status: 200 });
         await fetchData();
@@ -632,6 +702,8 @@ const InspectingView = (props) => {
                         {visibleCard.id === result.id && (
                           <InspectResultEdit
                             result={result}
+                            inspectItem={inspectItem}
+                            lebarKain= {props.jenisProses !== "mkl-bj" ? data?.sc_greige?.lebar_kain : data?.wo?.sc_greige?.lebar_kain}
                             jenisProses={props.jenisProses}
                             closeModal={closeModal}
                             onSuccessEdit={onSuccessEdit}
@@ -877,6 +949,8 @@ const InspectingView = (props) => {
             <InspectResultAdd
               closeModal={() => setShowModalAdd(false)}
               inspectingData={data}
+              inspectItem={inspectItem}
+              lebarKain= {props.jenisProses !== "mkl-bj" ? data?.sc_greige?.lebar_kain : data?.wo?.sc_greige?.lebar_kain}
               jenisProses={props.jenisProses}
               onSuccessAdd={onSuccessAdd}
             />
