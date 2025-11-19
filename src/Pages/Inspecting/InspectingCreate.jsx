@@ -28,6 +28,7 @@ const InspectingCreate = (props) => {
     props.jenisProses.charAt(0).toUpperCase() + props.jenisProses.slice(1)
   } Create `;
   const [nomorKartu, setNomorKartu] = useState("");
+  const [idKartu, setIdKartu] = useState(null);
   const [data, setData] = useState([]);
   const [isSearch, setIsSearch] = useState(false);
   const [isArrow, setIsArrow] = useState(false);
@@ -300,17 +301,30 @@ const InspectingCreate = (props) => {
           ? "dashboard/get-kartu-dyeing"
           : "dashboard/get-kartu-printing";
       const paramName = props.jenisProses === "dyeing" ? "no" : "no";
+      console.log('id:',idKartu,'no:',nomorKartu);
       const response = await axiosInstance.get(endpoint, {
         params: {
           [paramName]: nomorKartu,
+          id: idKartu,
         },
       });
+      console.log(response);
+      
+      
       setIsSearch(true);
-      setData(
-        response.data.data
-          ? response.data.data.sort((a, b) => (a.no > b.no ? 1 : -1))
-          : []
-      ); // Ensure data is an array
+      //jika data adalah array munculkan console
+      if (Array.isArray(response.data.data)) {
+        setData(
+          response.data.data
+            ? response.data.data.sort((a, b) => (a.no > b.no ? 1 : -1))
+            : []
+        );
+      } else {
+        // ubah response.data.data menjadi array
+        response.data.data = [response.data.data];
+        setData(response.data.data);
+      }
+
       if (response.data.data.length === 1) {
         if (props.jenisProses === "dyeing") {
           setKartuProsesItem(
@@ -362,6 +376,7 @@ const InspectingCreate = (props) => {
 
   const handleChoosOne = (item) => {
     setNomorKartu(item.no);
+    setIdKartu(item.id);
     setIsArrow(true);
     setIsChooseOne(true);
     window.scrollTo({
