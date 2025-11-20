@@ -124,7 +124,7 @@ const InspectingCreate = (props) => {
         const { name, value } = e.target;
         console.log(name, value);
         
-        if(name === 'grade' && value === '5' || value === 5){
+        if(name === 'grade' && value === '5' || value === 5 || value === '4' || value === 4){
             setInspectResult(prevState => {
                 const newState = [...prevState];
                 newState[index].grade = value;

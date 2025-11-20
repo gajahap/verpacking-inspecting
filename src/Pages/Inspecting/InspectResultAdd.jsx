@@ -141,6 +141,7 @@ const InspectResultAdd = (props) => {
 
     const handleChangeForm = (e) => {
         const { name, value } = e.target;
+        if(name === "grade" && value !== "5" && value !== "4" && value !== 5 && value !== 4) return
         setFormData(prevFormData => ({ ...prevFormData, [name]: value }));
     };
     const handleChangeFormSelect = (selected) => {
@@ -168,7 +169,7 @@ const InspectResultAdd = (props) => {
 
     useEffect(() => {
         // grade 5 → skip perhitungan
-        if (formData.grade === 5 || formData.grade === "5") return;
+        if (formData.grade === 5 || formData.grade === "5" || formData.grade === '4' || formData.grade === 4) return;
       
         // validasi join piece
         // const joinPiece = formData.join_piece;
@@ -212,16 +213,16 @@ const InspectResultAdd = (props) => {
         if (nilaiPoin <= 24) newGrade = 1;
         else if (nilaiPoin <= 30) newGrade = 2;
 
-        console.log('----------------------------------');
-        console.log('this defectPoint', defectPoint);
-        console.log('this anotherItem', anotherItem);
-        console.log('this anotherItemTotalQty', anotherQty);
-        console.log('this anotherItemDefectPoint', anotherDefectPoint);
-        console.log('currentTotalQty', totalQty);
-        console.log('currentTotalPoint', totalPoint);
+        // console.log('----------------------------------');
+        // console.log('this defectPoint', defectPoint);
+        // console.log('this anotherItem', anotherItem);
+        // console.log('this anotherItemTotalQty', anotherQty);
+        // console.log('this anotherItemDefectPoint', anotherDefectPoint);
+        // console.log('currentTotalQty', totalQty);
+        // console.log('currentTotalPoint', totalPoint);
         
-        console.log('----------------------------------');
-        console.log('nilai poin: ',nilaiPoin);
+        // console.log('----------------------------------');
+        // console.log('nilai poin: ',nilaiPoin);
       
         // hanya update grade jika berubah
         if (newGrade !== formData.grade) {
@@ -301,82 +302,88 @@ const InspectResultAdd = (props) => {
                                     <Form.Control type="text" name="lot_no" value={formData.lot_no} className="border-bold" onChange={handleChangeForm} />
                                 </Form.Group>
                             </Row>
-                            <strong>Defect</strong>
-                            <Row className="mb-3">
-                                {formData.defect.map((defect, defectIndex) => (
-                                    <React.Fragment key={defectIndex}>
-                                        {defectIndex === 0 && (
-                                            <>
-                                                <Form.Group as={Col} xs={4}>
-                                                    <Form.Label>Meter</Form.Label>
-                                                </Form.Group>
-                                                <Form.Group as={Col} xs={4}>
-                                                    <Form.Label>Kode</Form.Label>
-                                                </Form.Group>
-                                                <Form.Group as={Col} xs={4}>
-                                                    <Form.Label>Point</Form.Label>
-                                                </Form.Group>
-                                            </>
-                                        )}
-                                        <Form.Group as={Col} xs={4} className="mb-3">
-                                            <Form.Control
-                                                type="number"
-                                                name="meter_defect"
-                                                value={defect.meterage}
-                                                onChange={e => setFormData({
-                                                    ...formData,
-                                                    defect: formData.defect.map((def, i) =>
-                                                        i === defectIndex ? { ...def, meterage: parseInt(e.target.value, 10) || 0 } : def
-                                                    )
-                                                })}
-                                                className="border-bold"
-                                            />
-                                        </Form.Group>
-                                        <Form.Group as={Col} xs={4}>
-                                            <CustomSelect
-                                                options={kodeDefectOption}
-                                                value={kodeDefectOption.find(
-                                                    (option) => option.value === defect.mst_kode_defect_id
-                                                )}
-                                                onChange={(e) => {
-                                                    const updatedDefects = [...formData.defect];
-                                                    updatedDefects[defectIndex] = { ...updatedDefects[defectIndex], mst_kode_defect_id: e.value };
-                                                    setFormData({ ...formData, defect: updatedDefects });
-                                                }}
-                                                placeholder="Pilih"
-                                            />
-                                        </Form.Group>
 
-                                        <Form.Group as={Col} xs={4}>
-                                            <Stack gap={2} direction="horizontal">
-                                                <Form.Control
-                                                    type="number"
-                                                    name="point"
-                                                    value={defect.point}
-                                                    onChange={e => setFormData({
-                                                        ...formData,
-                                                        defect: formData.defect.map((def, i) =>
-                                                            i === defectIndex ? { ...def, point: parseInt(e.target.value, 10) || 0 } : def
-                                                        )
-                                                    })}
-                                                    className="border-bold no-spinner"
-                                                />
-                                                <Button
-                                                    variant="danger"
-                                                    onClick={() => handleDeleteDefect(defectIndex)}
-                                                >
-                                                    <FaTrash />
-                                                </Button>
-                                            </Stack>
-                                        </Form.Group>
-                                    </React.Fragment>
-                                ))}
-                                <Col className="pt-2">
-                                    <Button className="w-100" variant='secondary' size="sm" onClick={handleAddDefect}>
-                                        <FaPlus /> Tambah Defect
-                                    </Button>
-                                </Col>
-                            </Row>
+                            {formData.grade !== 5 && formData.grade !== '5' &&
+                                <>
+                                    <strong>Defect</strong>
+                                    <Row className="mb-3">
+                                        {formData.defect.map((defect, defectIndex) => (
+                                            <React.Fragment key={defectIndex}>
+                                                {defectIndex === 0 && (
+                                                    <>
+                                                        <Form.Group as={Col} xs={4}>
+                                                            <Form.Label>Meter</Form.Label>
+                                                        </Form.Group>
+                                                        <Form.Group as={Col} xs={4}>
+                                                            <Form.Label>Kode</Form.Label>
+                                                        </Form.Group>
+                                                        <Form.Group as={Col} xs={4}>
+                                                            <Form.Label>Point</Form.Label>
+                                                        </Form.Group>
+                                                    </>
+                                                )}
+                                                <Form.Group as={Col} xs={4} className="mb-3">
+                                                    <Form.Control
+                                                        type="number"
+                                                        name="meter_defect"
+                                                        value={defect.meterage}
+                                                        onChange={e => setFormData({
+                                                            ...formData,
+                                                            defect: formData.defect.map((def, i) =>
+                                                                i === defectIndex ? { ...def, meterage: parseInt(e.target.value, 10) || 0 } : def
+                                                            )
+                                                        })}
+                                                        className="border-bold"
+                                                    />
+                                                </Form.Group>
+                                                <Form.Group as={Col} xs={4}>
+                                                    <CustomSelect
+                                                        options={kodeDefectOption}
+                                                        value={kodeDefectOption.find(
+                                                            (option) => option.value === defect.mst_kode_defect_id
+                                                        )}
+                                                        onChange={(e) => {
+                                                            const updatedDefects = [...formData.defect];
+                                                            updatedDefects[defectIndex] = { ...updatedDefects[defectIndex], mst_kode_defect_id: e.value };
+                                                            setFormData({ ...formData, defect: updatedDefects });
+                                                        }}
+                                                        placeholder="Pilih"
+                                                    />
+                                                </Form.Group>
+
+                                                <Form.Group as={Col} xs={4}>
+                                                    <Stack gap={2} direction="horizontal">
+                                                        <Form.Control
+                                                            type="number"
+                                                            name="point"
+                                                            value={defect.point}
+                                                            onChange={e => setFormData({
+                                                                ...formData,
+                                                                defect: formData.defect.map((def, i) =>
+                                                                    i === defectIndex ? { ...def, point: parseInt(e.target.value, 10) || 0 } : def
+                                                                )
+                                                            })}
+                                                            className="border-bold no-spinner"
+                                                        />
+                                                        <Button
+                                                            variant="danger"
+                                                            onClick={() => handleDeleteDefect(defectIndex)}
+                                                        >
+                                                            <FaTrash />
+                                                        </Button>
+                                                    </Stack>
+                                                </Form.Group>
+                                            </React.Fragment>
+                                        ))}
+                                        <Col className="pt-2">
+                                            <Button className="w-100" variant='secondary' size="sm" onClick={handleAddDefect}>
+                                                <FaPlus /> Tambah Defect
+                                            </Button>
+                                        </Col>
+                                    </Row>
+                                </>
+                            }
+
 
                             <Button size="sm" type="submit" variant="success">{isSubmiting? <Spinner animation="border" size="sm" /> : (<><FaSave />Simpan</>)}</Button>
                         </Form>

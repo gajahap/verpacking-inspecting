@@ -544,6 +544,20 @@ const InspectingCreate = (props) => {
 
   const gradingValidation = (newResults, prevState, itemId, index) => {
     const currentPrev = prevState[itemId][index];
+    if (parseInt(currentPrev.grade) === 5){
+      return {
+        nilaiPoin : 0,    
+        grade: currentPrev.grade,
+        newPrevStateWithFilteredItems :[]
+      }
+    } else if (parseInt(currentPrev.grade) === 4){
+      return {
+        nilaiPoin : 0,    
+        grade: currentPrev.grade,
+        newPrevStateWithFilteredItems :[]
+      }
+      
+    }
   
     const newPrevStateWithFilteredItems = {};
   
@@ -793,12 +807,20 @@ const InspectingCreate = (props) => {
       const { value } = e.target;
   
       const intValue = parseInt(value, 10);
+      if (intValue !== 5 && intValue !== 4) return
+
+      //jika intValue === 5 maka hapus defect menjadi []
+
   
       setInspectResult((prevState) => {
         const updatedItem = {
           ...prevState[itemId][index], // Access child at index
           grade: intValue, // Update bits to the specified value
         };
+        if (intValue === 5) {
+          updatedItem.defect = [];
+          
+        }
         return {
           ...prevState,
           [itemId]: prevState[itemId].map((item, i) => i === index ? updatedItem : item),
@@ -856,7 +878,7 @@ const InspectingCreate = (props) => {
         const gradeResult = gradingValidation(updatedDefects, newState, itemId, index);
         currentItem.grade = gradeResult.grade;
 
-        console.log('grading',gradeResult);
+        // console.log('grading',gradeResult);
         
     
         // === STEP 4: Update item yang join_piece sama (kelompok baru) ===
@@ -879,6 +901,11 @@ const InspectingCreate = (props) => {
         return newState;
       });
     };
+
+      useEffect(() => {
+        console.log('perubahan = ',inspectResult);
+        
+      }, [inspectResult]);
     
 
   return (
@@ -1322,9 +1349,20 @@ const InspectingCreate = (props) => {
                                                   name="gsm_item"
                                                 />
                                               </Form.Group>
+                                              <Form.Group className="mb-3">
+                                                <Form.Label>
+                                                  <strong>GSM</strong>
+                                                </Form.Label>
+                                                <Form.Control
+                                                  type="number"
+                                                  defaultValue={result.gsm_item}
+                                                  className="border-bold"
+                                                  name="gsm_item"
+                                                />
+                                              </Form.Group>
                                               <hr />
                                               <Row className="mb-3">
-                                                <Form.Group as={Col} xs={4}>
+                                                <Form.Group as={Col} xs={4}>  
                                                   <Form.Label>
                                                     <strong>Grade</strong>
                                                   </Form.Label>
@@ -1396,104 +1434,54 @@ const InspectingCreate = (props) => {
                                                   />
                                                 </Form.Group>
                                               </Row>
-                                              <strong>Defect</strong>
-                                              <Row className="mb-3">
-                                                {result?.defect?.map(
-                                                  (defect, defectIndex) => (
-                                                    <React.Fragment
-                                                      key={defectIndex}
-                                                    >
-                                                      {defectIndex === 0 && (
-                                                        <>
-                                                          <Form.Group
-                                                            as={Col}
-                                                            xs={4}
-                                                          >
-                                                            <Form.Label>
-                                                              Meter
-                                                            </Form.Label>
-                                                          </Form.Group>
-                                                          <Form.Group
-                                                            as={Col}
-                                                            xs={4}
-                                                          >
-                                                            <Form.Label>
-                                                              Kode
-                                                            </Form.Label>
-                                                          </Form.Group>
-                                                          <Form.Group
-                                                            as={Col}
-                                                            xs={4}
-                                                          >
-                                                            <Form.Label>
-                                                              Point
-                                                            </Form.Label>
-                                                          </Form.Group>
-                                                        </>
-                                                      )}
-                                                      <Form.Group
-                                                        as={Col}
-                                                        xs={4}
-                                                        className="mb-3"
+                                              {result.grade !== 5 && <>
+                                                <strong>Defect</strong>
+                                                <Row className="mb-3">
+                                                  {result?.defect?.map(
+                                                    (defect, defectIndex) => (
+                                                      <React.Fragment
+                                                        key={defectIndex}
                                                       >
-                                                        <Form.Control
-                                                          type="number"
-                                                          name="meter_defect"
-                                                          value={
-                                                            defect?.meter_defect
-                                                          }
-                                                          className="border-bold"
-                                                          onChange={(e) =>
-                                                            handleChangeDefect(
-                                                              e,
-                                                              item.id,
-                                                              index,
-                                                              defectIndex
-                                                            )
-                                                          }
-                                                        />
-                                                      </Form.Group>
-                                                      <Form.Group
-                                                        as={Col}
-                                                        xs={4}
-                                                      >
-                                                        <CustomSelect
-                                                          options={
-                                                            kodeDefectOption
-                                                          }
-                                                          value={kodeDefectOption.find(
-                                                            (option) =>
-                                                              option.value ===
-                                                              defect?.kode_defect
-                                                          )}
-                                                          onChange={(e) =>
-                                                            handleChangeDefect(
-                                                              e,
-                                                              item.id,
-                                                              index,
-                                                              defectIndex,
-                                                              "kode_defect"
-                                                            )
-                                                          }
-                                                          placeholder="Pilih"
-                                                        />
-                                                      </Form.Group>
-
-                                                      <Form.Group
-                                                        as={Col}
-                                                        xs={4}
-                                                      >
-                                                        <Stack
-                                                          gap={2}
-                                                          direction="horizontal"
+                                                        {defectIndex === 0 && (
+                                                          <>
+                                                            <Form.Group
+                                                              as={Col}
+                                                              xs={4}
+                                                            >
+                                                              <Form.Label>
+                                                                Meter
+                                                              </Form.Label>
+                                                            </Form.Group>
+                                                            <Form.Group
+                                                              as={Col}
+                                                              xs={4}
+                                                            >
+                                                              <Form.Label>
+                                                                Kode
+                                                              </Form.Label>
+                                                            </Form.Group>
+                                                            <Form.Group
+                                                              as={Col}
+                                                              xs={4}
+                                                            >
+                                                              <Form.Label>
+                                                                Point
+                                                              </Form.Label>
+                                                            </Form.Group>
+                                                          </>
+                                                        )}
+                                                        <Form.Group
+                                                          as={Col}
+                                                          xs={4}
+                                                          className="mb-3"
                                                         >
                                                           <Form.Control
                                                             type="number"
-                                                            name="point"
+                                                            name="meter_defect"
                                                             value={
-                                                              defect?.point
+                                                              defect?.meter_defect
                                                             }
-                                                            className="border-bold no-spinner"
+                                                            className="border-bold"
                                                             onChange={(e) =>
                                                               handleChangeDefect(
                                                                 e,
@@ -1503,39 +1491,92 @@ const InspectingCreate = (props) => {
                                                               )
                                                             }
                                                           />
-                                                          <Button
-                                                            variant="danger"
-                                                            onClick={() =>
-                                                              handleRemoveDefect(
+                                                        </Form.Group>
+                                                        <Form.Group
+                                                          as={Col}
+                                                          xs={4}
+                                                        >
+                                                          <CustomSelect
+                                                            options={
+                                                              kodeDefectOption
+                                                            }
+                                                            value={kodeDefectOption.find(
+                                                              (option) =>
+                                                                option.value ===
+                                                                defect?.kode_defect
+                                                            )}
+                                                            onChange={(e) =>
+                                                              handleChangeDefect(
+                                                                e,
                                                                 item.id,
                                                                 index,
-                                                                defectIndex
+                                                                defectIndex,
+                                                                "kode_defect"
                                                               )
                                                             }
+                                                            placeholder="Pilih"
+                                                          />
+                                                        </Form.Group>
+
+                                                        <Form.Group
+                                                          as={Col}
+                                                          xs={4}
+                                                        >
+                                                          <Stack
+                                                            gap={2}
+                                                            direction="horizontal"
                                                           >
-                                                            <FaTrash />
-                                                          </Button>
-                                                        </Stack>
-                                                      </Form.Group>
-                                                    </React.Fragment>
-                                                  )
-                                                )}
-                                                <Col className="pt-2">
-                                                  <Button
-                                                    className="w-100"
-                                                    variant="secondary"
-                                                    size="sm"
-                                                    onClick={() =>
-                                                      handleAddDefect(
-                                                        item.id,
-                                                        index
-                                                      )
-                                                    }
-                                                  >
-                                                    <FaPlus /> Tambah Defect
-                                                  </Button>
-                                                </Col>
-                                              </Row>
+                                                            <Form.Control
+                                                              type="number"
+                                                              name="point"
+                                                              value={
+                                                                defect?.point
+                                                              }
+                                                              className="border-bold no-spinner"
+                                                              onChange={(e) =>
+                                                                handleChangeDefect(
+                                                                  e,
+                                                                  item.id,
+                                                                  index,
+                                                                  defectIndex
+                                                                )
+                                                              }
+                                                            />
+                                                            <Button
+                                                              variant="danger"
+                                                              onClick={() =>
+                                                                handleRemoveDefect(
+                                                                  item.id,
+                                                                  index,
+                                                                  defectIndex
+                                                                )
+                                                              }
+                                                            >
+                                                              <FaTrash />
+                                                            </Button>
+                                                          </Stack>
+                                                        </Form.Group>
+                                                      </React.Fragment>
+                                                    )
+                                                  )}
+                                                  <Col className="pt-2">
+                                                    <Button
+                                                      className="w-100"
+                                                      variant="secondary"
+                                                      size="sm"
+                                                      onClick={() =>
+                                                        handleAddDefect(
+                                                          item.id,
+                                                          index
+                                                        )
+                                                      }
+                                                    >
+                                                      <FaPlus /> Tambah Defect
+                                                    </Button>
+                                                  </Col>
+                                                </Row>
+                                              </>}
+
 
                                               <Button
                                                 size="sm"

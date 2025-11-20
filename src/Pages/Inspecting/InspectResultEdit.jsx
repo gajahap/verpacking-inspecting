@@ -163,6 +163,14 @@ const InspectResultEdit = (props) => {
   // handle untuk mengubah value pada formData
   const handleChangeForm = (e) => {
     const { name, value } = e.target;
+    if (name === "grade" && value !== "5" && value !== "4" && value !== 5 && value !== 4) {
+        return
+    } else {
+      if (parseInt(value) === 5  ){
+        setFormData((prevFormData) => ({ ...prevFormData, defect: [] }));
+      } 
+    }
+
     //jika perubahan merupakan join piece maka setJoinPieceItemBefore
     if (name === "join_piece" && value !== result.join_piece) {
       const joinPieceItemBeforeChange  = props.inspectItem.filter(item => item.join_piece === result.join_piece && item.id !== result.id && item.join_piece !== null && item.join_piece !== '');
@@ -197,7 +205,7 @@ const InspectResultEdit = (props) => {
   };
 
   useEffect(() =>{
-    if (formData.grade === "5" || formData.grade === 5) {
+    if (formData.grade === "5" || formData.grade === 5 || formData.grade === "4" || formData.grade === 4) {
       // setFormData((prevFormData) => ({ ...prevFormData, defect: [] }));
       return;
     }
@@ -230,7 +238,7 @@ const InspectResultEdit = (props) => {
     if (r <= 24) grade = 1;
     else if (r <= 30) grade = 2;
 
-    console.log('nilai poin = ',r , 'grade = ',grade, 'another item = ',anotherItem);
+    // console.log('nilai poin = ',r , 'grade = ',grade, 'another item = ',anotherItem);
     
 
     setFormData((prevFormData) => ({
@@ -244,10 +252,10 @@ const InspectResultEdit = (props) => {
     
   },[formData.qty, formData.defect, formData.join_piece]);
   
-  // useEffect(() => {
-  //   console.log('join piece item before = ',joinPieceItemBefore);
+  useEffect(() => {
+    console.log('perubahan = ',formData);
     
-  // }, [joinPieceItemBefore]);
+  }, [formData]);
 
   return (
     <>
