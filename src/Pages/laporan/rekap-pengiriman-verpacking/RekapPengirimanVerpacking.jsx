@@ -96,6 +96,7 @@ const DaftarPengirimanVerpacking = () => {
                 setData(
                     response.data.data.sort((a, b) => new Date(a.tgl) - new Date(b.tgl))
                 );
+                console.log(response.data.data);
             })
             .catch(error => {
                 console.error(error);
@@ -270,7 +271,7 @@ const DaftarPengirimanVerpacking = () => {
     };
 
     return (
-        <Container fluid className="py-4 px-4 vh-100" style={{ marginBottom: "200px" }}>
+        <Container fluid className="py-4 px-4 vh-100" style={{ marginBottom: "800px" }}>
             <Card>
                 <Card.Header className="bg-burgundy-gradient bg-pattern-container">
                     <Card.Title className="text-white">Rekap Pengiriman Verpacking</Card.Title>
@@ -324,18 +325,35 @@ const DaftarPengirimanVerpacking = () => {
                             <p className="print-title text-center">REKAP PENGIRIMAN VERPACKING</p>
                             <p className="text-center">Bulan {month[selectedMonth]}, Tahun {selectedYear}</p>
                             
-                            <Table ref={tableRef} id="tabelPengiriman">
-                                <thead>
+                            <Table ref={tableRef} id="tabelPengiriman" bordered>
+                                <thead className="text-center justify-content-center align-items-center">
                                     <tr className="border-bold-y">
-                                        <th>Tgl</th>
-                                        <th>Grade A</th>
-                                        <th>Grade A+</th>
-                                        <th>Grade A*</th>
-                                        <th>Grade B</th>
-                                        <th>Grade C</th>
-                                        <th>Piece Kecil</th>
-                                        <th>Contoh</th>
+                                        <th rowSpan={2}>Tgl</th>
+                                        <th colSpan={2}>Grade A</th>
+                                        <th colSpan={2}>Grade A+</th>
+                                        <th colSpan={2}>Grade A*</th>
+                                        <th colSpan={2}>Grade B</th>
+                                        <th colSpan={2}>Grade C</th>
+                                        <th colSpan={2}>Piece Kecil</th>
+                                        <th colSpan={2}>Contoh</th>
                                         <th>Total</th>
+                                    </tr>
+                                    <tr className="border-bold-y">
+                                        <th>Yard</th>
+                                        <th>%</th>
+                                        <th>Yard</th>
+                                        <th>%</th>
+                                        <th>Yard</th>
+                                        <th>%</th>
+                                        <th>Yard</th>
+                                        <th>%</th>
+                                        <th>Yard</th>
+                                        <th>%</th>
+                                        <th>Yard</th>
+                                        <th>%</th>
+                                        <th>Yard</th>
+                                        <th>%</th>
+                                        <th>Yard</th>
                                     </tr>
                                 </thead>
 
@@ -356,56 +374,68 @@ const DaftarPengirimanVerpacking = () => {
 
                                                 <td>
                                                     <b>{formatNumber(item["Grade A"] ?? 0)}</b>
-                                                    {" "}({(((item["Grade A"] ?? 0) / total) * 100).toFixed(2)}%)
                                                 </td>
+                                                <td>{(((item["Grade A"] ?? 0) / total) * 100).toFixed(2)}%</td>
 
                                                 <td>
                                                     <b>{formatNumber(item["Grade A+"] ?? 0)}</b>
-                                                    {" "}({(((item["Grade A+"] ?? 0) / total) * 100).toFixed(2)}%)
+                                                </td>
+                                                <td>
+                                                    {(((item["Grade A+"] ?? 0) / total) * 100).toFixed(2)}%
                                                 </td>
 
                                                 <td>
                                                     <b>{formatNumber(item["Grade A*"] ?? 0)}</b>
-                                                    {" "}({(((item["Grade A*"] ?? 0) / total) * 100).toFixed(2)}%)
+                                                </td>
+                                                <td>
+                                                    {(((item["Grade A*"] ?? 0) / total) * 100).toFixed(2)}%
                                                 </td>
 
                                                 <td>
                                                     <b>{formatNumber(item["Grade B"] ?? 0)}</b>
-                                                    {" "}({(((item["Grade B"] ?? 0) / total) * 100).toFixed(2)}%)
+                                                </td>
+                                                <td>
+                                                    {(((item["Grade B"] ?? 0) / total) * 100).toFixed(2)}%
                                                 </td>
 
                                                 <td>
                                                     <b>{formatNumber(item["Grade C"] ?? 0)}</b>
-                                                    {" "}({(((item["Grade C"] ?? 0) / total) * 100).toFixed(2)}%)
+                                                </td>
+                                                <td>
+                                                    {(((item["Grade C"] ?? 0) / total) * 100).toFixed(2)}%
                                                 </td>
 
                                                 <td>
                                                     <b>{formatNumber(item["Piece Kecil"] ?? 0)}</b>
-                                                    {" "}({(((item["Piece Kecil"] ?? 0) / total) * 100).toFixed(2)}%)
+                                                </td>
+                                                <td>
+                                                {(((item["Piece Kecil"] ?? 0) / total) * 100).toFixed(2)}%
                                                 </td>
 
                                                 <td>
                                                     <b>{formatNumber(item["Sample"] ?? 0)}</b>
-                                                    {" "}({(((item["Sample"] ?? 0) / total) * 100).toFixed(2)}%)
+                                                </td>
+                                                <td>
+                                                    {(((item["Sample"] ?? 0) / total) * 100).toFixed(2)}%
                                                 </td>
 
-                                                <td>{formatNumber(total)}</td>
+                                                <td><b>{formatNumber(total)}</b></td>
                                             </tr>
                                         );
                                     })}
                                 </tbody>
 
                                 <tfoot>
-                                    <tr className="border-bold-y">
+                                    <tr className="border-bold-y text-center">
                                         <th>Total</th>
 
-                                        <th>{formatNumber(data.reduce((sum, i) => sum + (i["Grade A"] ?? 0), 0))}</th>
-                                        <th>{formatNumber(data.reduce((sum, i) => sum + (i["Grade A+"] ?? 0), 0))}</th>
-                                        <th>{formatNumber(data.reduce((sum, i) => sum + (i["Grade A*"] ?? 0), 0))}</th>
-                                        <th>{formatNumber(data.reduce((sum, i) => sum + (i["Grade B"] ?? 0), 0))}</th>
-                                        <th>{formatNumber(data.reduce((sum, i) => sum + (i["Grade C"] ?? 0), 0))}</th>
-                                        <th>{formatNumber(data.reduce((sum, i) => sum + (i["Piece Kecil"] ?? 0), 0))}</th>
-                                        <th>{formatNumber(data.reduce((sum, i) => sum + (i["Sample"] ?? 0), 0))}</th>
+                                        <th colSpan={2}>{formatNumber(data.reduce((sum, i) => sum + (i["Grade A"] ?? 0), 0))}</th>
+                                        <th colSpan={2}>{formatNumber(data.reduce((sum, i) => sum + (i["Grade A+"] ?? 0), 0))}</th>
+                                        <th colSpan={2}>{formatNumber(data.reduce((sum, i) => sum + (i["Grade A*"] ?? 0), 0))}</th>
+                                        <th colSpan={2}>{formatNumber(data.reduce((sum, i) => sum + (i["Grade B"] ?? 0), 0))}</th>
+                                        <th colSpan={2}>{formatNumber(data.reduce((sum, i) => sum + (i["Grade C"] ?? 0), 0))}</th>
+                                        <th colSpan={2}>{formatNumber(data.reduce((sum, i) => sum + (i["Piece Kecil"] ?? 0), 0))}</th>
+                                        <th colSpan={2}>{formatNumber(data.reduce((sum, i) => sum + (i["Sample"] ?? 0), 0))}</th>
 
                                         <th>
                                             {formatNumber(
