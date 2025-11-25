@@ -502,43 +502,23 @@ const InspectPrint = ({ jenisProses }) => {
                 <td>{data?.mo?.piece_length}</td>
                 <td rowSpan={3}></td>
                 <td rowSpan={3} className="fw-bold">
-                      {kartuProsesItem && inspectItem && data.unit === 1
-                        ? ((kartuProsesItem.reduce(
-                            (total, item) => total + parseInt(item.panjang_m),
-                            0
-                          ) - (
-                            inspectItem.reduce(
-                              (total, item) =>
-                                total +
-                                (parseInt(item.qty_bit, 10) || 0) +
-                                parseInt(item.qty, 10),
-                              0
-                            )
-                          ))  /  kartuProsesItem.reduce(
-                            (total, item) => total + parseInt(item.panjang_m),
-                            0
-                          ) * 100
-                        ).toFixed(2)
-                        : null}
-
-                      {kartuProsesItem && inspectItem && data.unit === 2
-                        ? (((kartuProsesItem.reduce(
-                            (total, item) => total + parseInt(item.panjang_m),
-                            0
-                          ) / 0.9144) - (
-                            inspectItem.reduce(
-                              (total, item) =>
-                                total +
-                                (parseInt(item.qty_bit, 10) || 0) +
-                                parseInt(item.qty, 10),
-                              0
-                            )
-                          ))  /  (kartuProsesItem.reduce(
-                            (total, item) => total + parseInt(item.panjang_m),
-                            0
-                          ) / 0.9144) * 100
-                        ).toFixed(2)
-                        : null}
+                      {kartuProsesItem && inspectItem &&
+                      ((kartuProsesItem.reduce(
+                        (total, item) => total + parseInt(item.panjang_m),
+                        0
+                      ) - (
+                        inspectItem.reduce(
+                          (total, item) =>
+                            total +
+                            (parseInt(item.qty_bit, 10) || 0) +
+                            parseInt(item.qty, 10),
+                          0
+                        )
+                      ))  /  kartuProsesItem.reduce(
+                        (total, item) => total + parseInt(item.panjang_m),
+                        0
+                      ) * 100
+                    ).toFixed(2)} %
                 </td>
               </tr>
               <tr>
