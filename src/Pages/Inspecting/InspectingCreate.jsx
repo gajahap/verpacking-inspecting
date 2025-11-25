@@ -1848,10 +1848,9 @@ const InspectingCreate = (props) => {
                       <strong>Susut</strong>
                     </td>
                     <td className="fw-bold">
-                      {formData.unit && formData.unit === "1"
-                        ? (
+                      {(
                             ((kartuProsesItem.reduce(
-                              (total, item) => total + item.panjang_m,
+                              (total, item) => total + parseInt(item.panjang_m),
                               0
                             ) -
                               (inspectResult
@@ -1871,44 +1870,11 @@ const InspectingCreate = (props) => {
                                   )
                                 : 0)) /
                               kartuProsesItem.reduce(
-                                (total, item) => total + item.panjang_m,
+                                (total, item) => total + parseInt(item.panjang_m),
                                 0
                               )) *
                             100
-                          ).toFixed(2) + "%"
-                        : null}
-
-                      {formData.unit && formData.unit === "2"
-                        ? (
-                            ((kartuProsesItem.reduce(
-                              (total, item) => total + item.panjang_m,
-                              0
-                            ) /
-                              0.9144 -
-                              (inspectResult
-                                ? Object.values(inspectResult).reduce(
-                                    (total, item) =>
-                                      total +
-                                      item.reduce(
-                                        (total2, result) =>
-                                          total2 +
-                                          (result.qty_bit
-                                            ? result.qty_bit
-                                            : 0) +
-                                          result.qty,
-                                        0
-                                      ),
-                                    0
-                                  )
-                                : 0)) /
-                              (kartuProsesItem.reduce(
-                                (total, item) => total + item.panjang_m,
-                                0
-                              ) /
-                                0.9144)) *
-                            100
-                          ).toFixed(2) + "%"
-                        : null}
+                          ).toFixed(2) + "%"}
                     </td>
                   </tr>
                 </tfoot>
