@@ -729,7 +729,7 @@ const InspectPrint = (props) => {
                                 <td className="fw-bold">
                                 {kartuProsesItem && inspectItem && data.unit === 1
                                     ? ((kartuProsesItem.reduce(
-                                        (total, item) => total + item.panjang_m,
+                                        (total, item) => total + parseInt(item.panjang_m),
                                         0
                                       ) - (
                                         inspectItem.reduce(
@@ -740,7 +740,7 @@ const InspectPrint = (props) => {
                                           0
                                         )
                                       ))  /  kartuProsesItem.reduce(
-                                        (total, item) => total + item.panjang_m,
+                                        (total, item) => total + parseInt(item.panjang_m),
                                         0
                                       ) * 100
                                     ).toFixed(2)
@@ -748,7 +748,7 @@ const InspectPrint = (props) => {
 
                                   {kartuProsesItem && inspectItem && data.unit === 2
                                     ? (((kartuProsesItem.reduce(
-                                        (total, item) => total + item.panjang_m,
+                                        (total, item) => total + parseInt(item.panjang_m),
                                         0
                                       ) / 0.9144) - (
                                         inspectItem.reduce(
@@ -759,7 +759,7 @@ const InspectPrint = (props) => {
                                           0
                                         )
                                       ))  /  (kartuProsesItem.reduce(
-                                        (total, item) => total + item.panjang_m,
+                                        (total, item) => total + parseInt(item.panjang_m),
                                         0
                                       ) / 0.9144) * 100
                                     ).toFixed(2)
