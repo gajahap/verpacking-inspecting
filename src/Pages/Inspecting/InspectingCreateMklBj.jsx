@@ -122,17 +122,20 @@ const InspectingCreate = (props) => {
     
     const handleUpdateInspectResult = (e, index) => {
         const { name, value } = e.target;
-        console.log(name, value);
-        
-        if(name === 'grade' && value === '5' || value === 5 || value === '4' || value === 4){
+        // console.log(name, value);
+
+        const gradeResetValues = ['4', 4, '5', 5];
+
+        if (name === 'grade' && gradeResetValues.includes(value)) {
             setInspectResult(prevState => {
                 const newState = [...prevState];
                 newState[index].grade = value;
                 newState[index].defect = [];
                 return newState;
-            })
+            });
             return;
         }
+        
 
         setInspectResult(prevState => {
           // Clone array
