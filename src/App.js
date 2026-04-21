@@ -20,6 +20,7 @@ import UserConfiguration from './Pages/User/UserConfiguration';
 import About from './Pages/About';
 import GrafikDefect from './Pages/laporan/grafik-defect/GrafikDefect';
 import SearchDefectPerMotif from './Pages/laporan/search-defect-per-motif/SearchDefectPerMotif';
+import SearchPanjangDefectPerMotif from './Pages/laporan/search-panjang-defect-per-motif/SearchPanjangDefectPerMotif';
 const App = () => {
   return (
     <Router>
@@ -66,6 +67,8 @@ const App = () => {
           <Route path="/grafik-defect" element={<Middleware><GrafikDefect/></Middleware>} />
 
           <Route path="/search-defect-per-motif" element={<Middleware><SearchDefectPerMotif/></Middleware>} />
+
+          <Route path="/search-panjang-defect-per-motif" element={<Middleware><SearchPanjangDefectPerMotif/></Middleware>} />
 
           {/* <Route path="/laporan-stock-greige" element={<Middleware><LaporanStockGreige/></Middleware>} /> */}
 

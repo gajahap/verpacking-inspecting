@@ -1,0 +1,233 @@
+import React, { useState } from 'react';
+import { Container, Card, Form, Button,Stack ,Table, Spinner,OverlayTrigger, Popover } from 'react-bootstrap';
+import axiosInstance from '../../../axiosConfig';
+import Bottom from '../../Layouts/Bottom/Bottom';
+import DateRangePicker from '../../../Components/DateRangePicker/DateRangePicker';
+
+const SearchDefectPerMotif = () => {
+    document.title = "Search Defect Per Motif";
+    const [data, setData] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [params,setParams] = useState({});
+    const [selectedRange, setSelectedRange] = useState();
+     const fetchDataIndex = async () => {
+       setIsLoading(true);
+       try {
+        console.log(params);
+        if(!params.start_date || !params.end_date){
+            alert('Tanggal harus diisi');
+            return;
+        }else if(new Date(params.end_date) < new Date(params.start_date)){
+            alert('Tanggal akhir tidak boleh lebih kecil dari tanggal awal');
+            return;
+        } else if((new Date(params.end_date) - new Date(params.start_date)) / (1000 * 60 * 60 * 24) > 30){
+            alert('Jarak tanggal awal ke akhir tidak boleh lebih dari 30 hari');
+            return;
+        } else{
+            console.log('data yang dikirm',params);
+            const response = await axiosInstance.get(`defect-item/get-defect-meter-tgl-kirim`, {params: params});
+            setData(response.data.data);
+            console.log("DATA API:",response.data.data);
+            
+        }
+       } catch (error) {
+         console.log(error.response);
+       } finally {
+         setIsLoading(false);
+       }
+     };
+
+
+    const handleChangeParams = (e) => {
+        const { name, value } = e.target;
+        setParams((prevParams) => ({
+          ...prevParams,
+          [name]: value,
+        }));
+      };
+
+      const handleChangeRange = (range) => {
+        setSelectedRange(range);
+    
+        if (range?.from && range?.to) {
+            setParams((prevParams) => ({
+                ...prevParams,
+                start_date: range.from,
+                end_date: range.to,
+            }));
+        } else {
+            setParams((prevParams) => ({
+                ...prevParams,
+                start_date: null,
+                end_date: null,
+            }));
+        }
+    };
+        
+    return (
+        <>
+        <div className="vh-100" style={{ position: "relative", height: "30rem"}}>
+        <div
+          style={{
+            height: "70%",
+            justifyContent: "center",
+          }}
+          className="bg-burgundy-gradient bg-pattern-container text-white p-4 curved-container"
+        >
+        </div>
+            <div className="p-4" style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, zIndex: 1 }}>
+                <Container fluid className="py-5 container-padding-bottom">
+                    <Stack direction="vertical" gap={3} style={{ marginBottom: "200px" }}>
+                        <div className='py-4'>
+                            <h1 className='text-white'>Rekap Panjang Defect By Motif dan Grade</h1>
+                            <Form className="mt-4 d-flex justify-content-between gap-2 w-50 align-items-end">
+                                <Form.Group controlId="tahun" className='flex-grow-1'>
+                                    <Form.Label className="text-white">Tanggal</Form.Label>
+                                    <Stack direction="horizontal" gap={3}>
+                                        <DateRangePicker value={selectedRange} onChange={handleChangeRange}/>
+                                        <Button variant="burgundy" className='mt-auto' onClick={fetchDataIndex} disabled={isLoading}>
+                                            {isLoading ? <><Spinner animation="border" size="sm" />  Tunggu sebentar</> : 'Cari'}
+                                        </Button>
+                                    </Stack>
+                                </Form.Group>
+                            </Form>
+                        </div>
+                        <Card>
+                            <Card.Body>
+                                <Table className='text-center mt-3' responsive bordered hover striped>
+                                    <thead>
+                                        <tr>
+                                        <th>No</th>
+                                        <th>Kode Defect</th>
+                                        <th>Nama Defect</th>
+                                        <th>Grade B</th>
+                                        <th>Grade C</th>
+                                        <th>Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {data.map((item, index) => (
+                                            <tr key={index}>
+                                                <td>{index + 1}</td>
+                                                <td>{item.no_urut}</td>
+                                                <td style={{textAlign: 'left'}}>{item.nama_defect}</td>
+                                                {/* <td style={{whiteSpace: 'pre-wrap', textAlign: 'center'}} className='text-left'>
+                                                    {item.grade_2.length > 0 ? item.grade_2.map((grade2, i) => (
+                                                        <div key={i} style={{textAlign: 'left'}}>{`${grade2.nama_kain} = ${grade2.meterage}`}</div>
+                                                    )) : '-'}
+                                                </td>
+                                                <td style={{whiteSpace: 'pre-wrap', textAlign: 'center'}} className='text-left'>
+                                                    {item.grade_3.length > 0 ? item.grade_3.map((grade3, i) => (
+                                                        <div key={i} style={{textAlign: 'left'}}>{`${grade3.nama_kain} = ${grade3.meterage}`}</div>
+                                                    )) : '-'}
+                                                </td> */}
+                                                
+                                                {/* --- BAGIAN GRADE 2 --- */}
+                                                <td style={{ whiteSpace: 'pre-wrap' }} className="text-left">
+                                                    {item.grade_2.length > 0
+                                                        ? item.grade_2
+                                                            .slice()
+                                                            .sort((a, b) => Number(b.panjang) - Number(a.panjang))
+                                                            .map((grade2, i) => {
+                                                                // Buat konten Popover dengan scrollable list
+                                                                const popover = (
+                                                                    <Popover id={`popover-grade2-${i}`}>
+                                                                        <Popover.Header as="h3" style={{ fontSize: '12px' }}>Daftar No. Kartu</Popover.Header>
+                                                                        <Popover.Body style={{ maxHeight: '150px', overflowY: 'auto', padding: '10px' }}>
+                                                                            <ul style={{ paddingLeft: '15px', margin: 0, fontSize: '11px' }}>
+                                                                                {Array.isArray(grade2.no_kartu) ? (
+                                                                                    grade2.no_kartu.map((no, idx) => <li key={idx}>{no}</li>)
+                                                                                ) : (
+                                                                                    <li>{grade2.no_kartu || '-'}</li>
+                                                                                )}
+                                                                            </ul>
+                                                                        </Popover.Body>
+                                                                    </Popover>
+                                                                );
+
+                                                                return (
+                                                                    <OverlayTrigger
+                                                                        key={i}
+                                                                        trigger="click"
+                                                                        rootClose
+                                                                        placement="top"
+                                                                        overlay={popover}
+                                                                    >
+                                                                        <div style={{ textAlign: 'left', cursor: 'pointer' }} className="text-primary">
+                                                                            {`${grade2.nama_kain} = ${Number(grade2.panjang).toFixed(2)}`}
+                                                                        </div>
+                                                                    </OverlayTrigger>
+                                                                );
+                                                            })
+                                                        : '-'}
+                                                </td>
+
+                                                {/* --- BAGIAN GRADE 3 --- */}
+                                                <td style={{ whiteSpace: 'pre-wrap' }} className="text-left">
+                                                    {item.grade_3.length > 0
+                                                        ? item.grade_3
+                                                            .slice()
+                                                            .sort((a, b) => Number(b.panjang) - Number(a.panjang))
+                                                            .map((grade3, i) => {
+                                                                const popover = (
+                                                                    <Popover id={`popover-grade3-${i}`}>
+                                                                        <Popover.Header as="h3" style={{ fontSize: '12px' }}>Daftar No. Kartu</Popover.Header>
+                                                                        <Popover.Body style={{ maxHeight: '150px', overflowY: 'auto', padding: '10px' }}>
+                                                                            <ul style={{ paddingLeft: '15px', margin: 0, fontSize: '11px' }}>
+                                                                                {Array.isArray(grade3.no_kartu) ? (
+                                                                                    grade3.no_kartu.map((no, idx) => <li key={idx}>{no}</li>)
+                                                                                ) : (
+                                                                                    <li>{grade3.no_kartu || '-'}</li>
+                                                                                )}
+                                                                            </ul>
+                                                                        </Popover.Body>
+                                                                    </Popover>
+                                                                );
+
+                                                                return (
+                                                                    <OverlayTrigger
+                                                                        key={i}
+                                                                        trigger="click"
+                                                                        rootClose
+                                                                        placement="top"
+                                                                        overlay={popover}
+                                                                    >
+                                                                        <div style={{ textAlign: 'left', cursor: 'pointer'}} className="text-primary">
+                                                                            {`${grade3.nama_kain} = ${Number(grade3.panjang).toFixed(2)}`}
+                                                                        </div>
+                                                                    </OverlayTrigger>
+                                                                );
+                                                            })
+                                                        : '-'}
+                                                </td>
+                                                <td>{(item.total_grade_2 + item.total_grade_3).toFixed(2)}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colSpan="5" style={{ textAlign: "right", fontWeight: "bold" }}>
+                                                Grand Total:
+                                            </td>
+                                            <td style={{ fontWeight: "bold" }}>
+                                                {data.reduce(
+                                                (sum, item) =>
+                                                    sum + (item.total_grade_2 || 0) + (item.total_grade_3 || 0),
+                                                0
+                                                ).toFixed(2)}
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </Table>
+                            </Card.Body>
+                        </Card>
+                    </Stack>
+                </Container>
+            </div>
+      </div>
+      <Bottom />
+      </>
+    );
+};
+
+export default SearchDefectPerMotif;
