@@ -53,6 +53,12 @@ const InspectPrint = (props) => {
     1: "A",
   };
 
+  const units = {
+    1: "Yds",
+    2: "Mtr"
+  };
+
+
   const width = {
     1: 44,
     2: 58,
@@ -108,7 +114,7 @@ const InspectPrint = (props) => {
                           data?.sc_greige?.lebar_kain ||
                             data?.wo?.sc_greige?.lebar_kain
                         ] *
-                        (data.unit === 2 ? 0.9144 : 1)),
+                        (data.unit === 1 ? 1 : 1.09361)),
                   0
                 )
                 .toFixed(1)
@@ -125,7 +131,7 @@ const InspectPrint = (props) => {
                           data?.sc_greige?.lebar_kain ||
                             data?.wo?.sc_greige?.lebar_kain
                         ] *
-                        (data.unit === 2 ? 0.9144 : 1)),
+                        (data.unit === 1 ? 1 : 1.09361)),
                   0
                 )
                 .toFixed(1),
@@ -463,7 +469,7 @@ const InspectPrint = (props) => {
                                 textOverflow: "ellipsis",
                               }}
                             >
-                              Length (yds)
+                              Length ({units[unit]})
                             </td>
                             {[...Array(12).keys()].map((j) => (
                               <td key={j}>
@@ -615,7 +621,7 @@ const InspectPrint = (props) => {
                                           data?.sc_greige?.lebar_kain ||
                                             data?.wo?.sc_greige?.lebar_kain
                                         ] *
-                                        (unit === 2 ? 0.9144 : 1))
+                                        (unit === 1 ? 1 : 1.09361)) 
                                     ).toFixed(1)
                                   : ""}
                               </td>
